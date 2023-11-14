@@ -6,8 +6,6 @@ Imane Ait Lahcen
 
 Nolwen RIDHOI
 
-Cherifa Chekir
-
 
 ## Getting started
 
