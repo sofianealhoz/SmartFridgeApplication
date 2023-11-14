@@ -3,7 +3,7 @@
 ## Contributors
 
 Imane Ait Lahcen 
-
+Cherifa Chekir
 
 
 ## Getting started
