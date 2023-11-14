@@ -1,6 +1,10 @@
 # info3
 
 
+## Contributors
+Me : Nolwen RIDHOI
+
+
 
 ## Getting started
 
