@@ -1,5 +1,8 @@
 # info3
 
+## Contributors
+
+Imane Ait Lahcen 
 
 ## Contributors
 Me : Nolwen RIDHOI
