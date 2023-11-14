@@ -3,8 +3,6 @@
 ## Contributors
 
 Imane Ait Lahcen 
-
-## Contributors
 Me : Nolwen RIDHOI
 
 
