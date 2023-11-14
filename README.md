@@ -4,8 +4,6 @@
 
 Imane Ait Lahcen 
 
-Me : Nolwen RIDHOI
-
 
 
 ## Getting started
