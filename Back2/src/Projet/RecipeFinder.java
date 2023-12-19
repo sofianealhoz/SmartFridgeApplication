@@ -34,14 +34,10 @@ public class RecipeFinder {
             }
 
             Scanner scanner = new Scanner(conn.getInputStream());
-            StringBuilder response = new StringBuilder();
             while (scanner.hasNext()) {
-                response.append(scanner.nextLine());
+                System.out.println(scanner.nextLine());
             }
             scanner.close();
-
-            System.out.println("Recipes found with the specified ingredients:");
-            System.out.println(response.toString());
 
             conn.disconnect();
 
@@ -49,5 +45,4 @@ public class RecipeFinder {
             e.printStackTrace();
         }
     }
-    
 }

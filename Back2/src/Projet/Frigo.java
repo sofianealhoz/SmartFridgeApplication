@@ -58,4 +58,9 @@ public class Frigo {
             System.out.println("- " + allergie);
         }
     }
+
+    // New method to get current ingredients
+    public List<Ingredient> getCurrentIngredients() {
+        return new ArrayList<>(ingredients);
+    }
 }

@@ -25,12 +25,16 @@ class Ingredient {
         return quantite;
     }
 
-    // Ajoutez la méthode equals pour pouvoir comparer deux ingrédients
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
         if (obj == null || getClass() != obj.getClass()) return false;
         Ingredient ingredient = (Ingredient) obj;
         return nom.equals(ingredient.nom);
+    }
+
+    @Override
+    public int hashCode() {
+        return nom.hashCode();
     }
 }
