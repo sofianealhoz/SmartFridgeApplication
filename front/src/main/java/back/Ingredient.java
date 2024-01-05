@@ -5,13 +5,15 @@ import java.time.LocalDate;
 public class Ingredient {
     private String name;
     private LocalDate expirationDate;
-    private int quantity;
+    private double quantity;
     private String category;
+   
 
-    public Ingredient(String name, LocalDate expirationDate, int quantity) {
+    public Ingredient(String name, LocalDate expirationDate, int quantity, String category) {
         this.name = name;
         this.expirationDate = expirationDate;
         this.quantity = quantity;
+        this.category = category;
     }
 
     public String getName() {
@@ -22,13 +24,17 @@ public class Ingredient {
         return expirationDate;
     }
 
-    public int getQuantity() {
+    public double getQuantity() {
         return quantity;
     }
     public String getCategory() {
         return category;
     }
+    public void setCategory(String category) {
+        this.category = category;
+    }
 
+    
     // Add the equals method to compare two ingredients
     @Override
     public boolean equals(Object obj) {

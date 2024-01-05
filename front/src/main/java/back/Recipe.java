@@ -2,47 +2,62 @@ package back;
 
 import java.util.List;
 
+
 public class Recipe {
     private String name;
+    private String imageUrl;
     private List<Ingredient> ingredients;
-    private String instructions;
-    private String imageUrl; // URL to the image
+    private List<String> instructions;
+    private NutritionInfo nutritionInfo;
+    private List<String> allergens;
 
-    public Recipe(String name, List<Ingredient> ingredients, String instructions, String imageUrl) {
+    public Recipe(String name, String imageUrl, List<Ingredient> ingredientsList,List<String> instructions, NutritionInfo nutritionInfo, List<String> allergens) {
         this.name = name;
-        this.ingredients = ingredients;
-        this.instructions = instructions;
         this.imageUrl = imageUrl;
+        this.ingredients = ingredientsList;
+        this.instructions = instructions;
+        this.nutritionInfo = nutritionInfo;
+        this.allergens = allergens;  
     }
-
-    // ... other methods ...
-
-    public String getImageUrl() {
-        return imageUrl;
-    }
-
-    // Method to download the image from the imageUrl and return the local path
-    public String getImagePath() {
-        // This method should handle the download of the image and then
-        // return the path to where the image is stored locally.
-        // For this example, let's assume you have a utility method that handles the download.
-        String localPath = ImageDownloader.downloadImage(imageUrl);
-        return localPath;
-    }
-
 
     public String getName() {
         return name;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
     }
 
     public List<Ingredient> getIngredients() {
         return ingredients;
     }
 
-    public String getInstructions() {
+    public List<String> getInstructions() {
         return instructions;
     }
 
-	
+    public void setInstructions(List<String> instructions) {
+        this.instructions = instructions;
+    }
 
+    public String getImagePath() {
+        String localPath = ImageDownloader.downloadImage(imageUrl);
+        return localPath;
+    }
+    public NutritionInfo getNutritionInfo() {
+        return nutritionInfo;
+    }
+
+    public void setNutritionInfo(NutritionInfo nutritionInfo) {
+        this.nutritionInfo = nutritionInfo;
+    }
+
+    public List<String> getAllergens() {
+        return allergens;
+    }
+
+    public void setAllergens(List<String> allergens) {
+        this.allergens = allergens;
+    }
 }
+   

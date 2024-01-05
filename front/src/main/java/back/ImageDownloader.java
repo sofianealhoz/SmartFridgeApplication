@@ -15,7 +15,7 @@ public class ImageDownloader {
             URL url = new URL(imageUrl);
             BufferedImage image = ImageIO.read(url);
             String fileName = UUID.randomUUID().toString() + ".png"; // Generate a random file name
-            File outputFile = new File(System.getProperty("java.io.tmpdir"), fileName); // Save in the system temp directory
+            File outputFile = new File(System.getProperty("java.io.tmpdir"), fileName); // Save in the system 
             ImageIO.write(image, "png", outputFile);
             return outputFile.getAbsolutePath();
         } catch (IOException e) {
