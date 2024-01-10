@@ -2,60 +2,50 @@ package Front;
 
 import javax.swing.*;
 import java.awt.*;
-
 import Back.Ingredient;
 import Back.Recipe;
 
 public class RecipeDetailPanel extends JPanel {
     private static final long serialVersionUID = 1L;
-    
-    public RecipeDetailPanel(Recipe recipe, CardLayout cardLayout,  JPanel cardContainer) {
-        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
-        // Adding a back button
-        JButton backButton = new JButton("Back to Recipes");
-        backButton.addActionListener(e -> {
-            System.out.println("Back button clicked");
-            cardLayout.show(cardContainer, "Recipe List");
-        });
-        add(backButton);
+    public RecipeDetailPanel(Recipe recipe, CardLayout cardLayout, JPanel cardContainer) {
+        setLayout(new BorderLayout());
 
-        // Ingredient section header
+        // Container for ingredients and instructions
+        JPanel contentPanel = new JPanel();
+        contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
+        JScrollPane contentScrollPane = new JScrollPane(contentPanel);
+        add(contentScrollPane, BorderLayout.CENTER);
+
+        // "Ingredients" header
         JLabel ingredientsHeader = new JLabel("Ingredients:");
         customizeLabel(ingredientsHeader, Color.BLUE, new Font("Verdana", Font.ITALIC, 20));
-        add(ingredientsHeader);
+        contentPanel.add(ingredientsHeader);
 
-        // Displaying the ingredients of the recipe 
+        // Display recipe ingredients
         for (Ingredient ingredient : recipe.getIngredients()) {
-            JLabel ingredientLabel = new JLabel("\u2022 " + ingredient.getName()); 
+            JLabel ingredientLabel = new JLabel("\u2022 " + ingredient.getName());
             customizeLabel(ingredientLabel, Color.BLACK, new Font("Arial", Font.PLAIN, 16));
-            add(ingredientLabel);
+            contentPanel.add(ingredientLabel);
         }
 
-        // Separator between ingredients and instructions
-        add(Box.createRigidArea(new Dimension(0, 20)));
+        contentPanel.add(Box.createRigidArea(new Dimension(0, 20)));
 
+        // "Instructions" header
         JLabel instructionsHeader = new JLabel("Instructions:");
         customizeLabel(instructionsHeader, Color.BLUE, new Font("Verdana", Font.ITALIC, 20));
-        add(instructionsHeader);
+        contentPanel.add(instructionsHeader);
 
-        // Displaying the cooking instructions of the recipe
-        JPanel instructionsPanel = new JPanel();
-        instructionsPanel.setLayout(new BoxLayout(instructionsPanel, BoxLayout.Y_AXIS));
+        // Display cooking instructions for the recipe
         for (String instruction : recipe.getInstructions()) {
-            JLabel instructionLabel = new JLabel("\u2022 " + instruction); 
-            instructionLabel.setMaximumSize(new Dimension(Integer.MAX_VALUE, instructionLabel.getMinimumSize().height));
+            JLabel instructionLabel = new JLabel("\u2022 " + instruction);
             customizeLabel(instructionLabel, Color.DARK_GRAY, new Font("Arial", Font.PLAIN, 16));
-            instructionsPanel.add(instructionLabel);
+            contentPanel.add(instructionLabel);
         }
-
-        JScrollPane instructionsScrollPane = new JScrollPane(instructionsPanel);
-        add(instructionsScrollPane);
     }
 
     private void customizeLabel(JLabel label, Color color, Font font) {
         label.setForeground(color);
         label.setFont(font);
-        label.setAlignmentX(Component.LEFT_ALIGNMENT); 
     }
 }
