@@ -1,4 +1,4 @@
-package back;
+package Back;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -75,7 +75,7 @@ public class RecipeFinder {
         return recipes;
     }
 
-    // Fetches detailed recipe information including ingredients, instructions, nutrition, and allergens.
+    // Fetches detailed recipe information including ingredients, instructions, nutrition, and allergies.
     private static Recipe fetchRecipeDetails(int recipeId) {
         String detailUrl = "https://api.spoonacular.com/recipes/" + recipeId + "/information?includeNutrition=true&apiKey=" + API_KEY;
         try {

@@ -1,6 +1,6 @@
-package front;
+package Front;
 
-import back.Recipe;
+import Back.Recipe;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -70,7 +70,7 @@ public class RecipesPanel extends JPanel {
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         scrollPane.setBorder(null); 
         
-     // Title for the page
+        // Title for the page
         JLabel pageLabel = new JLabel("Recipes for you");
         pageLabel.setFont(new Font("Serif", Font.BOLD, 40));
         pageLabel.setHorizontalAlignment(SwingConstants.CENTER);
@@ -82,8 +82,7 @@ public class RecipesPanel extends JPanel {
         
         revalidate();
         repaint();
-
-        
+ 
         System.out.println("displayRecipes called with " + recipes.size() + " recipes.");
     }
 
@@ -97,6 +96,7 @@ public class RecipesPanel extends JPanel {
             return new ImageIcon(); 
         }
     }
+  
     private void showRecipeDetails(Recipe recipe) {
         RecipeDetailPanel detailPanel = new RecipeDetailPanel(recipe, cardLayout, cardPanel);
         cardPanel.add(detailPanel, "RecipeDetails");

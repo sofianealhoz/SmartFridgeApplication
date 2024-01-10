@@ -1,15 +1,14 @@
-package front;
+package Front;
 
 import javax.swing.*;
 import java.awt.*;
 
-import back.Ingredient;
-import back.Recipe;
+import Back.Ingredient;
+import Back.Recipe;
 
 public class RecipeDetailPanel extends JPanel {
     private static final long serialVersionUID = 1L;
     
-
     public RecipeDetailPanel(Recipe recipe, CardLayout cardLayout,  JPanel cardContainer) {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
@@ -54,7 +53,6 @@ public class RecipeDetailPanel extends JPanel {
         add(instructionsScrollPane);
     }
 
- 
     private void customizeLabel(JLabel label, Color color, Font font) {
         label.setForeground(color);
         label.setFont(font);

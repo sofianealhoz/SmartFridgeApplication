@@ -1,8 +1,8 @@
-package front;
+package Front;
 
-import back.Frigo;
-import back.RecipeFinder;
-import back.Recipe;
+import Back.Frigo;
+import Back.RecipeFinder;
+import Back.Recipe;
 
 import javax.swing.*;
 import java.awt.*;

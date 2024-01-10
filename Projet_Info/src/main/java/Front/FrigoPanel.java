@@ -1,4 +1,4 @@
-package front;
+package Front;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
@@ -9,8 +9,8 @@ import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.Comparator;
 
-import back.Frigo;
-import back.Ingredient;
+import Back.Frigo;
+import Back.Ingredient;
 
 public class FrigoPanel extends JPanel {
     private static final long serialVersionUID = 1L;
@@ -21,7 +21,7 @@ public class FrigoPanel extends JPanel {
         this.fridge = fridge;
         setLayout(new BorderLayout());
 
-     // Create a table 
+        // Create a table 
         String[] columnNames = {"Name", "Quantity", "Expiration Date", "Category"};
         DefaultTableModel tableModel = new DefaultTableModel(columnNames, 0);
         ingredientsTable = new JTable(tableModel);
@@ -41,8 +41,6 @@ public class FrigoPanel extends JPanel {
         titleLabel.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0)); 
         add(titleLabel, BorderLayout.NORTH);
 
-        
-
         // Button to add new ingredients
         JButton addIngredientButton = new JButton("Add Ingredient");
         
@@ -52,16 +50,7 @@ public class FrigoPanel extends JPanel {
         addIngredientButton.setBorder(BorderFactory.createRaisedBevelBorder()); // Set border for a 3D effect
         addIngredientButton.setFocusPainted(false); // Remove focus ring around text
         addIngredientButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
+
         addIngredientButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -72,7 +61,7 @@ public class FrigoPanel extends JPanel {
         refreshIngredientsTable();
     }
     
- // Style of the table
+    // Style of the table
     private void styleTable() {
     	// Style for the table header
         ingredientsTable.getTableHeader().setFont(new Font("SansSerif", Font.ITALIC, 16));
@@ -84,10 +73,7 @@ public class FrigoPanel extends JPanel {
         ingredientsTable.setForeground(Color.BLACK);
         ingredientsTable.setRowHeight(25); 
     }
-
-    
-
-   
+  
     // Shows a dialog to add a new ingredient to the fridge
     void displayAddIngredientDialog() {
         JFrame parentFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
@@ -175,7 +161,6 @@ public class FrigoPanel extends JPanel {
             });
         }
     }
-
-    
+ 
 }
 

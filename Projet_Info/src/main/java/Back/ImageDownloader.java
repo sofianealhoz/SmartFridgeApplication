@@ -1,4 +1,4 @@
-package back;
+package Back;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
