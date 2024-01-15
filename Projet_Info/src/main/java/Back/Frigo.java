@@ -7,11 +7,15 @@ public class Frigo {
     private final List<Ingredient> ingredients;
     // List to store allergies
     private final List<String> allergies;
+    private final List<Recipe> favoriteRecipes; ///
+
     
     // Constructor : initializes empty lists for ingredients and allergies
     public Frigo() {
         this.ingredients = new ArrayList<>();
         this.allergies = new ArrayList<>();
+        this.favoriteRecipes = new ArrayList<>(); ///
+
     }
     
     // Getter for the list of ingredients (returns a copy to prevent external modifications)
@@ -79,5 +83,19 @@ public class Frigo {
     	// Comparator for sorting ingredients by expiration date (nulls first)
         final Comparator<Ingredient> ingredientComparator = Comparator.comparing(Ingredient::getExpirationDate, Comparator.nullsFirst(Comparator.naturalOrder()));
         ingredients.sort(ingredientComparator);
+    }
+    
+    public List<Recipe> getFavoriteRecipes() { ///
+        return favoriteRecipes;
+    }
+    
+    public void addFavoriteRecipe(Recipe recipe) { ///
+        if (!favoriteRecipes.contains(recipe)) {
+            favoriteRecipes.add(recipe);
+        }
+    }
+
+    public void removeFavoriteRecipe(Recipe recipe) { ///
+        favoriteRecipes.remove(recipe);
     }
 }

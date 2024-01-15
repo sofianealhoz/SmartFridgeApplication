@@ -45,41 +45,13 @@ public class Interface extends JFrame {
         add(menuPanel, BorderLayout.WEST);
         add(cardPanel, BorderLayout.CENTER);
 
-        // Initializing and adding the add button panel
-        initializeAddButton();
-        JPanel addButtonPanel = createAddButtonPanel();
-        add(addButtonPanel, BorderLayout.SOUTH);
-
-  
+        
         setTitle("What's in my fridge");
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setVisible(true);
 
         }
-
-    // Initializes the "add ingredient" button
-    private void initializeAddButton() {
-        addButton = new JButton("+");
-        addButton.setPreferredSize(new Dimension(70, 70));
-        addButton.setFont(new Font("Arial", Font.BOLD, 24));
-        addButton.setForeground(Color.WHITE);
-        addButton.setBackground(Color.BLUE);
-        addButton.setOpaque(true);
-        addButton.setContentAreaFilled(false);
-        addButton.setBorderPainted(false);
-        addButton.setFocusPainted(false);
-        addButton.addActionListener(e -> frigoPanel.displayAddIngredientDialog());
-    }
-
-    // Creates the panel for the add button
-    private JPanel createAddButtonPanel() {
-        JPanel addButtonPanel = new JPanel();
-        addButtonPanel.setOpaque(false);
-        addButtonPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
-        addButtonPanel.add(addButton);
-        return addButtonPanel;
-    }
 
     // Creates the menu panel with buttons for different functionalities
     private JPanel createMenuPanel() {
@@ -92,12 +64,25 @@ public class Interface extends JFrame {
         return panel;
     }
 
-    // Adds a menu item (button) to the menu panel
+    // Adds the buttons to the menu panel
     private void addMenuItem(JPanel panel, String itemName) {
-        JButton button = new JButton(itemName);
-        button.setFont(new Font("Verdana", Font.TRUETYPE_FONT, 19));
-        button.setBackground(Color.BLUE);
-        button.setForeground(Color.WHITE);
+    	JButton button = new JButton(itemName);
+        button.setFont(new Font("Segoe UI", Font.BOLD, 18)); 
+        Color buttonColor = new Color(169, 204, 177); 
+        button.setBackground(buttonColor);
+        button.setForeground(Color.DARK_GRAY); 
+        button.setBorder(BorderFactory.createLineBorder(new Color(105, 130, 110))); 
+        button.setFocusPainted(false);
+        button.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        button.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                button.setBackground(buttonColor.darker()); 
+            }
+
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                button.setBackground(buttonColor); 
+            }
+        });
         button.addActionListener(e -> handleMenuItemClick(itemName));
         panel.add(button);
         menuButtons.add(button);
@@ -120,9 +105,27 @@ public class Interface extends JFrame {
                 recipesPanel.displayRecipes(recipes);
                 cardLayout.show(cardPanel, "Recipe Search");
                 break;
+            case "Favorites":
+                FavoritesPanel favoritesPanel = getFavoritesPanel(); // Obtenez ou créez une instance de FavoritesPanel
+                cardLayout.show(cardPanel, "Favorites");
+                break;
+
             // Additional handling for other menu items we need to implement
         }
     }
+    private FavoritesPanel favoritesPanel;
+
+ // ...
+
+ private FavoritesPanel getFavoritesPanel() {
+     if (favoritesPanel == null) {
+         favoritesPanel = new FavoritesPanel(cardPanel, cardLayout, frigo.getFavoriteRecipes());
+         cardPanel.add(favoritesPanel, "Favorites");
+     }
+     favoritesPanel.displayFavorites(frigo.getFavoriteRecipes());
+     return favoritesPanel;
+ }
+    
 
     // Main method to run the application
     public static void main(String[] args) {

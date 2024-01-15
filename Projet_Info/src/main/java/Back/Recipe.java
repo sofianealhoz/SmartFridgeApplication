@@ -11,6 +11,8 @@ public class Recipe {
     private List<String> instructions;
     private NutritionInfo nutritionInfo;
     private List<String> allergens;
+    private boolean favorite;
+
 
     // Constructor
     public Recipe(String name, String imageUrl, List<Ingredient> ingredientsList,List<String> instructions, NutritionInfo nutritionInfo, List<String> allergens) {
@@ -20,6 +22,8 @@ public class Recipe {
         this.instructions = instructions;
         this.nutritionInfo = nutritionInfo;
         this.allergens = allergens;  
+        this.favorite = false;
+
     }
     
     // Getter methods
@@ -40,6 +44,13 @@ public class Recipe {
     }
     public List<String> getAllergens() {
         return allergens;
+    }
+    public boolean isFavorite() {
+        return favorite;
+    }
+
+    public void setFavorite(boolean favorite) {
+        this.favorite = favorite;
     }
 
     
