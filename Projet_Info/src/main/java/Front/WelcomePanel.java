@@ -16,6 +16,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.ImageIcon;
+import java.net.URL;
 
 public class WelcomePanel extends JPanel {
 
@@ -30,8 +31,13 @@ public class WelcomePanel extends JPanel {
         add(Box.createVerticalStrut(20), BorderLayout.NORTH);
         
         // Load the background image
-        backgroundImage = new ImageIcon(getClass().getResource("/welcome.png")).getImage();
-
+        URL resourceUrl = getClass().getResource("/welcome.png");
+        if (resourceUrl != null) {
+    System.out.println("Resource URL: " + resourceUrl);
+    backgroundImage = new ImageIcon(resourceUrl).getImage();
+        } else {
+        System.err.println("Resource not found!");
+        }
         // Welcome message
         JLabel welcomeLabel = new JLabel("Welcome to your Fridge App!", SwingConstants.CENTER);
         welcomeLabel.setFont(new Font("Segoe UI", Font.BOLD, 60)); 

@@ -32,7 +32,7 @@ public class Interface extends JFrame {
         frigoPanel = new FrigoPanel(frigo);
         recipesPanel = new RecipesPanel(cardPanel, cardLayout);
 
-        // Welcome Panel 
+        // Welcome Panel
         WelcomePanel welcomePanel = new WelcomePanel();
         cardPanel.add(welcomePanel, "Welcome");
 
@@ -40,52 +40,63 @@ public class Interface extends JFrame {
         cardPanel.add(frigoPanel, "Fridge");
         cardPanel.add(recipesPanel, "Recipe Search");
 
-        // Creating and adding menu panel to the frame
-        JPanel menuPanel = createMenuPanel();
-        add(menuPanel, BorderLayout.WEST);
+        // Create the orange stripe panel
+        JPanel orangeStripe = new JPanel();
+        orangeStripe.setBackground(Color.ORANGE);
+        int stripeWidth = getWidth() / 6; // Adjust the width fraction as needed
+        orangeStripe.setPreferredSize(new Dimension(stripeWidth, getHeight()));
+
+        // Use BoxLayout for vertical arrangement of buttons
+        orangeStripe.setLayout(new BoxLayout(orangeStripe, BoxLayout.Y_AXIS));
+
+        // Create and add menu buttons to the orange stripe
+        String[] menuItems = {"","My Fridge App","","","","","","","","","","","Fridge",".", "Recipe Search",".", "Selected Recipes",".", "Shopping List",".", "Favorites"};
+        for (int i = 0; i < menuItems.length; i++) {
+            String item = menuItems[i];
+            JButton button = new JButton(item);
+            button.setFont(new Font("Segoe UI", Font.BOLD, 24));
+            button.setForeground(Color.WHITE);
+            button.setOpaque(false); // Make the button transparent
+            button.setContentAreaFilled(false); // Remove the default background
+            button.setBorderPainted(false); // Remove the button border
+            button.setFocusPainted(false);
+            button.setCursor(new Cursor(Cursor.HAND_CURSOR));
+            button.setAlignmentX(Component.CENTER_ALIGNMENT); // Center text horizontally
+        
+            button.addActionListener(e -> handleMenuItemClick(item));
+        
+            // Add rigid area for vertical spacing between buttons
+            orangeStripe.add(Box.createRigidArea(new Dimension(0, 10)));
+            orangeStripe.add(button);
+            menuButtons.add(button);
+        
+            // Apply a condition for the title
+            if (i == 1) {
+                button.setFont(new Font("Tahoma", Font.PLAIN, 40));
+            }
+        }
+
+        // Set the main layout to BorderLayout
+        setLayout(new BorderLayout());
+
+        // Add the orange stripe to the left (WEST) and content to the center (CENTER)
+        add(orangeStripe, BorderLayout.WEST);
         add(cardPanel, BorderLayout.CENTER);
 
-        
         setTitle("What's in my fridge");
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setVisible(true);
 
-        }
-
-    // Creates the menu panel with buttons for different functionalities
-    private JPanel createMenuPanel() {
-        JPanel panel = new JPanel();
-        panel.setLayout(new GridLayout(0, 1));
-        String[] menuItems = {"Fridge", "Recipe Search", "Selected Recipes", "Shopping List", "Favorites"};
-        for (String item : menuItems) {
-            addMenuItem(panel, item);
-        }
-        return panel;
-    }
-
-    // Adds the buttons to the menu panel
-    private void addMenuItem(JPanel panel, String itemName) {
-    	JButton button = new JButton(itemName);
-        button.setFont(new Font("Segoe UI", Font.BOLD, 18)); 
-        Color buttonColor = new Color(169, 204, 177); 
-        button.setBackground(buttonColor);
-        button.setForeground(Color.DARK_GRAY); 
-        button.setBorder(BorderFactory.createLineBorder(new Color(105, 130, 110))); 
-        button.setFocusPainted(false);
-        button.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        button.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                button.setBackground(buttonColor.darker()); 
-            }
-
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-                button.setBackground(buttonColor); 
+        // Add a component listener to handle resizing events
+        addComponentListener(new java.awt.event.ComponentAdapter() {
+            public void componentResized(java.awt.event.ComponentEvent evt) {
+                int stripeWidth = getWidth() / 5; // Adjust the width fraction as needed
+                orangeStripe.setPreferredSize(new Dimension(stripeWidth, getHeight()));
+                orangeStripe.revalidate();
             }
         });
-        button.addActionListener(e -> handleMenuItemClick(itemName));
-        panel.add(button);
-        menuButtons.add(button);
+
     }
 
     // Handles menu item clicks to switch between panels
@@ -109,7 +120,7 @@ public class Interface extends JFrame {
         }
     }
     
-
+    
     // Main method to run the application
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> new Interface());
