@@ -17,7 +17,6 @@ public class Interface extends JFrame {
     private RecipesPanel recipesPanel;
     private List<JButton> menuButtons;
     private Frigo frigo;
-    private JButton addButton;
 
     // Constructor to set up the main interface of the application.
     public Interface() {
@@ -120,7 +119,7 @@ public class Interface extends JFrame {
         }
     }
     
-    
+
     // Main method to run the application
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> new Interface());
