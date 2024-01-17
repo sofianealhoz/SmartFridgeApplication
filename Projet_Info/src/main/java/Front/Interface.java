@@ -41,11 +41,9 @@ public class Interface extends JFrame {
 
         // Create the orange stripe panel
         JPanel orangeStripe = new JPanel();
-        orangeStripe.setBackground(Color.ORANGE);
-        int stripeWidth = getWidth() / 6; // Adjust the width fraction as needed
+        orangeStripe.setBackground(new Color(255, 165, 79)); 
+        int stripeWidth = getWidth() / 6;
         orangeStripe.setPreferredSize(new Dimension(stripeWidth, getHeight()));
-
-        // Use BoxLayout for vertical arrangement of buttons
         orangeStripe.setLayout(new BoxLayout(orangeStripe, BoxLayout.Y_AXIS));
 
         // Create and add menu buttons to the orange stripe
@@ -55,12 +53,12 @@ public class Interface extends JFrame {
             JButton button = new JButton(item);
             button.setFont(new Font("Segoe UI", Font.BOLD, 24));
             button.setForeground(Color.WHITE);
-            button.setOpaque(false); // Make the button transparent
-            button.setContentAreaFilled(false); // Remove the default background
-            button.setBorderPainted(false); // Remove the button border
+            button.setOpaque(false); 
+            button.setContentAreaFilled(false); 
+            button.setBorderPainted(false); 
             button.setFocusPainted(false);
             button.setCursor(new Cursor(Cursor.HAND_CURSOR));
-            button.setAlignmentX(Component.CENTER_ALIGNMENT); // Center text horizontally
+            button.setAlignmentX(Component.CENTER_ALIGNMENT); 
         
             button.addActionListener(e -> handleMenuItemClick(item));
         
@@ -77,8 +75,6 @@ public class Interface extends JFrame {
 
         // Set the main layout to BorderLayout
         setLayout(new BorderLayout());
-
-        // Add the orange stripe to the left (WEST) and content to the center (CENTER)
         add(orangeStripe, BorderLayout.WEST);
         add(cardPanel, BorderLayout.CENTER);
 
@@ -90,7 +86,7 @@ public class Interface extends JFrame {
         // Add a component listener to handle resizing events
         addComponentListener(new java.awt.event.ComponentAdapter() {
             public void componentResized(java.awt.event.ComponentEvent evt) {
-                int stripeWidth = getWidth() / 5; // Adjust the width fraction as needed
+                int stripeWidth = getWidth() / 5; 
                 orangeStripe.setPreferredSize(new Dimension(stripeWidth, getHeight()));
                 orangeStripe.revalidate();
             }

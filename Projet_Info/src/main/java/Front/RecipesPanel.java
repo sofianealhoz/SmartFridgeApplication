@@ -2,6 +2,7 @@ package Front;
 
 import Back.Recipe;
 
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
@@ -14,15 +15,15 @@ import java.util.List;
 public class RecipesPanel extends JPanel {
 	private JPanel cardPanel;
     private CardLayout cardLayout;
-
+    
     private static final long serialVersionUID = 1L;
 
     public RecipesPanel(JPanel cardPanel, CardLayout cardLayout) {
-    	this.cardPanel = cardPanel;
+        this.cardPanel = cardPanel;
         this.cardLayout = cardLayout;
         setLayout(new BorderLayout());
     }
-
+    
     public void displayRecipes(List<Recipe> recipes) {
     	JPanel innerPanel = new JPanel();
         innerPanel.setLayout(new BoxLayout(innerPanel, BoxLayout.Y_AXIS));
@@ -69,6 +70,8 @@ public class RecipesPanel extends JPanel {
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         scrollPane.setBorder(null); 
+        
+        
         
         // Title for the page
         JLabel pageLabel = new JLabel("Recipes for you");

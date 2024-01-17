@@ -10,6 +10,16 @@ public class RecipeDetailPanel extends JPanel {
 
     public RecipeDetailPanel(Recipe recipe, CardLayout cardLayout, JPanel cardContainer) {
         setLayout(new BorderLayout());
+        
+     // Add a "Back to Recipes" button
+        JButton backButton = new JButton("Back to Recipes");
+        backButton.addActionListener(e -> cardLayout.show(cardContainer, "Recipe Search"));
+        add(backButton, BorderLayout.SOUTH);
+        backButton.setFont(new Font("Arial", Font.BOLD, 16));
+        backButton.setForeground(Color.WHITE);
+        backButton.setBackground(new Color(70, 130, 180));
+        backButton.setOpaque(true);
+        backButton.setBorderPainted(false);
 
         // Container for ingredients and instructions
         JPanel contentPanel = new JPanel();
