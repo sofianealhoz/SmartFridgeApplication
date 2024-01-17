@@ -13,11 +13,45 @@ import org.json.JSONObject;
 
 public class RecipeFinder {
 
-    private static final String API_KEY = "bde71878bd254e889f1c97348688c78d";
+    private static final String API_KEY = "43d2fa3384d347b2b8bab5785b2edff7";
 
     // Searches for recipes based on a list of ingredients.
     public static List<Recipe> searchRecipes(List<Ingredient> ingredients) {
         List<Recipe> recipes = new ArrayList<>();
+        List<Ingredient> chocolateCakeIngredients = Arrays.asList(
+            new Ingredient("Flour", LocalDate.of(2024, 6, 30), 500, "Bakery"),
+            new Ingredient("Sugar", LocalDate.of(2024, 12, 31), 200, "Bakery"),
+            new Ingredient("Eggs", LocalDate.of(2024, 5, 15), 3, "Dairy"),
+            new Ingredient("Cocoa Powder", LocalDate.of(2024, 11, 20), 100, "Bakery")
+        );
+
+        // Instructions for the chocolate cake
+        List<String> chocolateCakeInstructions = Arrays.asList(
+            "Preheat the oven to 180°C.",
+            "Mix flour, sugar, and cocoa powder.",
+            "Beat in eggs one at a time.",
+            "Pour batter into a greased pan.",
+            "Bake for 35 minutes or until a toothpick comes out clean."
+        );
+
+        // Nutritional information for the chocolate cake (example values)
+        NutritionInfo chocolateCakeNutrition = new NutritionInfo(350, 15, 5, 50, 2, 35, 0.2);
+
+        // Allergens for the chocolate cake
+        List<String> chocolateCakeAllergens = Arrays.asList("Gluten", "Eggs");
+
+        // Creating the chocolate cake recipe
+        Recipe chocolateCake = new Recipe(
+            "Chocolate Cake", 
+            "http://example.com/images/chocolate-cake.jpg",
+            chocolateCakeIngredients, 
+            chocolateCakeInstructions, 
+            chocolateCakeNutrition, 
+            chocolateCakeAllergens
+        );
+
+        // Create a list of recipes and add the chocolate cake recipe
+        recipes.add(chocolateCake);
 
         // Check if the ingredient list is empty
         if (ingredients.isEmpty()) {

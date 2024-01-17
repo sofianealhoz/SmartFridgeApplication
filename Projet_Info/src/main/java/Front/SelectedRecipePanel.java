@@ -13,7 +13,7 @@ public class SelectedRecipePanel extends JPanel {
     }
 
     public void displayRecipe(Recipe recipe) {
-        recipeDetails.setText("<html>" + recipe.getName() + "<br>" + recipe.getInstructions() + "</html>");
+        recipeDetails.setText("<html>" + recipe.getName() + "<br>" + recipe.getImageUrl() + "</html>");
         // Afficher d'autres détails de la recette si nécessaire
     }
 }
