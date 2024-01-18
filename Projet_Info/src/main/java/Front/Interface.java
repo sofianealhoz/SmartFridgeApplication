@@ -1,6 +1,7 @@
 package Front;
 
 import Back.Frigo;
+import Back.Ingredient;
 import Back.RecipeFinder;
 import Back.Recipe;
 
@@ -101,7 +102,8 @@ public class Interface extends JFrame {
                 cardLayout.show(cardPanel, "Fridge");
                 break;
             case "Recipe Search":
-                List<Recipe> recipes = RecipeFinder.searchRecipes(frigo.getIngredients());
+            	List<Ingredient> selectedIngredients = frigoPanel.getSelectedIngredients();
+                List<Recipe> recipes = RecipeFinder.searchRecipes(selectedIngredients);
                 System.out.println("List of found recipes:");
                 for (Recipe recipe : recipes) {
                     System.out.println("Recipe: " + recipe.getName());

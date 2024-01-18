@@ -3,6 +3,7 @@ package Front;
 import Back.Recipe;
 
 
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
@@ -106,4 +107,6 @@ public class RecipesPanel extends JPanel {
         cardLayout.show(cardPanel, "RecipeDetails");
 
     }
+    
+    
 }
