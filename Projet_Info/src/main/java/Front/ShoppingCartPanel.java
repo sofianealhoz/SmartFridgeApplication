@@ -35,7 +35,7 @@ public class ShoppingCartPanel extends JPanel {
 
     public void refreshShoppingCart() {
         List<Recipe> selectedRecipes = selectedRecipePanel.getSelectedRecipe();
-
+    
         if (selectedRecipes.isEmpty()) {
             // Handle the case when no recipes are selected
             JLabel emptyLabel = new JLabel("No recipes selected.");
@@ -44,31 +44,62 @@ public class ShoppingCartPanel extends JPanel {
             removeAll();
             add(emptyLabel, BorderLayout.CENTER);
         } else {
-            List<Ingredient> necessaryIngredients = new ArrayList<>();
-
-            // Calculate necessary ingredients from the selected recipes and fridge contents
+            removeAll(); // Clear the panel before updating
+    
+            // Create a JPanel with a vertical BoxLayout to contain the blocks of ingredients
+            JPanel ingredientsPanel = new JPanel();
+            ingredientsPanel.setLayout(new BoxLayout(ingredientsPanel, BoxLayout.Y_AXIS));
+    
             for (Recipe recipe : selectedRecipes) {
-                necessaryIngredients.addAll(calculateNecessaryIngredients(recipe, fridge.getIngredients()));
+                JPanel recipeBlock = new JPanel();
+                recipeBlock.setLayout(new BorderLayout());
+                recipeBlock.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1, true));
+                recipeBlock.setBackground(new Color(245, 246, 250));
+    
+                // Add recipe name as a label at the top of each block
+                JLabel recipeLabel = new JLabel(recipe.getName());
+                recipeLabel.setFont(new Font("Segoe UI", Font.BOLD, 24));
+                recipeLabel.setForeground(Color.ORANGE);
+                recipeLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+                recipeLabel.setHorizontalAlignment(SwingConstants.CENTER);
+    
+                recipeBlock.add(recipeLabel, BorderLayout.NORTH);
+    
+                // Create a table model to display the necessary ingredients for the recipe
+                DefaultTableModel tableModel = new DefaultTableModel(
+                    new String[]{"Ingredient", "Quantity", "Category"}, 0);
+    
+                List<Ingredient> necessaryIngredients = calculateNecessaryIngredients(recipe, fridge.getIngredients());
+    
+                for (Ingredient ingredient : necessaryIngredients) {
+                    tableModel.addRow(new Object[]{
+                        ingredient.getName(),
+                        ingredient.getQuantity(),
+                        ingredient.getCategory()
+                    });
+                }
+    
+                // Create a JTable to display the ingredients
+                JTable ingredientsTable = new JTable(tableModel);
+                ingredientsTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+                ingredientsTable.setFillsViewportHeight(true);
+    
+                JScrollPane scrollPane = new JScrollPane(ingredientsTable);
+                recipeBlock.add(scrollPane, BorderLayout.CENTER);
+    
+                // Add the recipe block to the ingredients panel
+                ingredientsPanel.add(recipeBlock);
+                ingredientsPanel.add(Box.createRigidArea(new Dimension(0, 20))); // Add spacing between blocks
             }
-
-            // Create a table model to display the necessary ingredients
-            DefaultTableModel tableModel = new DefaultTableModel(
-                new String[]{"Ingredient", "Quantity", "Category"}, 0);
-
-            for (Ingredient ingredient : necessaryIngredients) {
-                tableModel.addRow(new Object[]{
-                    ingredient.getName(),
-                    ingredient.getQuantity(),
-                    ingredient.getCategory()
-                });
-            }
-
-            ingredientsTable.setModel(tableModel);
+    
+            JScrollPane ingredientsScrollPane = new JScrollPane(ingredientsPanel);
+            add(ingredientsScrollPane, BorderLayout.CENTER);
         }
-
+    
         revalidate();
         repaint();
     }
+    
 
     private List<Ingredient> calculateNecessaryIngredients(Recipe recipe, List<Ingredient> fridgeIngredients) {
         List<Ingredient> necessaryIngredients = new ArrayList<>();
