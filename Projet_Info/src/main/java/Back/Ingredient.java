@@ -4,10 +4,23 @@ import java.time.LocalDate;
 
 public class Ingredient {
 	// Fields to store ingredient information
-	private String name;
-	private LocalDate expirationDate;
-	private double quantity;
-	private String category;
+    private String name;
+    private LocalDate expirationDate;
+    private double quantity;
+    private String category;
+   
+    // Constructor to initialize
+    public Ingredient(String name, LocalDate expirationDate, double quantity, String category) {
+        this.name = name;
+        this.expirationDate = expirationDate;
+        this.quantity = quantity;
+        this.category = category;
+    }
+    
+    // Getter method for the name of the ingredient
+    public String getName() {
+        return name;
+    }
 
 	// Constructor to initialize
 	public Ingredient(String name, LocalDate expirationDate, int quantity, String category) {

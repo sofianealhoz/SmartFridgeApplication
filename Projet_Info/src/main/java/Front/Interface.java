@@ -19,9 +19,16 @@ public class Interface extends JFrame {
 	private JPanel cardPanel;
 	private FrigoPanel frigoPanel;
 	private RecipesPanel recipesPanel;
+	private SelectedRecipePanel selectedRecipePanel;
+	private WelcomePanel welcomePanel;
 	private List<JButton> menuButtons;
 	private Frigo frigo;
+	private ShoppingCartPanel shoppingCartPanel;
 
+	public Frigo getFrigo() {
+        return frigo;
+}
+	
 	// Constructor to set up the main interface of the application.
 	public Interface() {
 		frigo = new Frigo();
@@ -34,6 +41,9 @@ public class Interface extends JFrame {
 		// Initializing the panels for the fridge and recipe search
 		frigoPanel = new FrigoPanel(frigo);
 		recipesPanel = new RecipesPanel(cardPanel, cardLayout);
+		selectedRecipePanel = new SelectedRecipePanel(recipesPanel);
+        shoppingCartPanel = new ShoppingCartPanel(this, selectedRecipePanel);
+
 
 		// Welcome Panel
 		WelcomePanel welcomePanel = new WelcomePanel();
@@ -42,6 +52,7 @@ public class Interface extends JFrame {
 		// Adding other panels to the card layout
 		cardPanel.add(frigoPanel, "Fridge");
 		cardPanel.add(recipesPanel, "Recipe Search");
+		cardPanel.add(selectedRecipePanel, "SelectedRecipe");
 
 		// Create the orange stripe panel
 		JPanel orangeStripe = new JPanel();
@@ -106,6 +117,9 @@ public class Interface extends JFrame {
 	// Handles menu item clicks to switch between panels
 	private void handleMenuItemClick(String itemName) {
 		switch (itemName) {
+		case "My Fridge App":
+            cardLayout.show(cardPanel, "Welcome");
+            break;
 		case "Fridge":
 			cardLayout.show(cardPanel, "Fridge");
 			break;
@@ -120,13 +134,37 @@ public class Interface extends JFrame {
 			recipesPanel.displayRecipes(recipes);
 			cardLayout.show(cardPanel, "Recipe Search");
 			break;
+		case "Selected Recipes":
+            selectedRecipePanel.displaySelectedRecipes();
+            cardLayout.show(cardPanel, "SelectedRecipe");
+            break;
+		case "Shopping List":
+            // Check if the ShoppingCartPanel already exists, and show it if it does
+            Component[] components = cardPanel.getComponents();
+            for (Component component : components) {
+                if (component instanceof ShoppingCartPanel) {
+                    cardLayout.show(cardPanel, "ShoppingCart"); // Use the correct card name here
+                    // Trigger a refresh of the ShoppingCartPanel
+                    ((ShoppingCartPanel) component).refreshShoppingCart();
+                    return; // Exit the method to prevent creating multiple instances
+                }
+            }
+
+            // If ShoppingCartPanel doesn't exist, create and add it
+            ShoppingCartPanel shoppingCartPanel = new ShoppingCartPanel(this, selectedRecipePanel);
+            cardPanel.add(shoppingCartPanel, "ShoppingCart"); // Use the correct card name here
+            cardLayout.show(cardPanel, "ShoppingCart"); // Use the correct card name here
+            break;
+
 		// Additional handling for other menu items we need to implement
 		}
 	}
 
-	// Main method to run the application
 	public static void main(String[] args) {
-		SwingUtilities.invokeLater(() -> new Interface());
+        SwingUtilities.invokeLater(() -> {
+            Interface app = new Interface();
+            app.handleMenuItemClick("My Fridge App"); // Display the WelcomePanel initially
+        });
+    }
 
-	}
 }
