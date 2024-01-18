@@ -11,7 +11,7 @@ public class Frigo {
     
     // Constructor : initializes empty lists for ingredients and allergies
     public Frigo() {
-        this.ingredients = new ArrayList<>();
+        this.ingredients = new ArrayList<>(DatabaseAccess.getIngredientsList());
         this.allergies = new ArrayList<>();
     
         // Initialize the ingredients list with default ingredients
@@ -21,15 +21,35 @@ public class Frigo {
     
     // Getter for the list of ingredients (returns a copy to prevent external modifications)
     public List<Ingredient> getIngredients() {
-        return new ArrayList<>(ingredients);
+        return DatabaseAccess.getIngredientsList();
     }
     
     // Adds a new ingredient to the fridge and prints a message
     public void addIngredient(final Ingredient ingredient) {
         if (ingredient != null && ingredient.getExpirationDate() != null) {
+            // Check if the ingredient is already present in the fridge
+            for (final Ingredient ingr : ingredients) {
+                if (ingr.getName().equals(ingredient.getName())) {
+                    // Increment the quantity by adding the new quantity
+                    ingr.setQuantity(ingr.getQuantity() + ingredient.getQuantity());
+                    System.out.println(ingredient.getQuantity() + " unit(s) of " + ingredient.getName() + " has(have) been added to the fridge.");
+                    return;
+                }
+            }
+            // If the ingredient is not already present, add it to the fridge
             ingredients.add(ingredient);
             System.out.println(ingredient.getQuantity() + " unit(s) of " + ingredient.getName() + " has(have) been added to the fridge.");
         }
+    }
+    
+    // Checks if an ingredient is present in the fridge
+    public boolean hasIngredient(String name) {
+    	for (Ingredient ingredient : ingredients) {
+            if (ingredient.getName().equals(name)) {
+                return true;
+            }
+        }
+    	return false;
     }
     
     // Removes a specified ingredient from the fridge and prints a message
@@ -45,6 +65,11 @@ public class Frigo {
         }
         // If the ingredient is not found, print a message
         System.out.println(ingredient.getQuantity() + " unit(s) of " + ingredient.getName() + " not found in the fridge.");
+    }
+    
+    // Removes a specified ingredient by name. 
+    public void removeIngredientByName(String name) {
+    	DatabaseAccess.callDeleteIngredientByName(name);
     }
     
     // Display the contents of the fridge (list of ingredients with quantities and expiration dates)
