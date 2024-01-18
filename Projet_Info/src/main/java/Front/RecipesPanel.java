@@ -51,6 +51,7 @@ public class RecipesPanel extends JPanel {
                             // Optionally update any UI components here
                         }
                         showRecipeDetails(recipe, e);
+                        System.out.println("Selected Recipes: " + selectedRecipes);
                     });
                 }
             });

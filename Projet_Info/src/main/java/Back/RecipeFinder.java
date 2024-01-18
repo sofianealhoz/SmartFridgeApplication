@@ -53,6 +53,43 @@ public class RecipeFinder {
         // Create a list of recipes and add the chocolate cake recipe
         recipes.add(chocolateCake);
 
+        List<Ingredient> vanillaCupcakeIngredients = Arrays.asList(
+            new Ingredient("Flour", LocalDate.of(2024, 7, 10), 400, "Bakery"),
+            new Ingredient("Sugar", LocalDate.of(2024, 12, 31), 150, "Bakery"),
+            new Ingredient("Eggs", LocalDate.of(2024, 5, 20), 2, "Dairy"),
+            new Ingredient("Milk", LocalDate.of(2024, 5, 30), 100, "Dairy"),
+            new Ingredient("Vanilla Extract", LocalDate.of(2025, 1, 15), 5, "Baking")
+        );
+        
+        // Instructions for the vanilla cupcake
+        List<String> vanillaCupcakeInstructions = Arrays.asList(
+            "Preheat the oven to 175°C.",
+            "Mix flour and sugar in a bowl.",
+            "Stir in eggs and milk gradually.",
+            "Add vanilla extract and mix well.",
+            "Pour batter into cupcake liners.",
+            "Bake for 20 minutes or until golden brown."
+        );
+        
+        // Nutritional information for the vanilla cupcake (example values)
+        NutritionInfo vanillaCupcakeNutrition = new NutritionInfo(250, 10, 4, 30, 1, 20, 0.1);
+        
+        // Allergens for the vanilla cupcake
+        List<String> vanillaCupcakeAllergens = Arrays.asList("Gluten", "Eggs", "Dairy");
+        
+        // Creating the vanilla cupcake recipe
+        Recipe vanillaCupcake = new Recipe(
+            "Vanilla Cupcake", 
+            "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSjTdfVsPKVziq7HXec_bPWUxMAgBONj94vDQ&usqp=CAU",
+            vanillaCupcakeIngredients, 
+            vanillaCupcakeInstructions, 
+            vanillaCupcakeNutrition, 
+            vanillaCupcakeAllergens
+        );
+        
+        // Add the vanilla cupcake recipe to the list of recipes
+        recipes.add(vanillaCupcake);
+
         // Check if the ingredient list is empty
         if (ingredients.isEmpty()) {
             System.out.println("No ingredients specified for recipe search.");
