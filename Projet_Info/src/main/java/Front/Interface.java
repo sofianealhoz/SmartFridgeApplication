@@ -17,9 +17,14 @@ public class Interface extends JFrame {
     private RecipesPanel recipesPanel;
     private List<JButton> menuButtons;
     private Frigo frigo;
+    private boolean isAdvancedMode = false; // Flag to track the mode
 
-    // Constructor to set up the main interface of the application.
     public Interface() {
+        // Call the normalInterface() method by default
+        normalInterface();
+    }
+
+    public void normalInterface() {
         frigo = new Frigo();
         menuButtons = new ArrayList<>();
 
@@ -49,7 +54,7 @@ public class Interface extends JFrame {
         orangeStripe.setLayout(new BoxLayout(orangeStripe, BoxLayout.Y_AXIS));
 
         // Create and add menu buttons to the orange stripe
-        String[] menuItems = {"","My Fridge App","","","","","","","","","","","Fridge",".", "Recipe Search",".", "Selected Recipes",".", "Shopping List",".", "Favorites"};
+        String[] menuItems = {"","My Fridge App","","","","","","","","","","","Fridge",".", "Recipe Search",".", "Shopping List","","","","","","","","",""," switch to advanced mode "};
         for (int i = 0; i < menuItems.length; i++) {
             String item = menuItems[i];
             JButton button = new JButton(item);
@@ -61,17 +66,25 @@ public class Interface extends JFrame {
             button.setFocusPainted(false);
             button.setCursor(new Cursor(Cursor.HAND_CURSOR));
             button.setAlignmentX(Component.CENTER_ALIGNMENT); // Center text horizontally
-        
+
             button.addActionListener(e -> handleMenuItemClick(item));
-        
+
             // Add rigid area for vertical spacing between buttons
             orangeStripe.add(Box.createRigidArea(new Dimension(0, 10)));
             orangeStripe.add(button);
             menuButtons.add(button);
-        
+
             // Apply a condition for the title
             if (i == 1) {
                 button.setFont(new Font("Tahoma", Font.PLAIN, 40));
+            }
+
+            // Apply conditions to the switch button
+            if (i == 26) {
+                button.setFont(new Font("Segoe UI", Font.BOLD, 18));
+                button.setForeground(Color.black);
+                button.setBorderPainted(true);
+                button.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
             }
         }
 
@@ -95,7 +108,113 @@ public class Interface extends JFrame {
                 orangeStripe.revalidate();
             }
         });
+    }
 
+    public void advancedInterface() {
+        frigo = new Frigo();
+        menuButtons = new ArrayList<>();
+
+        // Setting up card layout to switch between different panels
+        cardLayout = new CardLayout();
+        cardPanel = new JPanel(cardLayout);
+
+        // Initializing the panels for the fridge and recipe search
+        frigoPanel = new FrigoPanel(frigo);
+        recipesPanel = new RecipesPanel(cardPanel, cardLayout);
+
+        // Welcome Panel
+        WelcomePanel welcomePanel = new WelcomePanel();
+        cardPanel.add(welcomePanel, "Welcome");
+
+        // Adding other panels to the card layout
+        cardPanel.add(frigoPanel, "Fridge");
+        cardPanel.add(recipesPanel, "Recipe Search");
+
+        // Create the orange stripe panel
+        JPanel orangeStripe = new JPanel();
+        orangeStripe.setBackground(Color.ORANGE);
+        int stripeWidth = getWidth() / 6; // Adjust the width fraction as needed
+        orangeStripe.setPreferredSize(new Dimension(stripeWidth, getHeight()));
+
+        // Use BoxLayout for vertical arrangement of buttons
+        orangeStripe.setLayout(new BoxLayout(orangeStripe, BoxLayout.Y_AXIS));
+
+        // Create and add menu buttons to the orange stripe
+        String[] menuItems = {"","My Fridge App","","","","","","Fridge",".", "Recipe Search",".", "Selected Recipes",".", "Shopping List",".", "Favorites","","",""," switch to normal mode "};
+        for (int i = 0; i < menuItems.length; i++) {
+            String item = menuItems[i];
+            JButton button = new JButton(item);
+            button.setFont(new Font("Segoe UI", Font.BOLD, 24));
+            button.setForeground(Color.WHITE);
+            button.setOpaque(false); // Make the button transparent
+            button.setContentAreaFilled(false); // Remove the default background
+            button.setBorderPainted(false); // Remove the button border
+            button.setFocusPainted(false);
+            button.setCursor(new Cursor(Cursor.HAND_CURSOR));
+            button.setAlignmentX(Component.CENTER_ALIGNMENT); // Center text horizontally
+
+            button.addActionListener(e -> handleMenuItemClick(item));
+
+            // Add rigid area for vertical spacing between buttons
+            orangeStripe.add(Box.createRigidArea(new Dimension(0, 10)));
+            orangeStripe.add(button);
+            menuButtons.add(button);
+
+            // Apply a condition for the title
+            if (i == 1) {
+                button.setFont(new Font("Tahoma", Font.PLAIN, 40));
+            }
+
+            // Apply conditions to the switch button
+            if (i == 19) {
+                button.setFont(new Font("Segoe UI", Font.BOLD, 18));
+                button.setForeground(Color.black);
+                button.setBorderPainted(true);
+                button.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
+
+                // Add action listener to switch to normal mode
+                button.addActionListener(e -> switchToNormalMode());
+            }
+        }
+
+        // Set the main layout to BorderLayout
+        setLayout(new BorderLayout());
+
+        // Add the orange stripe to the left (WEST) and content to the center (CENTER)
+        add(orangeStripe, BorderLayout.WEST);
+        add(cardPanel, BorderLayout.CENTER);
+
+        setTitle("What's in my fridge");
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setVisible(true);
+
+        // Add a component listener to handle resizing events
+        addComponentListener(new java.awt.event.ComponentAdapter() {
+            public void componentResized(java.awt.event.ComponentEvent evt) {
+                int stripeWidth = getWidth() / 5; // Adjust the width fraction as needed
+                orangeStripe.setPreferredSize(new Dimension(stripeWidth, getHeight()));
+                orangeStripe.revalidate();
+            }
+        });
+    }
+
+    private void switchToAdvancedMode() {
+        isAdvancedMode = true;
+        resetInterface();
+        advancedInterface();
+    }
+
+    private void switchToNormalMode() {
+        isAdvancedMode = false;
+        resetInterface();
+        normalInterface();
+    }
+
+    private void resetInterface() {
+        getContentPane().removeAll();
+        revalidate();
+        repaint();
     }
 
     // Handles menu item clicks to switch between panels
@@ -115,14 +234,19 @@ public class Interface extends JFrame {
                 recipesPanel.displayRecipes(recipes);
                 cardLayout.show(cardPanel, "Recipe Search");
                 break;
-            // Additional handling for other menu items we need to implement
+            case " switch to normal mode ":
+                switchToNormalMode();
+                break;
+            case " switch to advanced mode ":
+                switchToAdvancedMode();
+                break;
         }
     }
-    
 
     // Main method to run the application
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> new Interface());
     }
 }
+
 
