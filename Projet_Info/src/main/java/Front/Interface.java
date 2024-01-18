@@ -28,7 +28,6 @@ public class Interface extends JFrame {
 
         frigoPanel = new FrigoPanel(frigo);
         recipesPanel = new RecipesPanel(cardPanel, cardLayout);
-
         selectedRecipePanel = new SelectedRecipePanel(); // Initialisation du panel pour afficher une recette sélectionnée
         cardPanel.add(frigoPanel, "Fridge");
         cardPanel.add(recipesPanel, "Recipe Search");

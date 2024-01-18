@@ -43,7 +43,7 @@ public class RecipeFinder {
         // Creating the chocolate cake recipe
         Recipe chocolateCake = new Recipe(
             "Chocolate Cake", 
-            "http://example.com/images/chocolate-cake.jpg",
+            "https://hips.hearstapps.com/hmg-prod/images/chocolate-cake-index-64b83bce2df26.jpg?crop=0.6668359143606668xw:1xh;center,top&resize=1200:*",
             chocolateCakeIngredients, 
             chocolateCakeInstructions, 
             chocolateCakeNutrition, 

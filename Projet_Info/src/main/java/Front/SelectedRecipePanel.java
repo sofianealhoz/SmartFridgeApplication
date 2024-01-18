@@ -1,8 +1,10 @@
 package Front;
 
 import Back.Recipe;
-
 import javax.swing.*;
+import java.awt.*;
+import java.util.List;
+
 
 public class SelectedRecipePanel extends JPanel {
     private JLabel recipeDetails;
@@ -13,7 +15,7 @@ public class SelectedRecipePanel extends JPanel {
     }
 
     public void displayRecipe(Recipe recipe) {
-        recipeDetails.setText("<html>" + recipe.getName() + "<br>" + recipe.getImageUrl() + "</html>");
+        recipeDetails.setText("<html>" + recipe.getName() + "<br>" + recipe.getInstructions() + "</html>");
         // Afficher d'autres détails de la recette si nécessaire
     }
 }
