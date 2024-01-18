@@ -46,10 +46,6 @@ public class RecipesPanel extends JPanel {
                 @Override
                 public void mouseClicked(MouseEvent e) {
                     SwingUtilities.invokeLater(() -> {
-                        if (!selectedRecipes.contains(recipe)) {
-                            selectedRecipes.add(recipe);
-                            // Optionally update any UI components here
-                        }
                         showRecipeDetails(recipe, e);
                         System.out.println("Selected Recipes: " + selectedRecipes);
                     });
@@ -57,15 +53,52 @@ public class RecipesPanel extends JPanel {
             });
 
             JLabel titleLabel = new JLabel("<html><u>" + recipe.getName() + "</u></html>");
-            titleLabel.setFont(new Font("Serif", Font.BOLD, 24));
-            titleLabel.setForeground(new Color(44, 62, 80));
+            titleLabel.setFont(new Font("Segoe UI", Font.BOLD, 24));
+            titleLabel.setForeground(Color.ORANGE);
             titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+            titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
             recipePanel.add(titleLabel);
 
             ImageIcon recipeImage = loadImageIcon(recipe.getImageUrl(), 200, 200);
             JLabel imageLabel = new JLabel(recipeImage);
             imageLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
             recipePanel.add(imageLabel);
+
+            JButton selectButton = new JButton("✔") {
+                @Override
+                protected void paintComponent(Graphics g) {
+                    if (getModel().isArmed()) {
+                        g.setColor(Color.GREEN); // Couleur plus foncée lors du clic
+                    } else {
+                        g.setColor(Color.BLUE); // Couleur normale du bouton
+                    }
+                    g.fillOval(6, 0, getSize().width - 14, getSize().height -1);
+                    super.paintComponent(g);
+                }
+
+                @Override
+                protected void paintBorder(Graphics g) {
+                    g.setColor(getForeground()); // Couleur de la bordure
+                    g.drawOval(6, 0, getSize().width - 14, getSize().height -1);
+                }
+            };
+
+            selectButton.setPreferredSize(new Dimension(40, 40)); // Augmenter la taille pour un aspect plus rond
+            selectButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+            selectButton.setFocusPainted(false);
+            selectButton.setBorderPainted(false);
+            selectButton.setContentAreaFilled(false);
+            selectButton.setForeground(Color.WHITE); // Texte blanc
+            selectButton.setFont(new Font("Segoe UI Symbol", Font.BOLD, 16)); // Police plus grande pour le texte
+
+            selectButton.addActionListener(e -> {
+                if (!selectedRecipes.contains(recipe)) {
+                    selectedRecipes.add(recipe);
+                    // Mettez à jour ici les composants de l'interface utilisateur si nécessaire
+                }
+            });
+
+            recipePanel.add(selectButton);
 
             innerPanel.add(recipePanel);
             innerPanel.add(Box.createRigidArea(new Dimension(0, 20)));
@@ -77,8 +110,10 @@ public class RecipesPanel extends JPanel {
         scrollPane.setBorder(null);
 
         JLabel pageLabel = new JLabel("Recipes for you");
-        pageLabel.setFont(new Font("Serif", Font.BOLD, 40));
+        pageLabel.setFont(new Font("Segoe UI", Font.BOLD, 40));
         pageLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        pageLabel.setForeground(Color.ORANGE);
+
         pageLabel.setBorder(BorderFactory.createEmptyBorder(20, 0, 20, 0));
         scrollPane.setColumnHeaderView(pageLabel);
 

@@ -1,5 +1,6 @@
 package Back;
 
+import java.time.LocalDate;
 import java.util.*;
 
 public class Frigo {
@@ -12,6 +13,10 @@ public class Frigo {
     public Frigo() {
         this.ingredients = new ArrayList<>();
         this.allergies = new ArrayList<>();
+    
+        // Initialize the ingredients list with default ingredients
+        ingredients.add(new Ingredient("Flour", LocalDate.of(2024, 6, 30), 500, "Bakery"));
+        ingredients.add(new Ingredient("Sugar", LocalDate.of(2024, 12, 31), 200, "Bakery"));
     }
     
     // Getter for the list of ingredients (returns a copy to prevent external modifications)

@@ -15,21 +15,21 @@ public class RecipeDetailPanel extends JPopupMenu {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
         JLabel ingredientsHeader = new JLabel("Ingredients:");
-        customizeLabel(ingredientsHeader, Color.BLUE, new Font("Verdana", Font.ITALIC, 20));
+        customizeLabel(ingredientsHeader, Color.ORANGE, new Font("Segoe UI", Font.BOLD, 20));
         add(ingredientsHeader);
 
         ingredientsTextArea = new JTextArea(5, 20); // Set size to limit the popup size
-        customizeTextArea(ingredientsTextArea, Color.BLACK, new Font("Arial", Font.PLAIN, 16));
+        customizeTextArea(ingredientsTextArea, Color.BLACK, new Font("Segoe UI", Font.PLAIN, 16));
         add(new JScrollPane(ingredientsTextArea)); // Add scrolling
 
         add(Box.createRigidArea(new Dimension(0, 20)));
 
         JLabel instructionsHeader = new JLabel("Instructions:");
-        customizeLabel(instructionsHeader, Color.BLUE, new Font("Verdana", Font.ITALIC, 20));
+        customizeLabel(instructionsHeader, Color.ORANGE, new Font("Segoe UI", Font.BOLD, 20));
         add(instructionsHeader);
 
         instructionsTextArea = new JTextArea(5, 20); // Set size
-        customizeTextArea(instructionsTextArea, Color.DARK_GRAY, new Font("Arial", Font.PLAIN, 16));
+        customizeTextArea(instructionsTextArea, Color.DARK_GRAY, new Font("Segoe UI", Font.PLAIN, 16));
         add(new JScrollPane(instructionsTextArea)); // Add scrolling
     }
 

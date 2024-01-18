@@ -10,7 +10,7 @@ public class Ingredient {
     private String category;
    
     // Constructor to initialize
-    public Ingredient(String name, LocalDate expirationDate, int quantity, String category) {
+    public Ingredient(String name, LocalDate expirationDate, double quantity, String category) {
         this.name = name;
         this.expirationDate = expirationDate;
         this.quantity = quantity;
