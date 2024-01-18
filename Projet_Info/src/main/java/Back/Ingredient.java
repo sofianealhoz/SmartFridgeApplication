@@ -16,11 +16,6 @@ public class Ingredient {
         this.quantity = quantity;
         this.category = category;
     }
-    
-    // Getter method for the name of the ingredient
-    public String getName() {
-        return name;
-    }
 
 	// Constructor to initialize
 	public Ingredient(String name, LocalDate expirationDate, int quantity, String category) {
