@@ -8,28 +8,31 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Consumer;
 
 public class RecipesPanel extends JPanel {
     private JPanel cardPanel;
     private CardLayout cardLayout;
-    private Consumer<Recipe> onRecipeSelect; // Ajout pour la sélection de recettes
+    private List<Recipe> selectedRecipes = new ArrayList<>();
+    private RecipeDetailPanel recipeDetailPanel; // Assuming this is defined elsewhere
 
     public RecipesPanel(JPanel cardPanel, CardLayout cardLayout) {
         this.cardPanel = cardPanel;
         this.cardLayout = cardLayout;
+        recipeDetailPanel = new RecipeDetailPanel(); // Initialize it if necessary
+        recipeDetailPanel.setVisible(false); // Hide the RecipeDetailPanel by default
         setLayout(new BorderLayout());
     }
 
-    // Ajout d'un setter pour onRecipeSelect
-    public void setOnRecipeSelect(Consumer<Recipe> onRecipeSelect) {
-        this.onRecipeSelect = onRecipeSelect;
+    public List<Recipe> getSelectedRecipes() {
+        return selectedRecipes;
     }
 
     public void displayRecipes(List<Recipe> recipes) {
         JPanel innerPanel = new JPanel();
         innerPanel.setLayout(new BoxLayout(innerPanel, BoxLayout.Y_AXIS));
+        innerPanel.setBackground(new Color(245, 246, 250)); // Set background color outside the loop
 
         for (Recipe recipe : recipes) {
             JPanel recipePanel = new JPanel();
@@ -38,16 +41,17 @@ public class RecipesPanel extends JPanel {
             recipePanel.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1, true),
                 BorderFactory.createEmptyBorder(10, 10, 10, 10)));
-            innerPanel.setBackground(new Color(245, 246, 250));
 
             recipePanel.addMouseListener(new MouseAdapter() {
                 @Override
                 public void mouseClicked(MouseEvent e) {
-                    if (onRecipeSelect != null) {
-                        onRecipeSelect.accept(recipe);
-                    } else {
-                        showRecipeDetails(recipe); // Méthode existante
-                    }
+                    SwingUtilities.invokeLater(() -> {
+                        if (!selectedRecipes.contains(recipe)) {
+                            selectedRecipes.add(recipe);
+                            // Optionally update any UI components here
+                        }
+                        showRecipeDetails(recipe, e);
+                    });
                 }
             });
 
@@ -94,8 +98,9 @@ public class RecipesPanel extends JPanel {
         }
     }
 
-    // Méthode showRecipeDetails existante
-    private void showRecipeDetails(Recipe recipe) {
-        // Votre logique existante pour afficher les détails de la recette
+    private void showRecipeDetails(Recipe recipe, MouseEvent e) {
+        RecipeDetailPanel detailPanel = new RecipeDetailPanel();
+        detailPanel.displayRecipe(recipe);
+        detailPanel.show(e.getComponent(), e.getX(), e.getY()); // Show as a popup at the click position
     }
 }

@@ -28,7 +28,7 @@ public class Interface extends JFrame {
 
         frigoPanel = new FrigoPanel(frigo);
         recipesPanel = new RecipesPanel(cardPanel, cardLayout);
-        selectedRecipePanel = new SelectedRecipePanel(); // Initialisation du panel pour afficher une recette sélectionnée
+        selectedRecipePanel = new SelectedRecipePanel(recipesPanel);
         cardPanel.add(frigoPanel, "Fridge");
         cardPanel.add(recipesPanel, "Recipe Search");
         cardPanel.add(selectedRecipePanel, "SelectedRecipe"); // Ajout du panel au CardLayout
@@ -74,11 +74,6 @@ public class Interface extends JFrame {
             }
         });
 
-        // Configurer RecipesPanel pour la sélection des recettes
-        recipesPanel.setOnRecipeSelect(recipe -> {
-            selectedRecipePanel.displayRecipe(recipe);
-            cardLayout.show(cardPanel, "SelectedRecipe");
-        });
     }
 
     private void handleMenuItemClick(String itemName) {
@@ -92,6 +87,7 @@ public class Interface extends JFrame {
                 cardLayout.show(cardPanel, "Recipe Search");
                 break;
             case "Selected Recipes":
+                selectedRecipePanel.displaySelectedRecipes();
                 cardLayout.show(cardPanel, "SelectedRecipe");
                 break;
             // Autres cas...

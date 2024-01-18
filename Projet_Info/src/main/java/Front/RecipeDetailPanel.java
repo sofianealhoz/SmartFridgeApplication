@@ -1,51 +1,73 @@
 package Front;
 
+import Back.Recipe;
+import Back.Ingredient;
+
 import javax.swing.*;
 import java.awt.*;
-import Back.Ingredient;
-import Back.Recipe;
+import java.util.List;
 
-public class RecipeDetailPanel extends JPanel {
-    private static final long serialVersionUID = 1L;
+public class RecipeDetailPanel extends JPopupMenu {
+    private JTextArea ingredientsTextArea;
+    private JTextArea instructionsTextArea;
 
-    public RecipeDetailPanel(Recipe recipe, CardLayout cardLayout, JPanel cardContainer) {
-        setLayout(new BorderLayout());
+    public RecipeDetailPanel() {
+        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
-        // Container for ingredients and instructions
-        JPanel contentPanel = new JPanel();
-        contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
-        JScrollPane contentScrollPane = new JScrollPane(contentPanel);
-        add(contentScrollPane, BorderLayout.CENTER);
-
-        // "Ingredients" header
         JLabel ingredientsHeader = new JLabel("Ingredients:");
         customizeLabel(ingredientsHeader, Color.BLUE, new Font("Verdana", Font.ITALIC, 20));
-        contentPanel.add(ingredientsHeader);
+        add(ingredientsHeader);
 
-        // Display recipe ingredients
-        for (Ingredient ingredient : recipe.getIngredients()) {
-            JLabel ingredientLabel = new JLabel("\u2022 " + ingredient.getName());
-            customizeLabel(ingredientLabel, Color.BLACK, new Font("Arial", Font.PLAIN, 16));
-            contentPanel.add(ingredientLabel);
-        }
+        ingredientsTextArea = new JTextArea(5, 20); // Set size to limit the popup size
+        customizeTextArea(ingredientsTextArea, Color.BLACK, new Font("Arial", Font.PLAIN, 16));
+        add(new JScrollPane(ingredientsTextArea)); // Add scrolling
 
-        contentPanel.add(Box.createRigidArea(new Dimension(0, 20)));
+        add(Box.createRigidArea(new Dimension(0, 20)));
 
-        // "Instructions" header
         JLabel instructionsHeader = new JLabel("Instructions:");
         customizeLabel(instructionsHeader, Color.BLUE, new Font("Verdana", Font.ITALIC, 20));
-        contentPanel.add(instructionsHeader);
+        add(instructionsHeader);
 
-        // Display cooking instructions for the recipe
-        for (String instruction : recipe.getInstructions()) {
-            JLabel instructionLabel = new JLabel("\u2022 " + instruction);
-            customizeLabel(instructionLabel, Color.DARK_GRAY, new Font("Arial", Font.PLAIN, 16));
-            contentPanel.add(instructionLabel);
+        instructionsTextArea = new JTextArea(5, 20); // Set size
+        customizeTextArea(instructionsTextArea, Color.DARK_GRAY, new Font("Arial", Font.PLAIN, 16));
+        add(new JScrollPane(instructionsTextArea)); // Add scrolling
+    }
+
+    public void displayRecipe(Recipe recipe) {
+        if (recipe != null) {
+            // Display ingredients in the ingredients text area
+            List<Ingredient> ingredients = recipe.getIngredients();
+            StringBuilder ingredientsText = new StringBuilder();
+            for (Ingredient ingredient : ingredients) {
+                ingredientsText.append("\u2022 ").append(ingredient.getName()).append("\n");
+            }
+            ingredientsTextArea.setText(ingredientsText.toString());
+
+            // Display instructions in the instructions text area
+            List<String> instructions = recipe.getInstructions();
+            StringBuilder instructionsText = new StringBuilder();
+            for (String instruction : instructions) {
+                instructionsText.append("\u2022 ").append(instruction).append("\n");
+            }
+            instructionsTextArea.setText(instructionsText.toString());
+        } else {
+            // Reset the text areas if no recipe is selected
+            ingredientsTextArea.setText("");
+            instructionsTextArea.setText("");
         }
     }
 
     private void customizeLabel(JLabel label, Color color, Font font) {
         label.setForeground(color);
         label.setFont(font);
+    }
+
+    private void customizeTextArea(JTextArea textArea, Color color, Font font) {
+        textArea.setEditable(false);
+        textArea.setWrapStyleWord(true);
+        textArea.setLineWrap(true);
+        textArea.setForeground(color);
+        textArea.setFont(font);
+        textArea.setMargin(new Insets(10, 10, 10, 10));
     }
 }
