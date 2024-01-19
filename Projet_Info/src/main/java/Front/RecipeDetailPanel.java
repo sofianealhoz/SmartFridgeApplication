@@ -48,7 +48,8 @@ public class RecipeDetailPanel extends JPanel {
 
         // Display cooking instructions for the recipe
         for (String instruction : recipe.getInstructions()) {
-            JLabel instructionLabel = new JLabel("\u2022 " + instruction);
+        	String htmlInstruction = convertToHtml(instruction);
+            JLabel instructionLabel = new JLabel(htmlInstruction);
             customizeLabel(instructionLabel, Color.DARK_GRAY, new Font("Arial", Font.PLAIN, 16));
             contentPanel.add(instructionLabel);
         }
@@ -58,4 +59,18 @@ public class RecipeDetailPanel extends JPanel {
         label.setForeground(color);
         label.setFont(font);
     }
+    private String convertToHtml(String text) {
+        String htmlStartTag = "<html><ol>";
+        String htmlEndTag = "</ol></html>";
+        StringBuilder htmlBuilder = new StringBuilder(htmlStartTag);
+        String[] lines = text.split("\n");
+        for (String line : lines) {
+            htmlBuilder.append("<li>").append(line).append("</li>");
+        }
+        htmlBuilder.append(htmlEndTag);
+        return htmlBuilder.toString();
+    }
+    
+    
+
 }

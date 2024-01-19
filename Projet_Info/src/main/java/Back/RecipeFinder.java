@@ -14,7 +14,9 @@ import org.json.JSONObject;
 public class RecipeFinder {
 
     private static final String API_KEY = "498e19ac44534b0d9d76f362ed9a558f";
-
+    public static final int ERROR_API_LIMIT = -1;
+    public static final int ERROR_NO_INTERNET = -2;
+    
     // Searches for recipes based on a list of ingredients.
     public static List<Recipe> searchRecipes(List<Ingredient> ingredients) {
         List<Recipe> recipes = new ArrayList<>();
@@ -69,7 +71,17 @@ public class RecipeFinder {
             conn.disconnect();
 
         } catch (IOException e) {
-            e.printStackTrace();
+            if (e.getMessage().contains("402")) {
+                // API limit reached
+                recipes.clear();
+                recipes.add(new Recipe("API_LIMIT", "", null, null, null, null));
+                return recipes;
+            } else {
+                // No internet connection
+                recipes.clear();
+                recipes.add(new Recipe("NO_INTERNET", "", null, null, null, null));
+                return recipes;
+            }
         }
 
         return recipes;

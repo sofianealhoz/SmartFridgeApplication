@@ -1,8 +1,7 @@
 package Front;
+
 import javax.swing.*;
-
 import javax.swing.table.DefaultTableModel;
-
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -11,8 +10,14 @@ import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.time.format.DateTimeFormatter;
 
-
+import Back.DatabaseConnection;
 import Back.Frigo;
 import Back.Ingredient;
 
@@ -20,7 +25,6 @@ public class FrigoPanel extends JPanel {
     private static final long serialVersionUID = 1L;
     private JTable ingredientsTable;
     private Frigo fridge;
-    
 
     public FrigoPanel(Frigo fridge) {
         this.fridge = fridge;
@@ -29,12 +33,7 @@ public class FrigoPanel extends JPanel {
         // Create a table 
         String[] columnNames = {"Name", "Quantity", "Expiration Date", "Category", "Select"};
         DefaultTableModel tableModel = new DefaultTableModel(columnNames, 0) {
-            /**
-			 * 
-			 */
-			private static final long serialVersionUID = 1L;
-
-			@Override
+            @Override
             public Class<?> getColumnClass(int columnIndex) {
                 return columnIndex == 4 ? Boolean.class : String.class;
             }
@@ -42,24 +41,23 @@ public class FrigoPanel extends JPanel {
 
         ingredientsTable = new JTable(tableModel);
         ingredientsTable.setFillsViewportHeight(true);
-        ingredientsTable.setAutoCreateRowSorter(true); 
+        ingredientsTable.setAutoCreateRowSorter(true);
         styleTable();
 
         // Scroll pane for text area
         JScrollPane scrollPane = new JScrollPane(ingredientsTable);
         add(scrollPane, BorderLayout.CENTER);
-        
-        
+
         // Add "What's in my fridge" title
         JLabel titleLabel = new JLabel("What's in my fridge", SwingConstants.CENTER);
         titleLabel.setFont(new Font("Serif", Font.BOLD, 40));
         titleLabel.setForeground(new Color(44, 62, 80));
-        titleLabel.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0)); 
+        titleLabel.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
         add(titleLabel, BorderLayout.NORTH);
 
         // Button to add new ingredients
         JButton addIngredientButton = new JButton("Add Ingredient");
-        
+
         addIngredientButton.setFont(new Font("SansSerif", Font.BOLD, 18)); // Set font
         addIngredientButton.setForeground(new Color(60, 60, 60)); // Set a dark gray text color
         addIngredientButton.setBackground(new Color(200, 200, 200)); // Set a light gray background color
@@ -75,21 +73,34 @@ public class FrigoPanel extends JPanel {
         });
         add(addIngredientButton, BorderLayout.SOUTH);
         refreshIngredientsTable();
+        List<Ingredient> ingredientsFromDb = getIngredientsFromDatabase();
+        for (Ingredient ingredient : ingredientsFromDb) {
+            fridge.addIngredient(ingredient);
+            // Ajoutez également l'ingrédient à tableModel
+            ((DefaultTableModel) ingredientsTable.getModel()).addRow(new Object[]{
+                ingredient.getName(),
+                ingredient.getQuantity() + " unit(s)",
+                ingredient.getExpirationDate().toString(),
+                ingredient.getCategory(),
+                false
+            });
+        }
+
     }
-    
+
     // Style of the table
     private void styleTable() {
-    	// Style for the table header
+        // Style for the table header
         ingredientsTable.getTableHeader().setFont(new Font("SansSerif", Font.ITALIC, 16));
-        ingredientsTable.getTableHeader().setBackground(new Color(153, 204, 255)); 
+        ingredientsTable.getTableHeader().setBackground(new Color(153, 204, 255));
         ingredientsTable.getTableHeader().setForeground(Color.BLACK);
         // Style for the table cells
         ingredientsTable.setFont(new Font("SansSerif", Font.PLAIN, 20));
         ingredientsTable.setBackground(Color.WHITE);
         ingredientsTable.setForeground(Color.BLACK);
-        ingredientsTable.setRowHeight(25); 
+        ingredientsTable.setRowHeight(25);
     }
-  
+
     // Shows a dialog to add a new ingredient to the fridge
     void displayAddIngredientDialog() {
         JFrame parentFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
@@ -129,6 +140,9 @@ public class FrigoPanel extends JPanel {
 
                         // Adding the new ingredient to the fridge
                         fridge.addIngredient(new Ingredient(name, expirationDate, quantity, selectedCategory));
+
+                        // Adding the new ingredient to the database
+                        addIngredientToDatabase(new Ingredient(name, expirationDate, quantity, selectedCategory));
 
                         // Refreshing the ingredients display
                         refreshIngredientsTable();
@@ -170,27 +184,27 @@ public class FrigoPanel extends JPanel {
         fridge.getIngredients().sort(Comparator.comparing(Ingredient::getCategory));
         for (Ingredient ingredient : fridge.getIngredients()) {
             model.addRow(new Object[]{
-                ingredient.getName(),
-                ingredient.getQuantity() + " unit(s)",
-                ingredient.getExpirationDate().toString(),
-                ingredient.getCategory(),
-                false
+                    ingredient.getName(),
+                    ingredient.getQuantity() + " unit(s)",
+                    ingredient.getExpirationDate().toString(),
+                    ingredient.getCategory(),
+                    false
             });
         }
     }
-    
-    // Method to get the ingredients we want to use for recipe search 
+
+    // Method to get the ingredients we want to use for recipe search
     public List<Ingredient> getSelectedIngredients() {
         List<Ingredient> selectedIngredients = new ArrayList<>();
         DefaultTableModel model = (DefaultTableModel) ingredientsTable.getModel();
         for (int i = 0; i < model.getRowCount(); i++) {
-            Object checkboxValue = model.getValueAt(i, 4); 
+            Object checkboxValue = model.getValueAt(i, 4);
             if (checkboxValue instanceof Boolean && (Boolean) checkboxValue) {
-                String name = (String) model.getValueAt(i, 0); 
-                double quantity = Double.parseDouble(((String) model.getValueAt(i, 1)).split(" ")[0]); 
-                int quantityInt = (int) quantity; 
-                LocalDate expirationDate = LocalDate.parse((String) model.getValueAt(i, 2)); 
-                String category = (String) model.getValueAt(i, 3); 
+                String name = (String) model.getValueAt(i, 0);
+                double quantity = Double.parseDouble(((String) model.getValueAt(i, 1)).split(" ")[0]);
+                int quantityInt = (int) quantity;
+                LocalDate expirationDate = LocalDate.parse((String) model.getValueAt(i, 2));
+                String category = (String) model.getValueAt(i, 3);
 
                 selectedIngredients.add(new Ingredient(name, expirationDate, quantityInt, category));
             }
@@ -199,12 +213,44 @@ public class FrigoPanel extends JPanel {
         return selectedIngredients;
     }
 
+    // Method to add an ingredient to the database
+    public void addIngredientToDatabase(Ingredient ingredient) {
+        Connection connection = DatabaseConnection.getConnection();
+        if (connection != null) {
+            try {
+                String insertSQL = "INSERT INTO ingredients (name, expiration_date, quantity, category) VALUES (?, ?, ?, ?)";
+                PreparedStatement preparedStatement = connection.prepareStatement(insertSQL);
+                preparedStatement.setString(1, ingredient.getName());
+                preparedStatement.setString(2, ingredient.getExpirationDate().format(DateTimeFormatter.ISO_LOCAL_DATE));
+                preparedStatement.setDouble(3, ingredient.getQuantity()); // Assuming quantity is a double
+                preparedStatement.setString(4, ingredient.getCategory());
+                preparedStatement.executeUpdate();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
-
-        
-     
-
-
-
+    // Method to retrieve ingredients from the database
+    public List<Ingredient> getIngredientsFromDatabase() {
+        List<Ingredient> ingredients = new ArrayList<>();
+        Connection connection = DatabaseConnection.getConnection();
+        if (connection != null) {
+            try {
+                String selectSQL = "SELECT * FROM ingredients";
+                Statement statement = connection.createStatement();
+                ResultSet resultSet = statement.executeQuery(selectSQL);
+                while (resultSet.next()) {
+                    String name = resultSet.getString("name");
+                    LocalDate expirationDate = LocalDate.parse(resultSet.getString("expiration_date"), DateTimeFormatter.ISO_LOCAL_DATE);
+                    double quantity = resultSet.getDouble("quantity");
+                    String category = resultSet.getString("category");
+                    ingredients.add(new Ingredient(name, expirationDate, (int) quantity, category));
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return ingredients;
+    }
 }
-
