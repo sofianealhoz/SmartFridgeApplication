@@ -2,6 +2,7 @@ package Front;
 
 import Back.Recipe;
 import Back.Ingredient;
+import Back.NutritionInfo;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,6 +15,7 @@ public class RecipeDetailPanel extends JPopupMenu {
 	private static final long serialVersionUID = 1L;
 	private JTextArea ingredientsTextArea;
     private JTextArea instructionsTextArea;
+    private JTextArea nutritionTextArea;
 
     public RecipeDetailPanel() {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -22,9 +24,9 @@ public class RecipeDetailPanel extends JPopupMenu {
         customizeLabel(ingredientsHeader, Color.ORANGE, new Font("Segoe UI", Font.BOLD, 20));
         add(ingredientsHeader);
 
-        ingredientsTextArea = new JTextArea(5, 20); // Set size to limit the popup size
+        ingredientsTextArea = new JTextArea(5, 20);
         customizeTextArea(ingredientsTextArea, Color.BLACK, new Font("Segoe UI", Font.PLAIN, 16));
-        add(new JScrollPane(ingredientsTextArea)); // Add scrolling
+        add(new JScrollPane(ingredientsTextArea));
 
         add(Box.createRigidArea(new Dimension(0, 20)));
 
@@ -32,14 +34,24 @@ public class RecipeDetailPanel extends JPopupMenu {
         customizeLabel(instructionsHeader, Color.ORANGE, new Font("Segoe UI", Font.BOLD, 20));
         add(instructionsHeader);
 
-        instructionsTextArea = new JTextArea(5, 20); // Set size
+        instructionsTextArea = new JTextArea(5, 20);
         customizeTextArea(instructionsTextArea, Color.DARK_GRAY, new Font("Segoe UI", Font.PLAIN, 16));
-        add(new JScrollPane(instructionsTextArea)); // Add scrolling
+        add(new JScrollPane(instructionsTextArea));
+
+        add(Box.createRigidArea(new Dimension(0, 20)));
+
+        JLabel nutritionHeader = new JLabel("Nutrition:");
+        customizeLabel(nutritionHeader, Color.ORANGE, new Font("Segoe UI", Font.BOLD, 20));
+        add(nutritionHeader);
+
+        nutritionTextArea = new JTextArea(5, 20);
+        customizeTextArea(nutritionTextArea, Color.DARK_GRAY, new Font("Segoe UI", Font.PLAIN, 16));
+        add(new JScrollPane(nutritionTextArea));
     }
 
     public void displayRecipe(Recipe recipe) {
         if (recipe != null) {
-            // Display ingredients in the ingredients text area
+            // Affichez les ingrédients dans la zone de texte des ingrédients
             List<Ingredient> ingredients = recipe.getIngredients();
             StringBuilder ingredientsText = new StringBuilder();
             for (Ingredient ingredient : ingredients) {
@@ -47,17 +59,28 @@ public class RecipeDetailPanel extends JPopupMenu {
             }
             ingredientsTextArea.setText(ingredientsText.toString());
 
-            // Display instructions in the instructions text area
+            // Affichez les instructions dans la zone de texte des instructions
             List<String> instructions = recipe.getInstructions();
             StringBuilder instructionsText = new StringBuilder();
             for (String instruction : instructions) {
                 instructionsText.append("\u2022 ").append(instruction).append("\n");
             }
             instructionsTextArea.setText(instructionsText.toString());
+
+            // Affichez les informations nutritionnelles
+            NutritionInfo nutritionInfo = recipe.getNutritionInfo();
+            StringBuilder nutritionText = new StringBuilder();
+            nutritionText.append("Calories: ").append(nutritionInfo.getCalories()).append(" ");
+            nutritionText.append("Protéines: ").append(nutritionInfo.getProtein()).append("g ");
+            nutritionText.append("Glucides: ").append(nutritionInfo.getCarbs()).append("g ");
+            nutritionText.append("Lipides: ").append(nutritionInfo.getFat()).append("g ");
+            nutritionText.append("Fibres: ").append(nutritionInfo.getFiber()).append("g");
+            nutritionTextArea.setText(nutritionText.toString());
         } else {
-            // Reset the text areas if no recipe is selected
+            // Réinitialisez les zones de texte si aucune recette n'est sélectionnée
             ingredientsTextArea.setText("");
             instructionsTextArea.setText("");
+            nutritionTextArea.setText("");
         }
     }
 
