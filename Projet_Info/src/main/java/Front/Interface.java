@@ -1,6 +1,7 @@
 package Front;
 
 import Back.Frigo;
+import Back.Ingredient;
 import Back.RecipeFinder;
 import Back.Recipe;
 import Back.DatabaseAccess;
@@ -12,6 +13,9 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TimerTask;
+
+import java.util.Timer;
 
 public class Interface extends JFrame {
 	private static final long serialVersionUID = 1L;
@@ -112,6 +116,9 @@ public class Interface extends JFrame {
 			}
 		});
 
+		// Ajoutez l'appel à startExpirationCheckTimer() ici
+		startExpirationCheckTimer();
+
 	}
 
 	// Handles menu item clicks to switch between panels
@@ -159,6 +166,39 @@ public class Interface extends JFrame {
 		// Additional handling for other menu items we need to implement
 		}
 	}
+
+	public void startExpirationCheckTimer() {
+        Timer timer = new Timer();
+        
+        // Scheduled task to check expiration dates every 24 hours
+        timer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                checkAndDisplayExpiredIngredients();
+            }
+        }, 10000, 10000); // Start immediately and repeat every
+    }
+
+    // Method to check and display expired ingredients
+    private void checkAndDisplayExpiredIngredients() {
+        List<Ingredient> expiredIngredients = DatabaseAccess.getExpiredIngredients();
+
+        if (!expiredIngredients.isEmpty()) {
+            // Build the message to display in the dialog box
+            StringBuilder message = new StringBuilder("The following ingredients have expired :\n");
+
+            for (Ingredient ingredient : expiredIngredients) {
+                message.append("- ").append(ingredient.getName()).append("\n");
+            }
+
+            // Display the dialog box
+			SwingUtilities.invokeLater(() -> {
+				JOptionPane.showMessageDialog(null, message.toString(), "Expired ingredients", JOptionPane.WARNING_MESSAGE);
+			});
+			
+			
+		}
+    }
 
 	public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
