@@ -29,6 +29,7 @@ public class Interface extends JFrame {
 	private FrigoPanel frigoPanel;
 	private RecipesPanel recipesPanel;
 	private SelectedRecipePanel selectedRecipePanel;
+	private FavoritePanel favoriteRecipePanel;
 	private WelcomePanel welcomePanel;
 	private List<JButton> menuButtons;
 	private Frigo frigo;
@@ -51,6 +52,7 @@ public class Interface extends JFrame {
 		frigoPanel = new FrigoPanel(frigo);
 		recipesPanel = new RecipesPanel(cardPanel, cardLayout);
 		selectedRecipePanel = new SelectedRecipePanel(recipesPanel);
+		favoriteRecipePanel = new FavoritePanel(recipesPanel);
         shoppingCartPanel = new ShoppingCartPanel(this, selectedRecipePanel);
 
 
@@ -62,6 +64,7 @@ public class Interface extends JFrame {
 		cardPanel.add(frigoPanel, "Fridge");
 		cardPanel.add(recipesPanel, "Recipe Search");
 		cardPanel.add(selectedRecipePanel, "SelectedRecipe");
+		cardPanel.add(favoriteRecipePanel, "Favorites");
 
 		// Create the orange stripe panel
 		JPanel orangeStripe = new JPanel();
@@ -73,7 +76,7 @@ public class Interface extends JFrame {
 		orangeStripe.setLayout(new BoxLayout(orangeStripe, BoxLayout.Y_AXIS));
 
 		// Create and add menu buttons to the orange stripe
-		String[] menuItems = { "", "My Fridge App", "", "", "", "", "", "", "", "", "", "", "Fridge", ".",
+		String[] menuItems = { "", "My Fridge App", "", "", "", "", "", "", "", "", "", "","", "", "", "", "", "", "", "", "", "Fridge", ".",
 				"Recipe Search", ".", "Selected Recipes", ".", "Shopping List", ".", "Favorites" };
 		for (int i = 0; i < menuItems.length; i++) {
 			String item = menuItems[i];
@@ -166,7 +169,10 @@ public class Interface extends JFrame {
             cardPanel.add(shoppingCartPanel, "ShoppingCart"); // Use the correct card name here
             cardLayout.show(cardPanel, "ShoppingCart"); // Use the correct card name here
             break;
-
+		case "Favorites":
+			favoriteRecipePanel.displayFavoriteRecipes();
+			cardLayout.show(cardPanel, "Favorites");
+			break;		
 		// Additional handling for other menu items we need to implement
 		}
 	}

@@ -22,6 +22,7 @@ public class RecipesPanel extends JPanel {
 	private JPanel cardPanel;
     private CardLayout cardLayout;
     private List<Recipe> selectedRecipes = new ArrayList<>();
+	private List<Recipe> favoriteRecipes = new ArrayList<>();
     private RecipeDetailPanel recipeDetailPanel; // Assuming this is defined elsewhere
 
     public RecipesPanel(JPanel cardPanel, CardLayout cardLayout) {
@@ -36,6 +37,9 @@ public class RecipesPanel extends JPanel {
         return selectedRecipes;
     }
 
+	public List<Recipe> getFavoriteRecipes() {
+		return favoriteRecipes;
+	}
     
     public void displayRecipes(List<Recipe> recipes) {
     	JPanel innerPanel = new JPanel();
@@ -56,8 +60,10 @@ public class RecipesPanel extends JPanel {
         } else {
 	        // Loop to display each recipe
 	        for (Recipe recipe : recipes) {
+				
 	            JPanel recipePanel = new JPanel();
-	            recipePanel.setLayout(new BoxLayout(recipePanel, BoxLayout.Y_AXIS));
+				recipePanel.setLayout(new BoxLayout(recipePanel, BoxLayout.Y_AXIS)); 
+				recipePanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 300)); // Set your desired maximum height here
 	            recipePanel.setAlignmentX(Component.CENTER_ALIGNMENT); 
 	            recipePanel.setBorder(BorderFactory.createCompoundBorder(
 	            	    BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1, true), 
@@ -79,8 +85,9 @@ public class RecipesPanel extends JPanel {
 	                        
 	            // Recipe title
 	            JLabel titleLabel = new JLabel("<html><u>" + recipe.getName() + "</u></html>");
-	            titleLabel.setFont(new Font("Serif", Font.BOLD, 24));
-	            titleLabel.setForeground(new Color(44, 62, 80));
+	            titleLabel.setFont(new Font("Segoe UI", Font.BOLD, 24));
+				titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
+	            titleLabel.setForeground(Color.ORANGE);
 	            titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT); 
 	            recipePanel.add(titleLabel);
 	
@@ -91,22 +98,24 @@ public class RecipesPanel extends JPanel {
 	            imageLabel.setAlignmentX(Component.CENTER_ALIGNMENT); 
 	            recipePanel.add(imageLabel);
 	
+				JPanel buttonPanel = new JPanel(); // Create a new panel for buttons
+
 	            JButton selectButton = new JButton("✔") {
 	                @Override
 	                protected void paintComponent(Graphics g) {
 	                    if (getModel().isArmed()) {
-	                        g.setColor(Color.GREEN); // Couleur plus foncée lors du clic
+	                        g.setColor(Color.CYAN); // Couleur plus foncée lors du clic
 	                    } else {
 	                        g.setColor(Color.BLUE); // Couleur normale du bouton
 	                    }
-	                    g.fillOval(6, 0, getSize().width - 14, getSize().height -1);
+	                    g.fillOval(0, 0, getSize().width - 1, getSize().height -1);
 	                    super.paintComponent(g);
 	                }
 
 	                @Override
 	                protected void paintBorder(Graphics g) {
 	                    g.setColor(getForeground()); // Couleur de la bordure
-	                    g.drawOval(6, 0, getSize().width - 14, getSize().height -1);
+	                    g.drawOval(0, 0, getSize().width - 1, getSize().height -1);
 	                }
 	            };
 
@@ -116,7 +125,7 @@ public class RecipesPanel extends JPanel {
 	            selectButton.setBorderPainted(false);
 	            selectButton.setContentAreaFilled(false);
 	            selectButton.setForeground(Color.WHITE); // Texte blanc
-	            selectButton.setFont(new Font("Segoe UI Symbol", Font.BOLD, 16)); // Police plus grande pour le texte
+	            selectButton.setFont(new Font("Segoe UI Symbol", Font.BOLD, 14)); // Police plus grande pour le texte
 
 	            selectButton.addActionListener(e -> {
 	                if (!selectedRecipes.contains(recipe)) {
@@ -125,11 +134,58 @@ public class RecipesPanel extends JPanel {
 	                }
 	            });
 
-	            recipePanel.add(selectButton);
 
 	            innerPanel.add(recipePanel);
 	            innerPanel.add(Box.createRigidArea(new Dimension(0, 20)));
-	        }
+
+					JButton favoriteButton = new JButton("★") {
+					@Override
+					protected void paintComponent(Graphics g) {
+					if (getModel().isArmed()) {
+						g.setColor(Color.WHITE); // Couleur plus foncée lors du clic
+					} else {
+						g.setColor(Color.ORANGE); // Couleur normale du bouton
+					}
+					g.fillOval(0, 0, getSize().width - 1, getSize().height -1);
+					super.paintComponent(g);
+				}
+
+					@Override
+					protected void paintBorder(Graphics g) {
+					g.setColor(getForeground()); // Couleur de la bordure
+					g.drawOval(0, 0, getSize().width - 1, getSize().height -1);
+				}
+			};
+
+			favoriteButton.setPreferredSize(new Dimension(40, 40)); // Augmenter la taille pour un aspect plus rond
+			favoriteButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+			favoriteButton.setFocusPainted(false);
+			favoriteButton.setBorderPainted(false);
+			favoriteButton.setContentAreaFilled(false);
+			favoriteButton.setForeground(Color.WHITE); // Texte blanc
+			favoriteButton.setFont(new Font("Segoe UI Symbol", Font.BOLD, 14)); // Police plus grande pour le texte
+
+			favoriteButton.addActionListener(e -> {
+				if (!favoriteRecipes.contains(recipe)) {
+					favoriteRecipes.add(recipe);
+					// Mettez à jour ici les composants de l'interface utilisateur si nécessaire
+				}
+			});
+
+
+			selectButton.setMargin(new Insets(2, 2, 2, 2)); // Smaller margins
+			favoriteButton.setMargin(new Insets(2, 2, 2, 2)); // Smaller margins
+
+			// Add buttons to the button panel
+			buttonPanel.add(selectButton);
+			buttonPanel.add(favoriteButton);
+
+			// Add the button panel to the recipe panel
+			recipePanel.add(buttonPanel);
+
+			innerPanel.add(recipePanel);
+			innerPanel.add(Box.createRigidArea(new Dimension(0, 20)));
+			}
 
 	        // Scroll pane for scrolling through the recipe cards
 	        JScrollPane scrollPane = new JScrollPane(innerPanel);
