@@ -1,6 +1,5 @@
 package Front;
 
-import Back.DatabaseInitializer;
 import Back.Frigo;
 import Back.Ingredient;
 import Back.RecipeFinder;
@@ -121,8 +120,7 @@ public class Interface extends JFrame {
 
     // Main method to run the application
     public static void main(String[] args) {
-    	// Initialize the database
-        DatabaseInitializer.initialize();
+    
         SwingUtilities.invokeLater(() -> new Interface());
     }
 }

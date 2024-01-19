@@ -10,14 +10,7 @@ import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.time.format.DateTimeFormatter;
 
-import Back.DatabaseConnection;
 import Back.Frigo;
 import Back.Ingredient;
 
@@ -33,7 +26,12 @@ public class FrigoPanel extends JPanel {
         // Create a table 
         String[] columnNames = {"Name", "Quantity", "Expiration Date", "Category", "Select"};
         DefaultTableModel tableModel = new DefaultTableModel(columnNames, 0) {
-            @Override
+            /**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+
+			@Override
             public Class<?> getColumnClass(int columnIndex) {
                 return columnIndex == 4 ? Boolean.class : String.class;
             }
@@ -73,18 +71,6 @@ public class FrigoPanel extends JPanel {
         });
         add(addIngredientButton, BorderLayout.SOUTH);
         refreshIngredientsTable();
-        List<Ingredient> ingredientsFromDb = getIngredientsFromDatabase();
-        for (Ingredient ingredient : ingredientsFromDb) {
-            fridge.addIngredient(ingredient);
-            // Ajoutez également l'ingrédient à tableModel
-            ((DefaultTableModel) ingredientsTable.getModel()).addRow(new Object[]{
-                ingredient.getName(),
-                ingredient.getQuantity() + " unit(s)",
-                ingredient.getExpirationDate().toString(),
-                ingredient.getCategory(),
-                false
-            });
-        }
 
     }
 
@@ -140,9 +126,6 @@ public class FrigoPanel extends JPanel {
 
                         // Adding the new ingredient to the fridge
                         fridge.addIngredient(new Ingredient(name, expirationDate, quantity, selectedCategory));
-
-                        // Adding the new ingredient to the database
-                        addIngredientToDatabase(new Ingredient(name, expirationDate, quantity, selectedCategory));
 
                         // Refreshing the ingredients display
                         refreshIngredientsTable();
@@ -213,44 +196,6 @@ public class FrigoPanel extends JPanel {
         return selectedIngredients;
     }
 
-    // Method to add an ingredient to the database
-    public void addIngredientToDatabase(Ingredient ingredient) {
-        Connection connection = DatabaseConnection.getConnection();
-        if (connection != null) {
-            try {
-                String insertSQL = "INSERT INTO ingredients (name, expiration_date, quantity, category) VALUES (?, ?, ?, ?)";
-                PreparedStatement preparedStatement = connection.prepareStatement(insertSQL);
-                preparedStatement.setString(1, ingredient.getName());
-                preparedStatement.setString(2, ingredient.getExpirationDate().format(DateTimeFormatter.ISO_LOCAL_DATE));
-                preparedStatement.setDouble(3, ingredient.getQuantity()); // Assuming quantity is a double
-                preparedStatement.setString(4, ingredient.getCategory());
-                preparedStatement.executeUpdate();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-    }
 
-    // Method to retrieve ingredients from the database
-    public List<Ingredient> getIngredientsFromDatabase() {
-        List<Ingredient> ingredients = new ArrayList<>();
-        Connection connection = DatabaseConnection.getConnection();
-        if (connection != null) {
-            try {
-                String selectSQL = "SELECT * FROM ingredients";
-                Statement statement = connection.createStatement();
-                ResultSet resultSet = statement.executeQuery(selectSQL);
-                while (resultSet.next()) {
-                    String name = resultSet.getString("name");
-                    LocalDate expirationDate = LocalDate.parse(resultSet.getString("expiration_date"), DateTimeFormatter.ISO_LOCAL_DATE);
-                    double quantity = resultSet.getDouble("quantity");
-                    String category = resultSet.getString("category");
-                    ingredients.add(new Ingredient(name, expirationDate, (int) quantity, category));
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-        return ingredients;
-    }
+
 }
