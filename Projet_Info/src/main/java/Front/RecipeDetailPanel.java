@@ -1,57 +1,63 @@
 package Front;
 
+import Back.Recipe;
+import Back.Ingredient;
+
 import javax.swing.*;
 import java.awt.*;
-import Back.Ingredient;
-import Back.Recipe;
+import java.util.List;
 
-public class RecipeDetailPanel extends JPanel {
-    private static final long serialVersionUID = 1L;
+public class RecipeDetailPanel extends JPopupMenu {
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private JTextArea ingredientsTextArea;
+    private JTextArea instructionsTextArea;
 
-    public RecipeDetailPanel(Recipe recipe, CardLayout cardLayout, JPanel cardContainer) {
-        setLayout(new BorderLayout());
-        
-     // Add a "Back to Recipes" button
-        JButton backButton = new JButton("Back to Recipes");
-        backButton.addActionListener(e -> cardLayout.show(cardContainer, "Recipe Search"));
-        add(backButton, BorderLayout.SOUTH);
-        backButton.setFont(new Font("Arial", Font.BOLD, 16));
-        backButton.setForeground(Color.WHITE);
-        backButton.setBackground(new Color(70, 130, 180));
-        backButton.setOpaque(true);
-        backButton.setBorderPainted(false);
+    public RecipeDetailPanel() {
+        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
-        // Container for ingredients and instructions
-        JPanel contentPanel = new JPanel();
-        contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
-        JScrollPane contentScrollPane = new JScrollPane(contentPanel);
-        add(contentScrollPane, BorderLayout.CENTER);
-
-        // "Ingredients" header
         JLabel ingredientsHeader = new JLabel("Ingredients:");
-        customizeLabel(ingredientsHeader, Color.BLUE, new Font("Verdana", Font.ITALIC, 20));
-        contentPanel.add(ingredientsHeader);
+        customizeLabel(ingredientsHeader, Color.ORANGE, new Font("Segoe UI", Font.BOLD, 20));
+        add(ingredientsHeader);
 
-        // Display recipe ingredients
-        for (Ingredient ingredient : recipe.getIngredients()) {
-            JLabel ingredientLabel = new JLabel("\u2022 " + ingredient.getName());
-            customizeLabel(ingredientLabel, Color.BLACK, new Font("Arial", Font.PLAIN, 16));
-            contentPanel.add(ingredientLabel);
-        }
+        ingredientsTextArea = new JTextArea(5, 20); // Set size to limit the popup size
+        customizeTextArea(ingredientsTextArea, Color.BLACK, new Font("Segoe UI", Font.PLAIN, 16));
+        add(new JScrollPane(ingredientsTextArea)); // Add scrolling
 
-        contentPanel.add(Box.createRigidArea(new Dimension(0, 20)));
+        add(Box.createRigidArea(new Dimension(0, 20)));
 
-        // "Instructions" header
         JLabel instructionsHeader = new JLabel("Instructions:");
-        customizeLabel(instructionsHeader, Color.BLUE, new Font("Verdana", Font.ITALIC, 20));
-        contentPanel.add(instructionsHeader);
+        customizeLabel(instructionsHeader, Color.ORANGE, new Font("Segoe UI", Font.BOLD, 20));
+        add(instructionsHeader);
 
-        // Display cooking instructions for the recipe
-        for (String instruction : recipe.getInstructions()) {
-        	String htmlInstruction = convertToHtml(instruction);
-            JLabel instructionLabel = new JLabel(htmlInstruction);
-            customizeLabel(instructionLabel, Color.DARK_GRAY, new Font("Arial", Font.PLAIN, 16));
-            contentPanel.add(instructionLabel);
+        instructionsTextArea = new JTextArea(5, 20); // Set size
+        customizeTextArea(instructionsTextArea, Color.DARK_GRAY, new Font("Segoe UI", Font.PLAIN, 16));
+        add(new JScrollPane(instructionsTextArea)); // Add scrolling
+    }
+
+    public void displayRecipe(Recipe recipe) {
+        if (recipe != null) {
+            // Display ingredients in the ingredients text area
+            List<Ingredient> ingredients = recipe.getIngredients();
+            StringBuilder ingredientsText = new StringBuilder();
+            for (Ingredient ingredient : ingredients) {
+                ingredientsText.append("\u2022 ").append(ingredient.getName()).append("\n");
+            }
+            ingredientsTextArea.setText(ingredientsText.toString());
+
+            // Display instructions in the instructions text area
+            List<String> instructions = recipe.getInstructions();
+            StringBuilder instructionsText = new StringBuilder();
+            for (String instruction : instructions) {
+                instructionsText.append("\u2022 ").append(instruction).append("\n");
+            }
+            instructionsTextArea.setText(instructionsText.toString());
+        } else {
+            // Reset the text areas if no recipe is selected
+            ingredientsTextArea.setText("");
+            instructionsTextArea.setText("");
         }
     }
 
@@ -59,18 +65,13 @@ public class RecipeDetailPanel extends JPanel {
         label.setForeground(color);
         label.setFont(font);
     }
-    private String convertToHtml(String text) {
-        String htmlStartTag = "<html><ol>";
-        String htmlEndTag = "</ol></html>";
-        StringBuilder htmlBuilder = new StringBuilder(htmlStartTag);
-        String[] lines = text.split("\n");
-        for (String line : lines) {
-            htmlBuilder.append("<li>").append(line).append("</li>");
-        }
-        htmlBuilder.append(htmlEndTag);
-        return htmlBuilder.toString();
-    }
-    
-    
 
+    private void customizeTextArea(JTextArea textArea, Color color, Font font) {
+        textArea.setEditable(false);
+        textArea.setWrapStyleWord(true);
+        textArea.setLineWrap(true);
+        textArea.setForeground(color);
+        textArea.setFont(font);
+        textArea.setMargin(new Insets(10, 10, 10, 10));
+    }
 }

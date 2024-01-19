@@ -13,7 +13,7 @@ import org.json.JSONObject;
 
 public class RecipeFinder {
 
-    private static final String API_KEY = "498e19ac44534b0d9d76f362ed9a558f";
+	private static final String API_KEY = "bde71878bd254e889f1c97348688c78d";
     public static final int ERROR_API_LIMIT = -1;
     public static final int ERROR_NO_INTERNET = -2;
     

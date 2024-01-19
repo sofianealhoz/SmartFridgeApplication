@@ -1,6 +1,7 @@
 package Front;
 
 import javax.swing.*;
+
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -11,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
+import Back.DatabaseAccess;
 import Back.Frigo;
 import Back.Ingredient;
 
@@ -45,6 +47,95 @@ public class FrigoPanel extends JPanel {
         // Scroll pane for text area
         JScrollPane scrollPane = new JScrollPane(ingredientsTable);
         add(scrollPane, BorderLayout.CENTER);
+        
+     // Button to delete selected ingredient
+     		JButton deleteIngredientButton = new JButton("Delete Ingredient");
+     		deleteIngredientButton.setFont(new Font("SansSerif", Font.BOLD, 18));
+     		deleteIngredientButton.setForeground(new Color(60, 60, 60));
+     		deleteIngredientButton.setBackground(new Color(200, 200, 200));
+     		deleteIngredientButton.setBorder(BorderFactory.createRaisedBevelBorder());
+     		deleteIngredientButton.setFocusPainted(false);
+     		deleteIngredientButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+
+     		deleteIngredientButton.addActionListener(new ActionListener() {
+     			@Override
+     			public void actionPerformed(ActionEvent e) {
+     				int selectedRow = ingredientsTable.getSelectedRow();
+
+     				if (selectedRow != -1) {
+     					// Get the name of the ingredient in the selected row
+     					String ingredientName = (String) ingredientsTable.getValueAt(selectedRow, 0);
+
+     					// Call a method to delete the ingredient from the fridge and database
+     					fridge.removeIngredientByName(ingredientName);
+
+     					// Refresh the ingredients table
+     					refreshIngredientsTable();
+     				} else {
+     					JOptionPane.showMessageDialog(FrigoPanel.this, "Please select an ingredient to delete.", "Error",
+     							JOptionPane.ERROR_MESSAGE);
+     				}
+     			}
+     		});
+
+        
+
+    		// Button to add new ingredients
+    		JButton addIngredientButton = new JButton("Add Ingredient");
+    		addIngredientButton.setFont(new Font("SansSerif", Font.BOLD, 18)); // Set font
+    		addIngredientButton.setForeground(new Color(60, 60, 60)); // Set a dark gray text color
+    		addIngredientButton.setBackground(new Color(200, 200, 200)); // Set a light gray background color
+    		addIngredientButton.setBorder(BorderFactory.createRaisedBevelBorder()); // Set border for a 3D effect
+    		addIngredientButton.setFocusPainted(false); // Remove focus ring around text
+    		addIngredientButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+
+    		addIngredientButton.addActionListener(new ActionListener() {
+    			@Override
+    			public void actionPerformed(ActionEvent e) {
+    				displayAddIngredientDialog();
+    			}
+    		});
+        
+    		// Button to update ingredient quantity
+    		JButton updateQuantityButton = new JButton("Update Quantity");
+    		updateQuantityButton.setFont(new Font("SansSerif", Font.BOLD, 18));
+    		updateQuantityButton.setForeground(new Color(60, 60, 60));
+    		updateQuantityButton.setBackground(new Color(200, 200, 200));
+    		updateQuantityButton.setBorder(BorderFactory.createRaisedBevelBorder());
+    		updateQuantityButton.setFocusPainted(false);
+    		updateQuantityButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+
+    		updateQuantityButton.addActionListener(new ActionListener() {
+    			@Override
+    			public void actionPerformed(ActionEvent e) {
+    				int selectedRow = ingredientsTable.getSelectedRow();
+
+    				if (selectedRow != -1) {
+    					// Get the name of the ingredient in the selected row
+    					String ingredientName = (String) ingredientsTable.getValueAt(selectedRow, 0);
+    					String quantityText = JOptionPane.showInputDialog(FrigoPanel.this, "Enter new quantity for " + ingredientName + ":");
+    					
+    					if (quantityText != null) {
+    						try {
+    							int quantity = Integer.parseInt(quantityText);
+    							
+    							// Call a method to update the ingredient quantity in the database
+    							DatabaseAccess.callUpdateIngredientQuantity(ingredientName, quantity);
+    							
+    							// Refresh the ingredients table
+    							refreshIngredientsTable();
+    						} catch (NumberFormatException ex) {
+    							JOptionPane.showMessageDialog(FrigoPanel.this, "Invalid quantity format.", "Error",
+    									JOptionPane.ERROR_MESSAGE);
+    						}
+    					}
+    				} else {
+    					JOptionPane.showMessageDialog(FrigoPanel.this, "Please select an ingredient to update.", "Error",
+    							JOptionPane.ERROR_MESSAGE);
+    				}
+    			}
+    		});
+        
 
         // Add "What's in my fridge" title
         JLabel titleLabel = new JLabel("What's in my fridge", SwingConstants.CENTER);
@@ -53,26 +144,17 @@ public class FrigoPanel extends JPanel {
         titleLabel.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
         add(titleLabel, BorderLayout.NORTH);
 
-        // Button to add new ingredients
-        JButton addIngredientButton = new JButton("Add Ingredient");
+     // Create a panel for the buttons
+     		JPanel buttonPanel = new JPanel();
+     		buttonPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
+     		buttonPanel.add(deleteIngredientButton);
+     		buttonPanel.add(addIngredientButton);
+     		buttonPanel.add(updateQuantityButton);
+     		add(buttonPanel, BorderLayout.SOUTH);
 
-        addIngredientButton.setFont(new Font("SansSerif", Font.BOLD, 18)); // Set font
-        addIngredientButton.setForeground(new Color(60, 60, 60)); // Set a dark gray text color
-        addIngredientButton.setBackground(new Color(200, 200, 200)); // Set a light gray background color
-        addIngredientButton.setBorder(BorderFactory.createRaisedBevelBorder()); // Set border for a 3D effect
-        addIngredientButton.setFocusPainted(false); // Remove focus ring around text
-        addIngredientButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+     		refreshIngredientsTable();
+     	}
 
-        addIngredientButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                displayAddIngredientDialog();
-            }
-        });
-        add(addIngredientButton, BorderLayout.SOUTH);
-        refreshIngredientsTable();
-
-    }
 
     // Style of the table
     private void styleTable() {
@@ -109,34 +191,46 @@ public class FrigoPanel extends JPanel {
 
         // Action listener for adding the ingredient
         addButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String name = nameField.getText();
-                String quantityText = quantityField.getText();
-                String expirationText = expirationField.getText();
-                String selectedCategory = (String) categoryComboBox.getSelectedItem();
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				String name = nameField.getText();
+				String quantityText = quantityField.getText();
+				String expirationText = expirationField.getText();
+				String selectedCategory = (String) categoryComboBox.getSelectedItem();
+				// Validation of input fields
+				if (name.isEmpty() || quantityText.isEmpty() || expirationText.isEmpty()) {
+					JOptionPane.showMessageDialog(dialog, "Please fill in all fields.", "Error",
+							JOptionPane.ERROR_MESSAGE);
+				} else {
+					try {
+						int quantity = Integer.parseInt(quantityText);
+						LocalDate expirationDate = LocalDate.parse(expirationText);
 
-                // Validation of input fields
-                if (name.isEmpty() || quantityText.isEmpty() || expirationText.isEmpty()) {
-                    JOptionPane.showMessageDialog(dialog, "Please fill in all fields.", "Error", JOptionPane.ERROR_MESSAGE);
-                } else {
-                    try {
-                        int quantity = Integer.parseInt(quantityText);
-                        LocalDate expirationDate = LocalDate.parse(expirationText);
+						// Check if the ingredient name already exists
+						if (fridge.hasIngredient(name)) {
+							throw new IllegalArgumentException("Ingredient already exists.");
+						}
 
-                        // Adding the new ingredient to the fridge
-                        fridge.addIngredient(new Ingredient(name, expirationDate, quantity, selectedCategory));
+						// Adding the new ingredient to the fridge
+						fridge.addIngredient(new Ingredient(name, expirationDate, quantity, selectedCategory));
+						DatabaseAccess.callInsertIngredient(name, quantityText, expirationText, selectedCategory);
 
-                        // Refreshing the ingredients display
-                        refreshIngredientsTable();
+						// Refreshing the ingredients display
+						refreshIngredientsTable();
 
-                        dialog.dispose();
-                    } catch (NumberFormatException | DateTimeParseException ex) {
-                        JOptionPane.showMessageDialog(dialog, "Invalid date or quantity format.", "Error", JOptionPane.ERROR_MESSAGE);
-                    }
-                }
-            }
-        });
+						dialog.dispose();
+					} catch (NumberFormatException | DateTimeParseException ex) {
+						JOptionPane.showMessageDialog(dialog, "Invalid date or quantity format.", "Error",
+								JOptionPane.ERROR_MESSAGE);
+					} catch (IllegalArgumentException ex) {
+						JOptionPane.showMessageDialog(dialog, "Ingredient already exists.", "Error",
+								JOptionPane.ERROR_MESSAGE);
+					}
+				}
+			}
+		});
+
+
 
         // Adding form fields to the panel
         panel.add(nameLabel);
