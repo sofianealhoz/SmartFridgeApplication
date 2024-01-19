@@ -1,6 +1,7 @@
 package Front;
 
 import Back.Frigo;
+import Back.Ingredient;
 import Back.RecipeFinder;
 import Back.Recipe;
 import Back.DatabaseAccess;
@@ -124,16 +125,18 @@ public class Interface extends JFrame {
 			cardLayout.show(cardPanel, "Fridge");
 			break;
 		case "Recipe Search":
-			List<Recipe> recipes = RecipeFinder.searchRecipes(frigo.getIngredients());
-			System.out.println("List of found recipes:");
-			for (Recipe recipe : recipes) {
-				System.out.println("Recipe: " + recipe.getName());
-				System.out.println("Image URL: " + recipe.getImageUrl());
-				System.out.println();
-			}
-			recipesPanel.displayRecipes(recipes);
-			cardLayout.show(cardPanel, "Recipe Search");
-			break;
+			List<Ingredient> selectedIngredients = frigoPanel.getSelectedIngredients();
+            List<Recipe> recipes = RecipeFinder.searchRecipes(selectedIngredients);
+            System.out.println("List of found recipes:");
+            for (Recipe recipe : recipes) {
+                System.out.println("Recipe: " + recipe.getName());
+                System.out.println("Image URL: " + recipe.getImageUrl());
+                System.out.println();
+            }
+            recipesPanel.displayRecipes(recipes);
+            cardLayout.show(cardPanel, "Recipe Search");
+            break;
+
 		case "Selected Recipes":
             selectedRecipePanel.displaySelectedRecipes();
             cardLayout.show(cardPanel, "SelectedRecipe");

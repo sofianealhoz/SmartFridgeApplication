@@ -8,7 +8,11 @@ import java.awt.*;
 import java.util.List;
 
 public class RecipeDetailPanel extends JPopupMenu {
-    private JTextArea ingredientsTextArea;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private JTextArea ingredientsTextArea;
     private JTextArea instructionsTextArea;
 
     public RecipeDetailPanel() {
