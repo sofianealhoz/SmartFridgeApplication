@@ -1,18 +1,26 @@
 package Front;
 
-import Back.Frigo;
-import Back.Ingredient;
-import Back.RecipeFinder;
-import Back.Recipe;
-import Back.DatabaseAccess;
-
-import javax.swing.*;
-import java.awt.*;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
+import java.awt.BorderLayout;
+import java.awt.CardLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Cursor;
+import java.awt.Dimension;
+import java.awt.Font;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
+
+import Back.Frigo;
+import Back.Ingredient;
+import Back.Recipe;
+import Back.RecipeFinder;
 
 public class Interface extends JFrame {
 	private static final long serialVersionUID = 1L;
