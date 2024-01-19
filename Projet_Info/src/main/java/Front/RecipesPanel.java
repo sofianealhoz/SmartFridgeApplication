@@ -154,8 +154,6 @@ public class RecipesPanel extends JPanel {
         }
         revalidate();
         repaint();
- 
-        System.out.println("displayRecipes called with " + recipes.size() + " recipes.");
     }
 
     private ImageIcon loadImageIcon(String imageUrl, int width, int height) {
@@ -165,7 +163,7 @@ public class RecipesPanel extends JPanel {
             return new ImageIcon(image);
         } catch (IOException e) {
             e.printStackTrace();
-            return new ImageIcon(); 
+            return new ImageIcon();
         }
     }
   

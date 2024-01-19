@@ -17,13 +17,13 @@ import Back.Frigo;
 import Back.Ingredient;
 
 public class FrigoPanel extends JPanel {
-    private static final long serialVersionUID = 1L;
-    private JTable ingredientsTable;
-    private Frigo fridge;
+	private static final long serialVersionUID = 1L;
+	private JTable ingredientsTable;
+	private Frigo fridge;
 
-    public FrigoPanel(Frigo fridge) {
-        this.fridge = fridge;
-        setLayout(new BorderLayout());
+	public FrigoPanel(Frigo fridge) {
+		this.fridge = fridge;
+		setLayout(new BorderLayout());
 
         // Create a table 
         String[] columnNames = {"Name", "Quantity", "Expiration Date", "Category", "Select"};
@@ -173,21 +173,21 @@ public class FrigoPanel extends JPanel {
     void displayAddIngredientDialog() {
         JFrame parentFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
 
-        JDialog dialog = new JDialog(parentFrame, "Add an Ingredient", true);
-        JPanel panel = new JPanel(new GridLayout(0, 2));
+				if (selectedRow != -1) {
+					// Get the name of the ingredient in the selected row
+					String ingredientName = (String) ingredientsTable.getValueAt(selectedRow, 0);
 
-        // Form fields for ingredient details
-        JLabel nameLabel = new JLabel("Ingredient Name:");
-        JTextField nameField = new JTextField();
-        JLabel quantityLabel = new JLabel("Quantity:");
-        JTextField quantityField = new JTextField();
-        JLabel expirationLabel = new JLabel("Expiration Date (yyyy-MM-dd):");
-        JTextField expirationField = new JTextField();
-        JLabel categoryLabel = new JLabel("Category:");
-        String[] categories = {"Meat", "Vegetable", "Fruit", "Dairy", "Grain", "Spice", "Other"};
-        JComboBox<String> categoryComboBox = new JComboBox<>(categories);
+					// Call a method to delete the ingredient from the fridge and database
+					fridge.removeIngredientByName(ingredientName);
 
-        JButton addButton = new JButton("Add");
+					// Refresh the ingredients table
+					refreshIngredientsTable();
+				} else {
+					JOptionPane.showMessageDialog(FrigoPanel.this, "Please select an ingredient to delete.", "Error",
+							JOptionPane.ERROR_MESSAGE);
+				}
+			}
+		});
 
         // Action listener for adding the ingredient
         addButton.addActionListener(new ActionListener() {
@@ -232,31 +232,36 @@ public class FrigoPanel extends JPanel {
 
 
 
-        // Adding form fields to the panel
-        panel.add(nameLabel);
-        panel.add(nameField);
-        panel.add(quantityLabel);
-        panel.add(quantityField);
-        panel.add(expirationLabel);
-        panel.add(expirationField);
-        panel.add(categoryLabel);
-        panel.add(categoryComboBox);
+		// Add "What's in my fridge" title
+		JLabel titleLabel = new JLabel("What's in my fridge", SwingConstants.CENTER);
+		titleLabel.setFont(new Font("Serif", Font.BOLD, 40));
+		titleLabel.setForeground(new Color(44, 62, 80));
+		titleLabel.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
+		add(titleLabel, BorderLayout.NORTH);
 
-        // Setting up the dialog layout
-        JPanel buttonPanel = new JPanel();
-        buttonPanel.add(addButton);
+		// Create a panel for the buttons
+		JPanel buttonPanel = new JPanel();
+		buttonPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
+		buttonPanel.add(deleteIngredientButton);
+		buttonPanel.add(addIngredientButton);
+		buttonPanel.add(updateQuantityButton);
+		add(buttonPanel, BorderLayout.SOUTH);
 
-        dialog.add(panel, BorderLayout.CENTER);
-        dialog.add(buttonPanel, BorderLayout.SOUTH);
-        dialog.pack();
-        dialog.setLocationRelativeTo(parentFrame);
-        dialog.setVisible(true);
-    }
+		refreshIngredientsTable();
+	}
 
-    // Refreshes the display of ingredients in the text area
-    private void refreshIngredientsTable() {
-        DefaultTableModel model = (DefaultTableModel) ingredientsTable.getModel();
-        model.setRowCount(0); // Clear table
+	// Style of the table
+	private void styleTable() {
+		// Style for the table header
+		ingredientsTable.getTableHeader().setFont(new Font("SansSerif", Font.ITALIC, 16));
+		ingredientsTable.getTableHeader().setBackground(new Color(153, 204, 255));
+		ingredientsTable.getTableHeader().setForeground(Color.BLACK);
+		// Style for the table cells
+		ingredientsTable.setFont(new Font("SansSerif", Font.PLAIN, 20));
+		ingredientsTable.setBackground(Color.WHITE);
+		ingredientsTable.setForeground(Color.BLACK);
+		ingredientsTable.setRowHeight(25);
+	}
 
         fridge.getIngredients().sort(Comparator.comparing(Ingredient::getCategory));
         for (Ingredient ingredient : fridge.getIngredients()) {
