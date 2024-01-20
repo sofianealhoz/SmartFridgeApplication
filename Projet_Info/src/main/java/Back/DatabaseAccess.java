@@ -19,7 +19,7 @@ public class DatabaseAccess {
 	// Définissez les informations de connexion à votre base de données
 	private static final String URL = "jdbc:mysql://127.0.0.1/prinfo";
 	private static final String USER = "root";
-	private static final String PASSWORD = "rootroot";
+	private static final String PASSWORD = "root";
 
 	/*
 	 * public static void main(String[] args) { try { // Établissez la connexion à
@@ -326,7 +326,7 @@ public class DatabaseAccess {
 			try (PreparedStatement statement = connection.prepareStatement(sql)) {
 				// Utilisez la date actuelle pour comparer avec les dates d’expiration
 				LocalDate currentDate = LocalDate.now();
-            	LocalDate soonToExpireDate = currentDate.minusWeeks(1); // Date proche de l'expiration
+            	LocalDate soonToExpireDate = currentDate.minusWeeks(1); //Date proche de l'expiration
 				statement.setDate(1, Date.valueOf(soonToExpireDate));
 				statement.setDate(2, Date.valueOf(currentDate));
 				statement.setDate(3, Date.valueOf(currentDate));

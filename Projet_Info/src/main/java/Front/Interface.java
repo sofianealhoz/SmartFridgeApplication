@@ -245,7 +245,7 @@ public class Interface extends JFrame {
 		}
     }
 
-	// Method to check and display expired ingredients
+	// Method to check and display soon expired ingredients
     private void checkAndDisplaySoonExpiredIngredients() {
 		if (alertDisplayed2) {
 			// An alert is already displayed, do nothing
