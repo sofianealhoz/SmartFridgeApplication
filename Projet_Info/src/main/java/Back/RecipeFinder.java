@@ -13,11 +13,14 @@ import org.json.JSONObject;
 
 public class RecipeFinder {
 
-    private static final String API_KEY = "43d2fa3384d347b2b8bab5785b2edff7";
-
+	private static final String API_KEY = "bde71878bd254e889f1c97348688c78d";
+    public static final int ERROR_API_LIMIT = -1;
+    public static final int ERROR_NO_INTERNET = -2;
+    
     // Searches for recipes based on a list of ingredients.
     public static List<Recipe> searchRecipes(List<Ingredient> ingredients) {
         List<Recipe> recipes = new ArrayList<>();
+        
         List<Ingredient> chocolateCakeIngredients = Arrays.asList(
             new Ingredient("Flour", LocalDate.of(2024, 6, 30), 500, "Bakery"),
             new Ingredient("Sugar", LocalDate.of(2024, 12, 31), 200, "Bakery"),
@@ -89,7 +92,7 @@ public class RecipeFinder {
         
         // Add the vanilla cupcake recipe to the list of recipes
         recipes.add(vanillaCupcake);
-
+        
         // Check if the ingredient list is empty
         if (ingredients.isEmpty()) {
             System.out.println("No ingredients specified for recipe search.");
@@ -140,7 +143,17 @@ public class RecipeFinder {
             conn.disconnect();
 
         } catch (IOException e) {
-            e.printStackTrace();
+            if (e.getMessage().contains("402")) {
+                // API limit reached
+                recipes.clear();
+                recipes.add(new Recipe("API_LIMIT", "", null, null, null, null));
+                return recipes;
+            } else {
+                // No internet connection
+                recipes.clear();
+                recipes.add(new Recipe("NO_INTERNET", "", null, null, null, null));
+                return recipes;
+            }
         }
 
         return recipes;
