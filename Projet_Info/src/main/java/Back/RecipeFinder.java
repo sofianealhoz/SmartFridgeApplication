@@ -124,8 +124,12 @@ public class RecipeFinder {
             String title = recipeDetail.getString("title");
             String imageUrl = recipeDetail.getString("image");
             String rawInstructions = recipeDetail.optString("instructions", "");
-            List<String> instructionList = Arrays.asList(rawInstructions.split("\n")); 
-
+            
+            // Use RecipeFormatter to standardize instructions
+            RecipeFormatter formatter = new RecipeFormatter();
+            String standardizedInstructions = formatter.standardizeInstructions(rawInstructions);
+            List<String> instructionList = Arrays.asList(standardizedInstructions.split("\n")); 
+            
             // Extracting nutrition info and allergens
             JSONObject nutritionObject = recipeDetail.optJSONObject("nutrition");
             NutritionInfo nutritionInfo = extractNutritionInfo(nutritionObject);

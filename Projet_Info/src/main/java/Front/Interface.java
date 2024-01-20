@@ -156,12 +156,14 @@ public class Interface extends JFrame {
 			int choice = JOptionPane.showOptionDialog(this, "Choose an option:", "Recipe Search", JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
 
 			if (choice == 0) {
-				List<Recipe> recipes = RecipeFinder.searchRecipes(frigo.getIngredients());
-				System.out.println("List of found recipes:");
-				for (Recipe recipe : recipes) {
-					System.out.println("Recipe: " + recipe.getName());
-					System.out.println("Image URL: " + recipe.getImageUrl());
-					System.out.println();
+				
+				List<Ingredient> selectedIngredients = frigoPanel.getSelectedIngredients();
+	            List<Recipe> recipes = RecipeFinder.searchRecipes(selectedIngredients);
+	            System.out.println("List of found recipes:");
+	            for (Recipe recipe : recipes) {
+	                System.out.println("Recipe: " + recipe.getName());
+	                System.out.println("Image URL: " + recipe.getImageUrl());
+	                System.out.println();
 				}
 				recipesPanel.displayRecipes(recipes);
 				cardLayout.show(cardPanel, "Recipe Search");
