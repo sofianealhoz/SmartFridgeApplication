@@ -9,12 +9,14 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import java.sql.Date;
+
 public class DatabaseAccess {
 
 	// Définissez les informations de connexion à votre base de données
 	private static final String URL = "jdbc:mysql://127.0.0.1/prinfo";
 	private static final String USER = "root";
-	private static final String PASSWORD = "root";
+	private static final String PASSWORD = "rootroot";
 
 	/*
 	 * public static void main(String[] args) { try { // Établissez la connexion à
@@ -165,4 +167,35 @@ public class DatabaseAccess {
 			}
 		}
 	}
+
+	public static List<Ingredient> getExpiredIngredients() {
+		List<Ingredient> expiredIngredients = new ArrayList<>();
+		
+	
+		try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD)) {
+			String sql = "SELECT * FROM Ingredients WHERE expiration_date < ?";
+			try (PreparedStatement statement = connection.prepareStatement(sql)) {
+				// Utilisez la date actuelle pour comparer avec les dates d’expiration
+				LocalDate currentDate = LocalDate.now();
+				statement.setDate(1, Date.valueOf(currentDate));
+	
+				try (ResultSet resultSet = statement.executeQuery()) {
+					while (resultSet.next()) {
+						String name = resultSet.getString("name");
+						LocalDate expirationDate = resultSet.getDate("expiration_date").toLocalDate();
+						int quantity = resultSet.getInt("quantity");
+						String category = resultSet.getString("category");
+	
+						Ingredient ingredient = new Ingredient(name, expirationDate, quantity, category);
+						expiredIngredients.add(ingredient);
+					}
+				}
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	
+		return expiredIngredients;
+	}
+	
 }
