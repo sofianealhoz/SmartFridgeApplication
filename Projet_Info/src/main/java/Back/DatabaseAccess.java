@@ -16,7 +16,7 @@ public class DatabaseAccess {
 	// Définissez les informations de connexion à votre base de données
 	private static final String URL = "jdbc:mysql://127.0.0.1/prinfo";
 	private static final String USER = "root";
-	private static final String PASSWORD = "rootroot";
+	private static final String PASSWORD = "root";
 
 	/*
 	 * public static void main(String[] args) { try { // Établissez la connexion à
