@@ -14,7 +14,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.TimerTask;
-
 import java.util.Timer;
 
 public class Interface extends JFrame {
@@ -28,6 +27,8 @@ public class Interface extends JFrame {
 	private List<JButton> menuButtons;
 	private Frigo frigo;
 	private ShoppingCartPanel shoppingCartPanel;
+	private boolean alertDisplayed = false;
+
 
 	public Frigo getFrigo() {
         return frigo;
@@ -170,19 +171,22 @@ public class Interface extends JFrame {
 	public void startExpirationCheckTimer() {
         Timer timer = new Timer();
         
-        // Scheduled task to check expiration dates every 24 hours
+        // Scheduled task to check expiration dates every 1 minute
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
                 checkAndDisplayExpiredIngredients();
             }
-        }, 10000, 10000); // Start immediately and repeat every
+        }, 1000*60, 1000*60); // Start after 1 minute and repeat every minute
     }
 
     // Method to check and display expired ingredients
     private void checkAndDisplayExpiredIngredients() {
+		if (alertDisplayed) {
+			// An alert is already displayed, do nothing
+			return;
+		}
         List<Ingredient> expiredIngredients = DatabaseAccess.getExpiredIngredients();
-
         if (!expiredIngredients.isEmpty()) {
             // Build the message to display in the dialog box
             StringBuilder message = new StringBuilder("The following ingredients have expired :\n");
@@ -195,6 +199,7 @@ public class Interface extends JFrame {
 			SwingUtilities.invokeLater(() -> {
 				JOptionPane.showMessageDialog(null, message.toString(), "Expired ingredients", JOptionPane.WARNING_MESSAGE);
 			});
+			alertDisplayed = true; // Update alert status
 			
 			
 		}

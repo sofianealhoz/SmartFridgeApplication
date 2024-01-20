@@ -175,7 +175,7 @@ public class DatabaseAccess {
 		try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD)) {
 			String sql = "SELECT * FROM Ingredients WHERE expiration_date < ?";
 			try (PreparedStatement statement = connection.prepareStatement(sql)) {
-				// Use current date to compare with expiry dates
+				// Utilisez la date actuelle pour comparer avec les dates d’expiration
 				LocalDate currentDate = LocalDate.now();
 				statement.setDate(1, Date.valueOf(currentDate));
 	
