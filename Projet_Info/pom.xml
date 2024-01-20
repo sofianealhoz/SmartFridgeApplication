@@ -11,5 +11,15 @@
         <artifactId>json</artifactId>
         <version>20210307</version>
     </dependency>
+    <dependency>
+        <groupId>mysql</groupId>
+        <artifactId>mysql-connector-java</artifactId>
+        <version>8.0.26</version> <!-- Assurez-vous de spécifier la dernière version disponible -->
+    </dependency>
+    <dependency>
+	    <groupId>org.jsoup</groupId>
+	    <artifactId>jsoup</artifactId>
+	    <version>1.13.1</version> <!-- use the latest version -->
+    </dependency>
   </dependencies>
 </project>

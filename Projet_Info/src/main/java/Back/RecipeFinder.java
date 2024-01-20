@@ -13,11 +13,12 @@ import org.json.JSONObject;
 
 public class RecipeFinder {
 
-    private static final String API_KEY = "bde71878bd254e889f1c97348688c78d";
+    private static final String API_KEY = "dce42378565a430c9540f059c5d33e1d";
 
     // Searches for recipes based on a list of ingredients.
     public static List<Recipe> searchRecipes(List<Ingredient> ingredients) {
         List<Recipe> recipes = new ArrayList<>();
+        DatabaseAccess.resetDatabaseRecipe();
 
         // Check if the ingredient list is empty
         if (ingredients.isEmpty()) {
@@ -69,7 +70,17 @@ public class RecipeFinder {
             conn.disconnect();
 
         } catch (IOException e) {
-            e.printStackTrace();
+            if (e.getMessage().contains("402")) {
+                // API limit reached
+                recipes.clear();
+                recipes.add(new Recipe("API_LIMIT", "", null, null, null, null));
+                return recipes;
+            } else {
+                // No internet connection
+                recipes.clear();
+                recipes.add(new Recipe("NO_INTERNET", "", null, null, null, null));
+                return recipes;
+            }
         }
 
         return recipes;
@@ -113,8 +124,12 @@ public class RecipeFinder {
             String title = recipeDetail.getString("title");
             String imageUrl = recipeDetail.getString("image");
             String rawInstructions = recipeDetail.optString("instructions", "");
-            List<String> instructionList = Arrays.asList(rawInstructions.split("\n")); 
-
+            
+            // Use RecipeFormatter to standardize instructions
+            RecipeFormatter formatter = new RecipeFormatter();
+            String standardizedInstructions = formatter.standardizeInstructions(rawInstructions);
+            List<String> instructionList = Arrays.asList(standardizedInstructions.split("\n")); 
+            
             // Extracting nutrition info and allergens
             JSONObject nutritionObject = recipeDetail.optJSONObject("nutrition");
             NutritionInfo nutritionInfo = extractNutritionInfo(nutritionObject);
@@ -122,6 +137,9 @@ public class RecipeFinder {
             
             // Creating a Recipe object with the extracted information
             Recipe recipe = new Recipe(title, imageUrl, ingredientList, instructionList, nutritionInfo, allergens);
+            
+            DatabaseAccess.callInsertListOfIngredient(ingredientList, recipeId);
+            DatabaseAccess.insertRecipe(recipe, recipeId);
             return recipe;
 
         } catch (IOException e) {
