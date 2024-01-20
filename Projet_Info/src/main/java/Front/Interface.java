@@ -1,6 +1,7 @@
 package Front;
 
 import Back.Frigo;
+import Back.Ingredient;
 import Back.RecipeFinder;
 import Back.Recipe;
 import Back.DatabaseAccess;
@@ -10,8 +11,30 @@ import java.awt.*;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+
+import java.awt.BorderLayout;
+import java.awt.CardLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Cursor;
+import java.awt.Dimension;
+import java.awt.Font;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TimerTask;
+import java.util.Timer;
+
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
+
+import Back.Frigo;
+import Back.Ingredient;
+import Back.Recipe;
+import Back.RecipeFinder;
 
 public class Interface extends JFrame {
 	private static final long serialVersionUID = 1L;
@@ -24,6 +47,8 @@ public class Interface extends JFrame {
 	private List<JButton> menuButtons;
 	private Frigo frigo;
 	private ShoppingCartPanel shoppingCartPanel;
+	private boolean alertDisplayed = false;
+
 
 	public Frigo getFrigo() {
         return frigo;
@@ -112,6 +137,9 @@ public class Interface extends JFrame {
 			}
 		});
 
+		// Ajoutez l'appel à startExpirationCheckTimer() ici
+		startExpirationCheckTimer();
+
 	}
 
 	// Handles menu item clicks to switch between panels
@@ -174,6 +202,43 @@ public class Interface extends JFrame {
 		// Additional handling for other menu items we need to implement
 		}
 	}
+
+	public void startExpirationCheckTimer() {
+        Timer timer = new Timer();
+        
+        // Scheduled task to check expiration dates every 1 minute
+        timer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                checkAndDisplayExpiredIngredients();
+            }
+        }, 1000*60, 1000*60); // Start after 1 minute and repeat every minute
+    }
+
+    // Method to check and display expired ingredients
+    private void checkAndDisplayExpiredIngredients() {
+		if (alertDisplayed) {
+			// An alert is already displayed, do nothing
+			return;
+		}
+        List<Ingredient> expiredIngredients = DatabaseAccess.getExpiredIngredients();
+        if (!expiredIngredients.isEmpty()) {
+            // Build the message to display in the dialog box
+            StringBuilder message = new StringBuilder("The following ingredients have expired :\n");
+
+            for (Ingredient ingredient : expiredIngredients) {
+                message.append("- ").append(ingredient.getName()).append("\n");
+            }
+
+            // Display the dialog box
+			SwingUtilities.invokeLater(() -> {
+				JOptionPane.showMessageDialog(null, message.toString(), "Expired ingredients", JOptionPane.WARNING_MESSAGE);
+			});
+			alertDisplayed = true; // Update alert status
+			
+			
+		}
+    }
 
 	public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {

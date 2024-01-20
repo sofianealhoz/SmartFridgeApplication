@@ -70,7 +70,17 @@ public class RecipeFinder {
             conn.disconnect();
 
         } catch (IOException e) {
-            e.printStackTrace();
+            if (e.getMessage().contains("402")) {
+                // API limit reached
+                recipes.clear();
+                recipes.add(new Recipe("API_LIMIT", "", null, null, null, null));
+                return recipes;
+            } else {
+                // No internet connection
+                recipes.clear();
+                recipes.add(new Recipe("NO_INTERNET", "", null, null, null, null));
+                return recipes;
+            }
         }
 
         return recipes;
