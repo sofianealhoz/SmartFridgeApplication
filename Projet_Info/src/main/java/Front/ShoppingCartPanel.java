@@ -120,7 +120,8 @@ public class ShoppingCartPanel extends JPanel {
                             recipeIngredient.getName(),
                             recipeIngredient.getExpirationDate(),
                             neededQuantity,
-                            recipeIngredient.getCategory()
+                            recipeIngredient.getCategory(),
+                            recipeIngredient.getUnit()
                         ));
                     }
                     break;
