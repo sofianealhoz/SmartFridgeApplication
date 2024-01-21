@@ -8,7 +8,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
+
 
 import Back.DatabaseAccess;
 import Back.Frigo;
@@ -24,14 +27,16 @@ public class FrigoPanel extends JPanel {
 		setLayout(new BorderLayout());
 
 		// Create a table
-		String[] columnNames = { "Name", "Quantity", "Expiration Date", "Category" };
-		@SuppressWarnings("serial")
-		DefaultTableModel tableModel = new DefaultTableModel(columnNames, 0){
-		    @Override
-		    public boolean isCellEditable(int row, int column) {
-		        return false; // Rendre toutes les cellules de la première colonne non modifiables
-		    }
-		};
+		String[] columnNames = {"Name", "Quantity", "Expiration Date", "Category", "Select"};
+		 DefaultTableModel tableModel = new DefaultTableModel(columnNames, 0) {
+				private static final long serialVersionUID = 1L;
+
+				@Override
+	            public Class<?> getColumnClass(int columnIndex) {
+	                return columnIndex == 4 ? Boolean.class : String.class;
+	            }
+	        };
+
 		ingredientsTable = new JTable(tableModel);
 		ingredientsTable.setFillsViewportHeight(true);
 		ingredientsTable.setAutoCreateRowSorter(true);
@@ -256,4 +261,33 @@ public class FrigoPanel extends JPanel {
 			}
 		}
 	}
+	 // Method to get the ingredients we want to use for recipe search 
+    public List<Ingredient> getSelectedIngredients() {
+        List<Ingredient> selectedIngredients = new ArrayList<>();
+        DefaultTableModel model = (DefaultTableModel) ingredientsTable.getModel();
+        for (int i = 0; i < model.getRowCount(); i++) {
+            Object checkboxValue = model.getValueAt(i, 4); 
+            if (checkboxValue instanceof Boolean && (Boolean) checkboxValue) {
+                String name = (String) model.getValueAt(i, 0); 
+                double quantity = Double.parseDouble(((String) model.getValueAt(i, 1)).split(" ")[0]); 
+                int quantityInt = (int) quantity; 
+                LocalDate expirationDate = LocalDate.parse((String) model.getValueAt(i, 2)); 
+                String category = (String) model.getValueAt(i, 3); 
+
+                selectedIngredients.add(new Ingredient(name, expirationDate, quantityInt, category));
+            }
+        }
+        System.out.println("Selected Ingredients: " + selectedIngredients.size());
+        return selectedIngredients;
+    }
+
+
+
+        
+     
+
+
+
 }
+
+

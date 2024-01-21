@@ -1,6 +1,7 @@
 package Front;
 
 import Back.Frigo;
+import Back.Ingredient;
 import Back.RecipeFinder;
 import Back.Recipe;
 import Back.DatabaseAccess;
@@ -10,8 +11,23 @@ import java.awt.*;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+
+import java.awt.BorderLayout;
+import java.awt.CardLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Cursor;
+import java.awt.Dimension;
+import java.awt.Font;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TimerTask;
+import java.util.Timer;
+
+import Back.Frigo;
+import Back.Ingredient;
+import Back.Recipe;
+import Back.RecipeFinder;
 
 public class Interface extends JFrame {
 	private static final long serialVersionUID = 1L;
@@ -20,10 +36,16 @@ public class Interface extends JFrame {
 	private FrigoPanel frigoPanel;
 	private RecipesPanel recipesPanel;
 	private SelectedRecipePanel selectedRecipePanel;
+	private FavoritePanel favoriteRecipePanel;
 	private WelcomePanel welcomePanel;
 	private List<JButton> menuButtons;
 	private Frigo frigo;
 	private ShoppingCartPanel shoppingCartPanel;
+	private boolean alertDisplayed = false;
+	private boolean alertDisplayed2 = false;
+
+	
+
 
 	public Frigo getFrigo() {
         return frigo;
@@ -42,17 +64,23 @@ public class Interface extends JFrame {
 		frigoPanel = new FrigoPanel(frigo);
 		recipesPanel = new RecipesPanel(cardPanel, cardLayout);
 		selectedRecipePanel = new SelectedRecipePanel(recipesPanel);
+		favoriteRecipePanel = new FavoritePanel(recipesPanel);
         shoppingCartPanel = new ShoppingCartPanel(this, selectedRecipePanel);
 
 
 		// Welcome Panel
 		WelcomePanel welcomePanel = new WelcomePanel();
 		cardPanel.add(welcomePanel, "Welcome");
+		
+		// Loading Panel
+		LoadingPanel loadingPanel = new LoadingPanel();
+		cardPanel.add(loadingPanel, "Loading");
 
 		// Adding other panels to the card layout
 		cardPanel.add(frigoPanel, "Fridge");
 		cardPanel.add(recipesPanel, "Recipe Search");
 		cardPanel.add(selectedRecipePanel, "SelectedRecipe");
+		cardPanel.add(favoriteRecipePanel, "Favorites");
 
 		// Create the orange stripe panel
 		JPanel orangeStripe = new JPanel();
@@ -64,8 +92,9 @@ public class Interface extends JFrame {
 		orangeStripe.setLayout(new BoxLayout(orangeStripe, BoxLayout.Y_AXIS));
 
 		// Create and add menu buttons to the orange stripe
-		String[] menuItems = { "", "My Fridge App", "", "", "", "", "", "", "", "", "", "", "Fridge", ".",
-				"Recipe Search", ".", "Selected Recipes", ".", "Shopping List", ".", "Favorites" };
+		String[] menuItems = { "", "My Fridge App", "", "", "","", "", "", "", "", "", "", "", "", "Fridge", ".",
+		        "Recipe Search", ".", "Selected Recipes", ".", "Shopping List", ".", "Favorites" };
+
 		for (int i = 0; i < menuItems.length; i++) {
 			String item = menuItems[i];
 			JButton button = new JButton(item);
@@ -112,6 +141,9 @@ public class Interface extends JFrame {
 			}
 		});
 
+		// Call to startExpirationCheckTimer
+		startExpirationCheckTimer();
+
 	}
 
 	// Handles menu item clicks to switch between panels
@@ -124,41 +156,138 @@ public class Interface extends JFrame {
 			cardLayout.show(cardPanel, "Fridge");
 			break;
 		case "Recipe Search":
-			List<Recipe> recipes = RecipeFinder.searchRecipes(frigo.getIngredients());
-			System.out.println("List of found recipes:");
-			for (Recipe recipe : recipes) {
-				System.out.println("Recipe: " + recipe.getName());
-				System.out.println("Image URL: " + recipe.getImageUrl());
-				System.out.println();
-			}
-			recipesPanel.displayRecipes(recipes);
-			cardLayout.show(cardPanel, "Recipe Search");
-			break;
+            Object[] options = {"New Search", "Show last research"};
+            int choice = JOptionPane.showOptionDialog(this, "Choose an option:", "Recipe Search", JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+
+            if (choice == 0) {
+                // Show the loading panel while processing the new search
+                cardLayout.show(cardPanel, "Loading");
+
+                // Perform the search in a separate thread
+                new Thread(() -> {
+                    List<Ingredient> selectedIngredients = frigoPanel.getSelectedIngredients();
+                    List<Recipe> recipes = RecipeFinder.searchRecipes(selectedIngredients);
+                    SwingUtilities.invokeLater(() -> {
+                        System.out.println("List of found recipes:");
+                        for (Recipe recipe : recipes) {
+                            System.out.println("Recipe: " + recipe.getName());
+                            System.out.println("Image URL: " + recipe.getImageUrl());
+                            System.out.println();
+                        }
+                        recipesPanel.displayRecipes(recipes);
+                        cardLayout.show(cardPanel, "Recipe Search");
+                    });
+                }).start();
+            } else if (choice == 1) {
+                // Show the loading panel while fetching the last research
+                cardLayout.show(cardPanel, "Loading");
+
+                // Perform the fetching in a separate thread
+                new Thread(() -> {
+                    List<Recipe> recipes = DatabaseAccess.returnRecipeList();
+                    SwingUtilities.invokeLater(() -> {
+                        System.out.println("List of last researched recipes:");
+                        for (Recipe recipe : recipes) {
+                            System.out.println("Recipe: " + recipe.getName());
+                            System.out.println("Image URL: " + recipe.getImageUrl());
+                            System.out.println();
+                        }
+                        recipesPanel.displayRecipes(recipes);
+                        cardLayout.show(cardPanel, "Recipe Search");
+                    });
+                }).start();
+            }
+            break;
 		case "Selected Recipes":
             selectedRecipePanel.displaySelectedRecipes();
             cardLayout.show(cardPanel, "SelectedRecipe");
             break;
 		case "Shopping List":
-            // Check if the ShoppingCartPanel already exists, and show it if it does
+            // Check if the ShoppingCartPanel already exists
             Component[] components = cardPanel.getComponents();
             for (Component component : components) {
                 if (component instanceof ShoppingCartPanel) {
-                    cardLayout.show(cardPanel, "ShoppingCart"); // Use the correct card name here
+                    cardLayout.show(cardPanel, "ShoppingCart"); 
                     // Trigger a refresh of the ShoppingCartPanel
                     ((ShoppingCartPanel) component).refreshShoppingCart();
-                    return; // Exit the method to prevent creating multiple instances
+                    return; 
                 }
             }
 
             // If ShoppingCartPanel doesn't exist, create and add it
             ShoppingCartPanel shoppingCartPanel = new ShoppingCartPanel(this, selectedRecipePanel);
-            cardPanel.add(shoppingCartPanel, "ShoppingCart"); // Use the correct card name here
-            cardLayout.show(cardPanel, "ShoppingCart"); // Use the correct card name here
+            cardPanel.add(shoppingCartPanel, "ShoppingCart"); 
+            cardLayout.show(cardPanel, "ShoppingCart"); 
             break;
-
-		// Additional handling for other menu items we need to implement
+		case "Favorites":
+			favoriteRecipePanel.displayFavoriteRecipes();
+			cardLayout.show(cardPanel, "Favorites");
+			break;
 		}
 	}
+
+	public void startExpirationCheckTimer() {
+        Timer timer = new Timer();
+        
+        // Scheduled task to check expiration dates every 1 minute
+        timer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                checkAndDisplayExpiredIngredients();
+				checkAndDisplaySoonExpiredIngredients();
+            }
+        }, 1000*60, 1000*60); // Start after 1 minute and repeat every minute
+    }
+
+    // Method to check and display expired ingredients
+    private void checkAndDisplayExpiredIngredients() {
+		if (alertDisplayed) {
+			// An alert is already displayed, do nothing
+			return;
+		}
+        List<Ingredient> expiredIngredients = DatabaseAccess.getExpiredIngredients();
+        if (!expiredIngredients.isEmpty()) {
+            // Build the message to display in the dialog box
+            StringBuilder message = new StringBuilder("The following ingredients have expired :\n");
+
+            for (Ingredient ingredient : expiredIngredients) {
+                message.append("- ").append(ingredient.getName()).append("\n");
+            }
+
+            // Display the dialog box
+			SwingUtilities.invokeLater(() -> {
+				JOptionPane.showMessageDialog(null, message.toString(), "Expired ingredients", JOptionPane.WARNING_MESSAGE);
+			});
+			alertDisplayed = true; // Update alert status
+			
+			
+		}
+    }
+
+	// Method to check and display soon expired ingredients
+    private void checkAndDisplaySoonExpiredIngredients() {
+		if (alertDisplayed2) {
+			// An alert is already displayed, do nothing
+			return;
+		}
+        List<Ingredient> soonexpiredIngredients = DatabaseAccess.getSoonExpiredIngredients();
+        if (!soonexpiredIngredients.isEmpty()) {
+            // Build the message to display in the dialog box
+            StringBuilder message = new StringBuilder("The following ingredients will soon expire :\n");
+
+            for (Ingredient ingredient : soonexpiredIngredients) {
+                message.append("- ").append(ingredient.getName()).append("\n");
+            }
+
+            // Display the dialog box
+			SwingUtilities.invokeLater(() -> {
+				JOptionPane.showMessageDialog(null, message.toString(), "Soon expired ingredients", JOptionPane.WARNING_MESSAGE);
+			});
+			alertDisplayed2 = true; // Update alert status
+			
+			
+		}
+    }
 
 	public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {

@@ -11,40 +11,32 @@ import java.util.List;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-public class SelectedRecipePanel extends JPanel {
+public class FavoritePanel extends JPanel {
     private JLabel recipeDetails;
     private RecipesPanel recipesPanel; // Add a reference to RecipesPanel
-    private List<Recipe> selectedRecipes;
-    private ShoppingCartPanel shoppingCartPanel;
+    private List<Recipe> favoriteRecipes;
 
-    public SelectedRecipePanel(RecipesPanel recipesPanel) {
+    public FavoritePanel(RecipesPanel recipesPanel) {
         this.recipesPanel = recipesPanel; // Initialize the reference to RecipesPanel
         recipeDetails = new JLabel();
         this.add(recipeDetails);
     }
-    public void removeSelectedRecipe(Recipe recipe) {
-        if (selectedRecipes.contains(recipe)) {
-            selectedRecipes.remove(recipe);
-            displaySelectedRecipes(); // Refresh the panel after removing the recipe
-        }
+
+    public void updateFavoriteRecipes(List<Recipe> favoriteRecipes) {
+        this.favoriteRecipes = favoriteRecipes;
     }
 
-    public void updateSelectedRecipes(List<Recipe> selectedRecipes) {
-        this.selectedRecipes = selectedRecipes;
-        shoppingCartPanel.refreshShoppingCart(); // Call the refreshShoppingCart method
+    public List<Recipe> getFavoriteRecipe(){
+        favoriteRecipes = recipesPanel.getFavoriteRecipes();
+        return favoriteRecipes;
     }
 
-    public List<Recipe> getSelectedRecipe(){
-        selectedRecipes = recipesPanel.getSelectedRecipes();
-        return selectedRecipes;
-    }
-
-    public void displaySelectedRecipes() {
+    public void displayFavoriteRecipes() {
         JPanel innerPanel = new JPanel();
         innerPanel.setLayout(new BoxLayout(innerPanel, BoxLayout.Y_AXIS));
-        selectedRecipes = this.getSelectedRecipe();
+        favoriteRecipes = this.getFavoriteRecipe();
         
-        for (Recipe recipe : selectedRecipes) {
+        for (Recipe recipe : favoriteRecipes) {
             JPanel recipePanel = new JPanel();
             recipePanel.setLayout(new BoxLayout(recipePanel, BoxLayout.Y_AXIS));
             recipePanel.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -102,8 +94,8 @@ public class SelectedRecipePanel extends JPanel {
             selectButton.setFont(new Font("Segoe UI Symbol", Font.BOLD, 16)); // Police plus grande pour le texte
 
             selectButton.addActionListener(e -> {
-                if (selectedRecipes.contains(recipe)) {
-                    removeSelectedRecipe(recipe);
+                if (favoriteRecipes.contains(recipe)) {
+                    favoriteRecipes.remove(recipe);
                 }
             });
 
@@ -117,7 +109,7 @@ public class SelectedRecipePanel extends JPanel {
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         scrollPane.setBorder(null);
 
-        JLabel pageLabel = new JLabel("Recipes Selected");
+        JLabel pageLabel = new JLabel("Favorite Recipes");
         pageLabel.setFont(new Font("Segoe UI", Font.BOLD, 40));
         pageLabel.setForeground(Color.ORANGE);
         pageLabel.setHorizontalAlignment(SwingConstants.CENTER);
