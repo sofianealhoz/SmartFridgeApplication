@@ -13,7 +13,7 @@ import org.json.JSONObject;
 
 public class RecipeFinder {
 
-    private static final String API_KEY = "dce42378565a430c9540f059c5d33e1d";
+    private static final String API_KEY = "bde71878bd254e889f1c97348688c78d";
 
     // Searches for recipes based on a list of ingredients.
     public static List<Recipe> searchRecipes(List<Ingredient> ingredients) {
