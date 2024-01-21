@@ -24,13 +24,6 @@ import java.util.List;
 import java.util.TimerTask;
 import java.util.Timer;
 
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
-
 import Back.Frigo;
 import Back.Ingredient;
 import Back.Recipe;
@@ -49,7 +42,15 @@ public class Interface extends JFrame {
 	private Frigo frigo;
 	private ShoppingCartPanel shoppingCartPanel;
 	private boolean alertDisplayed = false;
-	private boolean isAdvancedMode = false; // Flag to track the mode
+    private boolean alertDisplayed2 = false;
+    private boolean isAdvancedMode = false; // Flag to track the mode
+<<<<<<< Projet_Info/src/main/java/Front/Interface.java
+	
+=======
+	
+
+	
+>>>>>>> Projet_Info/src/main/java/Front/Interface.java
 
 
 	public Frigo getFrigo() {
@@ -228,6 +229,7 @@ public class Interface extends JFrame {
         add(orangeStripe, BorderLayout.WEST);
         add(cardPanel, BorderLayout.CENTER);
 
+<<<<<<< Projet_Info/src/main/java/Front/Interface.java
         setTitle("What's in my fridge");
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -242,9 +244,14 @@ public class Interface extends JFrame {
             }
         });
         
-		// Ajoutez l'appel à startExpirationCheckTimer() ici
-		startExpirationCheckTimer();
+		// Call to startExpirationCheckTimer
+        startExpirationCheckTimer();
     }
+=======
+		
+>>>>>>> Projet_Info/src/main/java/Front/Interface.java
+		
+   
     
     private void switchToAdvancedMode() {
         isAdvancedMode = true;
@@ -345,6 +352,7 @@ public class Interface extends JFrame {
             @Override
             public void run() {
                 checkAndDisplayExpiredIngredients();
+				checkAndDisplaySoonExpiredIngredients();
             }
         }, 1000*60, 1000*60); // Start after 1 minute and repeat every minute
     }
@@ -369,6 +377,31 @@ public class Interface extends JFrame {
 				JOptionPane.showMessageDialog(null, message.toString(), "Expired ingredients", JOptionPane.WARNING_MESSAGE);
 			});
 			alertDisplayed = true; // Update alert status
+			
+			
+		}
+    }
+
+	// Method to check and display soon expired ingredients
+    private void checkAndDisplaySoonExpiredIngredients() {
+		if (alertDisplayed2) {
+			// An alert is already displayed, do nothing
+			return;
+		}
+        List<Ingredient> soonexpiredIngredients = DatabaseAccess.getSoonExpiredIngredients();
+        if (!soonexpiredIngredients.isEmpty()) {
+            // Build the message to display in the dialog box
+            StringBuilder message = new StringBuilder("The following ingredients will soon expire :\n");
+
+            for (Ingredient ingredient : soonexpiredIngredients) {
+                message.append("- ").append(ingredient.getName()).append("\n");
+            }
+
+            // Display the dialog box
+			SwingUtilities.invokeLater(() -> {
+				JOptionPane.showMessageDialog(null, message.toString(), "Soon expired ingredients", JOptionPane.WARNING_MESSAGE);
+			});
+			alertDisplayed2 = true; // Update alert status
 			
 			
 		}

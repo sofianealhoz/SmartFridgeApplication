@@ -316,5 +316,38 @@ public class DatabaseAccess {
 	
 		return expiredIngredients;
 	}
+
+	public static List<Ingredient> getSoonExpiredIngredients() {
+		List<Ingredient> soonexpiredIngredients = new ArrayList<>();
+		
+	
+		try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD)) {
+			String sql = "SELECT * FROM Ingredients WHERE ? < ? AND ? < expiration_date ";
+			try (PreparedStatement statement = connection.prepareStatement(sql)) {
+				// Utilisez la date actuelle pour comparer avec les dates d’expiration
+				LocalDate currentDate = LocalDate.now();
+            	LocalDate soonToExpireDate = currentDate.minusWeeks(1); //Date proche de l'expiration
+				statement.setDate(1, Date.valueOf(soonToExpireDate));
+				statement.setDate(2, Date.valueOf(currentDate));
+				statement.setDate(3, Date.valueOf(currentDate));
+	
+				try (ResultSet resultSet = statement.executeQuery()) {
+					while (resultSet.next()) {
+						String name = resultSet.getString("name");
+						LocalDate expirationDate = resultSet.getDate("expiration_date").toLocalDate();
+						int quantity = resultSet.getInt("quantity");
+						String category = resultSet.getString("category");
+	
+						Ingredient ingredient = new Ingredient(name, expirationDate, quantity, category);
+						soonexpiredIngredients.add(ingredient);
+					}
+				}
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	
+		return soonexpiredIngredients;
+	}
 	
 }
