@@ -44,19 +44,10 @@ public class Interface extends JFrame {
 	private boolean alertDisplayed = false;
     private boolean alertDisplayed2 = false;
     private boolean isAdvancedMode = false; // Flag to track the mode
-<<<<<<< Projet_Info/src/main/java/Front/Interface.java
-	
-=======
-	
-
-	
->>>>>>> Projet_Info/src/main/java/Front/Interface.java
-
 
 	public Frigo getFrigo() {
         return frigo;
 	}
-	
 
     public Interface() {
         // Call the normalInterface() method by default
@@ -229,7 +220,6 @@ public class Interface extends JFrame {
         add(orangeStripe, BorderLayout.WEST);
         add(cardPanel, BorderLayout.CENTER);
 
-<<<<<<< Projet_Info/src/main/java/Front/Interface.java
         setTitle("What's in my fridge");
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -246,11 +236,7 @@ public class Interface extends JFrame {
         
 		// Call to startExpirationCheckTimer
         startExpirationCheckTimer();
-    }
-=======
-		
->>>>>>> Projet_Info/src/main/java/Front/Interface.java
-		
+    }	
    
     
     private void switchToAdvancedMode() {
@@ -270,7 +256,6 @@ public class Interface extends JFrame {
         revalidate();
         repaint();
     }
-
 
     
 	// Handles menu item clicks to switch between panels
