@@ -147,7 +147,7 @@ public class RecipeFinder {
     }
 
     // Fetches detailed recipe information including ingredients, instructions, nutrition, and allergies.
-    private static Recipe fetchRecipeDetails(int recipeId) {
+    public static Recipe fetchRecipeDetails(int recipeId) {
         String detailUrl = "https://api.spoonacular.com/recipes/" + recipeId + "/information?includeNutrition=true&apiKey=" + API_KEY;
         try {
             URL url = new URL(detailUrl);
@@ -202,7 +202,7 @@ public class RecipeFinder {
     }
 
     // Extracts nutrition information from the JSON object.
-    private static NutritionInfo extractNutritionInfo(JSONObject nutritionObject) {
+    public static NutritionInfo extractNutritionInfo(JSONObject nutritionObject) {
         if (nutritionObject == null) {
             return new NutritionInfo(0, 0, 0, 0, 0, 0, 0);
         }
@@ -218,7 +218,7 @@ public class RecipeFinder {
     }
 
     // Extracts allergen information from the JSON object.
-    private static List<String> extractAllergens(JSONObject recipeDetail) {
+    public static List<String> extractAllergens(JSONObject recipeDetail) {
         JSONArray allergensArray = recipeDetail.optJSONArray("allergens");
         List<String> allergens = new ArrayList<>();
         if (allergensArray != null) {
