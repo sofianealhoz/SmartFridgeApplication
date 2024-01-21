@@ -71,6 +71,10 @@ public class Interface extends JFrame {
 		// Welcome Panel
 		WelcomePanel welcomePanel = new WelcomePanel();
 		cardPanel.add(welcomePanel, "Welcome");
+		
+		// Loading Panel
+		LoadingPanel loadingPanel = new LoadingPanel();
+		cardPanel.add(loadingPanel, "Loading");
 
 		// Adding other panels to the card layout
 		cardPanel.add(frigoPanel, "Fridge");
@@ -88,8 +92,9 @@ public class Interface extends JFrame {
 		orangeStripe.setLayout(new BoxLayout(orangeStripe, BoxLayout.Y_AXIS));
 
 		// Create and add menu buttons to the orange stripe
-		String[] menuItems = { "", "My Fridge App", "", "", "", "", "", "", "", "", "", "","", "", "", "", "", "", "", "", "", "Fridge", ".",
-				"Recipe Search", ".", "Selected Recipes", ".", "Shopping List", ".", "Favorites" };
+		String[] menuItems = { "", "My Fridge App", "", "", "","", "", "", "", "", "", "", "", "", "Fridge", ".",
+		        "Recipe Search", ".", "Selected Recipes", ".", "Shopping List", ".", "Favorites" };
+
 		for (int i = 0; i < menuItems.length; i++) {
 			String item = menuItems[i];
 			JButton button = new JButton(item);
@@ -151,59 +156,73 @@ public class Interface extends JFrame {
 			cardLayout.show(cardPanel, "Fridge");
 			break;
 		case "Recipe Search":
-			Object[] options = {"New Search", "Show last research"};
-			int choice = JOptionPane.showOptionDialog(this, "Choose an option:", "Recipe Search", JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+            Object[] options = {"New Search", "Show last research"};
+            int choice = JOptionPane.showOptionDialog(this, "Choose an option:", "Recipe Search", JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
 
-			if (choice == 0) {
-				
-				List<Ingredient> selectedIngredients = frigoPanel.getSelectedIngredients();
-	            List<Recipe> recipes = RecipeFinder.searchRecipes(selectedIngredients);
-	            System.out.println("List of found recipes:");
-	            for (Recipe recipe : recipes) {
-	                System.out.println("Recipe: " + recipe.getName());
-	                System.out.println("Image URL: " + recipe.getImageUrl());
-	                System.out.println();
-				}
-				recipesPanel.displayRecipes(recipes);
-				cardLayout.show(cardPanel, "Recipe Search");
-			} else if (choice == 1) {
-				List<Recipe> recipes = DatabaseAccess.returnRecipeList();
-				System.out.println("List of last researched recipes:");
-				for (Recipe recipe : recipes) {
-					System.out.println("Recipe: " + recipe.getName());
-					System.out.println("Image URL: " + recipe.getImageUrl());
-					System.out.println();
-				}
-				recipesPanel.displayRecipes(recipes);
-				cardLayout.show(cardPanel, "Recipe Search");
-			}
-			break;
+            if (choice == 0) {
+                // Show the loading panel while processing the new search
+                cardLayout.show(cardPanel, "Loading");
+
+                // Perform the search in a separate thread
+                new Thread(() -> {
+                    List<Ingredient> selectedIngredients = frigoPanel.getSelectedIngredients();
+                    List<Recipe> recipes = RecipeFinder.searchRecipes(selectedIngredients);
+                    SwingUtilities.invokeLater(() -> {
+                        System.out.println("List of found recipes:");
+                        for (Recipe recipe : recipes) {
+                            System.out.println("Recipe: " + recipe.getName());
+                            System.out.println("Image URL: " + recipe.getImageUrl());
+                            System.out.println();
+                        }
+                        recipesPanel.displayRecipes(recipes);
+                        cardLayout.show(cardPanel, "Recipe Search");
+                    });
+                }).start();
+            } else if (choice == 1) {
+                // Show the loading panel while fetching the last research
+                cardLayout.show(cardPanel, "Loading");
+
+                // Perform the fetching in a separate thread
+                new Thread(() -> {
+                    List<Recipe> recipes = DatabaseAccess.returnRecipeList();
+                    SwingUtilities.invokeLater(() -> {
+                        System.out.println("List of last researched recipes:");
+                        for (Recipe recipe : recipes) {
+                            System.out.println("Recipe: " + recipe.getName());
+                            System.out.println("Image URL: " + recipe.getImageUrl());
+                            System.out.println();
+                        }
+                        recipesPanel.displayRecipes(recipes);
+                        cardLayout.show(cardPanel, "Recipe Search");
+                    });
+                }).start();
+            }
+            break;
 		case "Selected Recipes":
             selectedRecipePanel.displaySelectedRecipes();
             cardLayout.show(cardPanel, "SelectedRecipe");
             break;
 		case "Shopping List":
-            // Check if the ShoppingCartPanel already exists, and show it if it does
+            // Check if the ShoppingCartPanel already exists
             Component[] components = cardPanel.getComponents();
             for (Component component : components) {
                 if (component instanceof ShoppingCartPanel) {
-                    cardLayout.show(cardPanel, "ShoppingCart"); // Use the correct card name here
+                    cardLayout.show(cardPanel, "ShoppingCart"); 
                     // Trigger a refresh of the ShoppingCartPanel
                     ((ShoppingCartPanel) component).refreshShoppingCart();
-                    return; // Exit the method to prevent creating multiple instances
+                    return; 
                 }
             }
 
             // If ShoppingCartPanel doesn't exist, create and add it
             ShoppingCartPanel shoppingCartPanel = new ShoppingCartPanel(this, selectedRecipePanel);
-            cardPanel.add(shoppingCartPanel, "ShoppingCart"); // Use the correct card name here
-            cardLayout.show(cardPanel, "ShoppingCart"); // Use the correct card name here
+            cardPanel.add(shoppingCartPanel, "ShoppingCart"); 
+            cardLayout.show(cardPanel, "ShoppingCart"); 
             break;
 		case "Favorites":
 			favoriteRecipePanel.displayFavoriteRecipes();
 			cardLayout.show(cardPanel, "Favorites");
-			break;		
-		// Additional handling for other menu items we need to implement
+			break;
 		}
 	}
 
