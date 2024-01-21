@@ -22,12 +22,6 @@ public class SelectedRecipePanel extends JPanel {
         recipeDetails = new JLabel();
         this.add(recipeDetails);
     }
-    public void removeSelectedRecipe(Recipe recipe) {
-        if (selectedRecipes.contains(recipe)) {
-            selectedRecipes.remove(recipe);
-            displaySelectedRecipes(); // Refresh the panel after removing the recipe
-        }
-    }
 
     public void updateSelectedRecipes(List<Recipe> selectedRecipes) {
         this.selectedRecipes = selectedRecipes;
@@ -103,7 +97,7 @@ public class SelectedRecipePanel extends JPanel {
 
             selectButton.addActionListener(e -> {
                 if (selectedRecipes.contains(recipe)) {
-                    removeSelectedRecipe(recipe);
+                    selectedRecipes.remove(recipe);
                 }
             });
 

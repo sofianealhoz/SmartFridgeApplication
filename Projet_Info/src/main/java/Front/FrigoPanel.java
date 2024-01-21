@@ -11,6 +11,17 @@ import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
+
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 
 
 import Back.DatabaseAccess;
@@ -21,6 +32,7 @@ public class FrigoPanel extends JPanel {
 	private static final long serialVersionUID = 1L;
 	private JTable ingredientsTable;
 	private Frigo fridge;
+	private String currentUnit = "units"; // Default unit
 
 	public FrigoPanel(Frigo fridge) {
 		this.fridge = fridge;
@@ -48,9 +60,9 @@ public class FrigoPanel extends JPanel {
 
 		// Button to delete selected ingredient
 		JButton deleteIngredientButton = new JButton("Delete Ingredient");
-		deleteIngredientButton.setFont(new Font("SansSerif", Font.BOLD, 18));
-		deleteIngredientButton.setForeground(new Color(60, 60, 60));
-		deleteIngredientButton.setBackground(new Color(200, 200, 200));
+		deleteIngredientButton.setFont(new Font("Segoe UI", Font.BOLD, 18));
+		deleteIngredientButton.setForeground(Color.WHITE);
+		deleteIngredientButton.setBackground(Color.ORANGE);
 		deleteIngredientButton.setBorder(BorderFactory.createRaisedBevelBorder());
 		deleteIngredientButton.setFocusPainted(false);
 		deleteIngredientButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
@@ -78,9 +90,9 @@ public class FrigoPanel extends JPanel {
 
 		// Button to add new ingredients
 		JButton addIngredientButton = new JButton("Add Ingredient");
-		addIngredientButton.setFont(new Font("SansSerif", Font.BOLD, 18)); // Set font
-		addIngredientButton.setForeground(new Color(60, 60, 60)); // Set a dark gray text color
-		addIngredientButton.setBackground(new Color(200, 200, 200)); // Set a light gray background color
+		addIngredientButton.setFont(new Font("Segoe UI", Font.BOLD, 18)); // Set font
+		addIngredientButton.setForeground(Color.WHITE); // Set a dark gray text color
+		addIngredientButton.setBackground(Color.ORANGE); // Set a light gray background color
 		addIngredientButton.setBorder(BorderFactory.createRaisedBevelBorder()); // Set border for a 3D effect
 		addIngredientButton.setFocusPainted(false); // Remove focus ring around text
 		addIngredientButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
@@ -94,9 +106,9 @@ public class FrigoPanel extends JPanel {
 
 		// Button to update ingredient quantity
 		JButton updateQuantityButton = new JButton("Update Quantity");
-		updateQuantityButton.setFont(new Font("SansSerif", Font.BOLD, 18));
-		updateQuantityButton.setForeground(new Color(60, 60, 60));
-		updateQuantityButton.setBackground(new Color(200, 200, 200));
+		updateQuantityButton.setFont(new Font("Segoe UI", Font.BOLD, 18));
+		updateQuantityButton.setForeground(Color.WHITE);
+		updateQuantityButton.setBackground(Color.ORANGE);
 		updateQuantityButton.setBorder(BorderFactory.createRaisedBevelBorder());
 		updateQuantityButton.setFocusPainted(false);
 		updateQuantityButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
@@ -134,8 +146,8 @@ public class FrigoPanel extends JPanel {
 
 		// Add "What's in my fridge" title
 		JLabel titleLabel = new JLabel("What's in my fridge", SwingConstants.CENTER);
-		titleLabel.setFont(new Font("Serif", Font.BOLD, 40));
-		titleLabel.setForeground(new Color(44, 62, 80));
+		titleLabel.setFont(new Font("Segoe UI", Font.BOLD, 40));
+		titleLabel.setForeground(Color.ORANGE);
 		titleLabel.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
 		add(titleLabel, BorderLayout.NORTH);
 
@@ -149,15 +161,15 @@ public class FrigoPanel extends JPanel {
 
 		refreshIngredientsTable();
 	}
-
+	
 	// Style of the table
 	private void styleTable() {
 		// Style for the table header
-		ingredientsTable.getTableHeader().setFont(new Font("SansSerif", Font.ITALIC, 16));
-		ingredientsTable.getTableHeader().setBackground(new Color(153, 204, 255));
-		ingredientsTable.getTableHeader().setForeground(Color.BLACK);
+		ingredientsTable.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 16));
+		ingredientsTable.getTableHeader().setBackground(Color.ORANGE);
+		ingredientsTable.getTableHeader().setForeground(Color.WHITE);
 		// Style for the table cells
-		ingredientsTable.setFont(new Font("SansSerif", Font.PLAIN, 20));
+		ingredientsTable.setFont(new Font("Segoe UI", Font.PLAIN, 20));
 		ingredientsTable.setBackground(Color.WHITE);
 		ingredientsTable.setForeground(Color.BLACK);
 		ingredientsTable.setRowHeight(25);
@@ -165,10 +177,10 @@ public class FrigoPanel extends JPanel {
 
 	// Shows a dialog to add a new ingredient to the fridge
 	void displayAddIngredientDialog() {
+		
 		JFrame parentFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
-
-		JDialog dialog = new JDialog(parentFrame, "Add an Ingredient", true);
-		JPanel panel = new JPanel(new GridLayout(0, 2));
+    	JDialog dialog = new JDialog(parentFrame, "Add an Ingredient", true);
+    	JPanel panel = new JPanel(new GridLayout(0, 2));
 
 		// Form fields for ingredient details
 		JLabel nameLabel = new JLabel("Ingredient Name:");
@@ -181,6 +193,13 @@ public class FrigoPanel extends JPanel {
 		String[] categories = { "Meat", "Vegetable", "Fruit", "Dairy", "Grain", "Spice", "Other" };
 		JComboBox<String> categoryComboBox = new JComboBox<>(categories);
 
+		 // Add Unit Selection
+		 JLabel unitLabel = new JLabel("Unit:");
+		 String[] units = { "grams", "milliliters", "units" };
+		 JComboBox<String> unitComboBox = new JComboBox<>(units);
+		 panel.add(unitLabel);
+		 panel.add(unitComboBox);
+		 
 		JButton addButton = new JButton("Add");
 
 		addButton.addActionListener(new ActionListener() {
@@ -198,19 +217,20 @@ public class FrigoPanel extends JPanel {
 					try {
 						int quantity = Integer.parseInt(quantityText);
 						LocalDate expirationDate = LocalDate.parse(expirationText);
-
+		
 						// Check if the ingredient name already exists
 						if (fridge.hasIngredient(name)) {
 							throw new IllegalArgumentException("Ingredient already exists.");
 						}
-
+		
 						// Adding the new ingredient to the fridge
-						fridge.addIngredient(new Ingredient(name, expirationDate, quantity, selectedCategory));
-						DatabaseAccess.callInsertIngredient(name, quantityText, expirationText, selectedCategory);
-
+						String selectedUnit = (String) unitComboBox.getSelectedItem(); // Use the existing unitComboBox
+						fridge.addIngredient(new Ingredient(name, expirationDate, quantity, selectedCategory, selectedUnit));
+						DatabaseAccess.callInsertIngredient(name, quantityText, expirationText, selectedCategory, selectedUnit);
+		
 						// Refreshing the ingredients display
 						refreshIngredientsTable();
-
+		
 						dialog.dispose();
 					} catch (NumberFormatException | DateTimeParseException ex) {
 						JOptionPane.showMessageDialog(dialog, "Invalid date or quantity format.", "Error",
@@ -220,9 +240,11 @@ public class FrigoPanel extends JPanel {
 								JOptionPane.ERROR_MESSAGE);
 					}
 				}
+				refreshIngredientsTable();
+				dialog.dispose();
 			}
 		});
-
+		
 		// Adding form fields to the panel
 		panel.add(nameLabel);
 		panel.add(nameField);
@@ -244,23 +266,45 @@ public class FrigoPanel extends JPanel {
 		dialog.setVisible(true);
 	}
 	
-	// Refreshes the display of ingredients in the text area
 	private void refreshIngredientsTable() {
 		DefaultTableModel model = (DefaultTableModel) ingredientsTable.getModel();
 		model.setRowCount(0); // Clear table
-		fridge.getIngredients().sort(Comparator.comparing(Ingredient::getCategory));
+	
 		for (Ingredient ingredient : fridge.getIngredients()) {
-			model.addRow(new Object[] { ingredient.getName(), ingredient.getQuantity() + " unit(s)",
-					ingredient.getExpirationDate().toString(), ingredient.getCategory() });
-		}
-		
-		// Disable cell editing
-		for (int row = 0; row < model.getRowCount(); row++) {
-			for (int col = 0; col < model.getColumnCount(); col++) {
-				model.isCellEditable(row, col);
-			}
+			String displayQuantity = convertQuantity(ingredient.getQuantity(), ingredient.getUnit());
+			model.addRow(new Object[] {
+				ingredient.getName(),
+				displayQuantity, // Display converted quantity
+				ingredient.getExpirationDate().toString(),
+				ingredient.getCategory()
+			});
 		}
 	}
+
+	private String convertQuantity(double quantity, String unit) {
+		// Conversion factors
+		final double GRAMS_PER_KILO = 1000.0;
+		final double MILLILITERS_PER_LITER = 1000.0;
+	
+		switch (unit) {
+			case "grams":
+				if (quantity >= GRAMS_PER_KILO) {
+					return String.format("%.2f kg", quantity / GRAMS_PER_KILO);
+				} else {
+					return String.format("%.0f g", quantity);
+				}
+			case "milliliters":
+				if (quantity >= MILLILITERS_PER_LITER) {
+					return String.format("%.2f L", quantity / MILLILITERS_PER_LITER);
+				} else {
+					return String.format("%.0f mL", quantity);
+				}
+			default:
+				return String.format("%.2f %s", quantity, unit);
+		}
+	}
+	
+
 	 // Method to get the ingredients we want to use for recipe search 
     public List<Ingredient> getSelectedIngredients() {
         List<Ingredient> selectedIngredients = new ArrayList<>();
@@ -280,14 +324,5 @@ public class FrigoPanel extends JPanel {
         System.out.println("Selected Ingredients: " + selectedIngredients.size());
         return selectedIngredients;
     }
-
-
-
-        
-     
-
-
-
+	
 }
-
-

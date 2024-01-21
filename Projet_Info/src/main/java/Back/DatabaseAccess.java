@@ -57,8 +57,9 @@ public class DatabaseAccess {
 					LocalDate expirationDate = resultSet.getDate("expiration_date").toLocalDate();
 					int quantity = resultSet.getInt("quantity");
 					String category = resultSet.getString("category");
+					String unit = resultSet.getString("unit");
 
-					Ingredient ingredient = new Ingredient(name, expirationDate, quantity, category);
+					Ingredient ingredient = new Ingredient(name, expirationDate, quantity, category, unit);
 					ingredients.add(ingredient);
 				}
 			}
@@ -100,8 +101,9 @@ public class DatabaseAccess {
                     		double ingredient_quantity = result.getInt("quantity"); 
                     		String dateString = result.getString("expiration_date");
                     		LocalDate exp_date = LocalDate.parse(dateString, DateTimeFormatter.ISO_LOCAL_DATE);
+							String unit = result.getString("unit");
                     		
-                    		Ingredient ingredient = new Ingredient(ingredient_name, exp_date, ingredient_quantity, "Unknown");
+                    		Ingredient ingredient = new Ingredient(ingredient_name, exp_date, ingredient_quantity, "Unknown","Unknown");
                     		ingredients.add(ingredient);
                     	}
                     		
@@ -165,11 +167,11 @@ public class DatabaseAccess {
 		}
 	}
 
-	public static void callInsertIngredient(String name, String quantity, String date, String category) {
+	public static void callInsertIngredient(String name, String quantity, String date, String category, String unit) {
 		try {
 			// Établissez la connexion à la base de données
 			try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD)) {
-				insertIngredient(connection, name, quantity, date, category);
+				insertIngredient(connection, name, quantity, date, category, unit);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -189,7 +191,7 @@ public class DatabaseAccess {
 
 	private static void insertListOfIngredients(Connection connection, List<Ingredient> ingredients, int recipe_id)
 			throws SQLException {
-		String sql = "INSERT INTO ingredientsofrecipe (name, quantity, expiration_date, r_id) VALUES (?, ?, ?, ?)";
+		String sql = "INSERT INTO ingredientsofrecipe (name, quantity, expiration_date, r_id) VALUES (?, ?, ?, ?, ?)";
 
 		try (PreparedStatement insertStatement = connection.prepareStatement(sql)) {
 			for (Ingredient ingredient : ingredients) {
@@ -197,6 +199,7 @@ public class DatabaseAccess {
 				insertStatement.setDouble(2, ingredient.getQuantity());
 				insertStatement.setDate(3, java.sql.Date.valueOf(ingredient.getExpirationDate()));
 				insertStatement.setInt(4, recipe_id);
+				insertStatement.setString(5, ingredient.getUnit());
 
 				// Ajouter le batch pour l'exécution efficace de plusieurs insertions
 				insertStatement.addBatch();
@@ -209,13 +212,14 @@ public class DatabaseAccess {
 
 	// Méthode pour insérer des données dans la table Ingredients
 	private static void insertIngredient(Connection connection, String name, String d, String localDate,
-			String category) throws SQLException {
-		String sql = "INSERT INTO Ingredients (name, quantity, expiration_date, category) VALUES (?, ?, ?, ?)";
+			String category, String unit) throws SQLException {
+		String sql = "INSERT INTO Ingredients (name, quantity, expiration_date, category, unit) VALUES (?, ?, ?, ?, ?)";
 		try (PreparedStatement insertStatement = connection.prepareStatement(sql)) {
 			insertStatement.setString(1, name);
 			insertStatement.setString(2, d);
 			insertStatement.setString(3, localDate);
 			insertStatement.setString(4, category);
+			insertStatement.setString(5, unit);
 			insertStatement.executeUpdate();
 		}
 	}
