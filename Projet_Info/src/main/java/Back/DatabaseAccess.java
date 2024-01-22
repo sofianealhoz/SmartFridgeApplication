@@ -162,7 +162,7 @@ public class DatabaseAccess {
                     		LocalDate exp_date = LocalDate.parse(dateString, DateTimeFormatter.ISO_LOCAL_DATE);
 							String unit = result.getString("unit");
                     		
-                    		Ingredient ingredient = new Ingredient(ingredient_name, exp_date, ingredient_quantity, "Unknown","Unknown");
+                    		Ingredient ingredient = new Ingredient(ingredient_name, exp_date, ingredient_quantity, "Unknown",unit);
                     		ingredients.add(ingredient);
                     	}
                     		
