@@ -16,31 +16,62 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `ingredients`
+-- Table structure for table `fridgeingredients`
+--
+
+DROP TABLE IF EXISTS `fridgeingredients`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `fridgeingredients` (
+  `fridge_ingredient_id` int NOT NULL AUTO_INCREMENT,
+  `fridge_id` int DEFAULT NULL,
+  `ingredient_id` int DEFAULT NULL,
+  `quantity` double DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`fridge_ingredient_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `fridgeingredients`
+--
+
+LOCK TABLES `fridgeingredients` WRITE;
+/*!40000 ALTER TABLE `fridgeingredients` DISABLE KEYS */;
+/*!40000 ALTER TABLE `fridgeingredients` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `fridges`
 --
 
 DROP TABLE IF EXISTS `fridges`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `fridges` (
+  `fridge_id` int NOT NULL AUTO_INCREMENT,
+  `user_id` int DEFAULT NULL,
+  `name` varchar(255) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`fridge_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=184 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
-CREATE TABLE fridges (
-  fridge_id INT AUTO_INCREMENT PRIMARY KEY,
-  user_id INT, -- Associates a fridge with a user using user_id
-  name VARCHAR(255), -- Name of the fridge
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+--
+-- Dumping data for table `fridges`
+--
 
+LOCK TABLES `fridges` WRITE;
+/*!40000 ALTER TABLE `fridges` DISABLE KEYS */;
+INSERT INTO `fridges` VALUES (20,NULL,'user','2024-01-22 17:38:48','2024-01-22 17:38:48'),(21,NULL,'default','2024-01-22 17:38:48','2024-01-22 17:38:48'),(22,NULL,'default','2024-01-22 17:38:48','2024-01-22 17:38:48'),(23,NULL,'ahmed','2024-01-22 17:39:15','2024-01-22 17:39:15'),(24,NULL,'test','2024-01-22 17:41:08','2024-01-22 17:41:08'),(25,NULL,'user','2024-01-22 17:57:17','2024-01-22 17:57:17'),(26,NULL,'default','2024-01-22 17:57:17','2024-01-22 17:57:17'),(27,NULL,'default','2024-01-22 17:57:17','2024-01-22 17:57:17'),(28,NULL,'ahmed','2024-01-22 17:57:22','2024-01-22 17:57:22'),(29,NULL,'test','2024-01-22 17:57:30','2024-01-22 17:57:30'),(30,NULL,'user','2024-01-22 18:03:48','2024-01-22 18:03:48'),(31,NULL,'default','2024-01-22 18:03:48','2024-01-22 18:03:48'),(32,NULL,'default','2024-01-22 18:03:48','2024-01-22 18:03:48'),(33,NULL,'user','2024-01-22 18:07:33','2024-01-22 18:07:33'),(34,NULL,'default','2024-01-22 18:07:33','2024-01-22 18:07:33'),(35,NULL,'default','2024-01-22 18:07:33','2024-01-22 18:07:33'),(36,NULL,'ahmed','2024-01-22 18:08:07','2024-01-22 18:08:07'),(37,NULL,'user','2024-01-22 18:08:20','2024-01-22 18:08:20'),(38,NULL,'default','2024-01-22 18:08:20','2024-01-22 18:08:20'),(39,NULL,'default','2024-01-22 18:08:20','2024-01-22 18:08:20'),(40,NULL,'ahmed','2024-01-22 18:08:30','2024-01-22 18:08:30'),(41,NULL,'user','2024-01-22 18:12:19','2024-01-22 18:12:19'),(42,NULL,'default','2024-01-22 18:12:19','2024-01-22 18:12:19'),(43,NULL,'default','2024-01-22 18:12:19','2024-01-22 18:12:19'),(44,NULL,'ahmed','2024-01-22 18:12:36','2024-01-22 18:12:36'),(45,NULL,'user','2024-01-22 18:14:00','2024-01-22 18:14:00'),(46,NULL,'default','2024-01-22 18:14:00','2024-01-22 18:14:00'),(47,NULL,'default','2024-01-22 18:14:00','2024-01-22 18:14:00'),(48,NULL,'ahmed','2024-01-22 18:14:09','2024-01-22 18:14:09'),(49,NULL,'user','2024-01-22 18:20:53','2024-01-22 18:20:53'),(50,NULL,'default','2024-01-22 18:20:53','2024-01-22 18:20:53'),(51,NULL,'default','2024-01-22 18:20:53','2024-01-22 18:20:53'),(52,NULL,'ahmed','2024-01-22 18:20:59','2024-01-22 18:20:59'),(53,NULL,'user','2024-01-22 18:22:09','2024-01-22 18:22:09'),(54,NULL,'default','2024-01-22 18:22:09','2024-01-22 18:22:09'),(55,NULL,'default','2024-01-22 18:22:09','2024-01-22 18:22:09'),(56,NULL,'ahmed','2024-01-22 18:22:14','2024-01-22 18:22:14'),(57,NULL,'user','2024-01-22 18:28:16','2024-01-22 18:28:16'),(58,NULL,'default','2024-01-22 18:28:16','2024-01-22 18:28:16'),(59,NULL,'default','2024-01-22 18:28:16','2024-01-22 18:28:16'),(60,NULL,'ahmed','2024-01-22 18:28:22','2024-01-22 18:28:22'),(61,NULL,'user','2024-01-22 18:44:09','2024-01-22 18:44:09'),(62,NULL,'default','2024-01-22 18:44:09','2024-01-22 18:44:09'),(63,NULL,'default','2024-01-22 18:44:09','2024-01-22 18:44:09'),(64,NULL,'ahmed','2024-01-22 18:44:15','2024-01-22 18:44:15'),(65,NULL,'user','2024-01-22 18:53:56','2024-01-22 18:53:56'),(66,NULL,'default','2024-01-22 18:53:56','2024-01-22 18:53:56'),(67,NULL,'default','2024-01-22 18:53:56','2024-01-22 18:53:56'),(68,NULL,'user','2024-01-22 19:07:58','2024-01-22 19:07:58'),(69,NULL,'default','2024-01-22 19:07:58','2024-01-22 19:07:58'),(70,NULL,'default','2024-01-22 19:07:58','2024-01-22 19:07:58'),(71,NULL,'ahmed','2024-01-22 19:08:03','2024-01-22 19:08:03'),(72,NULL,'user','2024-01-22 19:59:52','2024-01-22 19:59:52'),(73,NULL,'default','2024-01-22 19:59:52','2024-01-22 19:59:52'),(74,NULL,'default','2024-01-22 19:59:52','2024-01-22 19:59:52'),(75,NULL,'ahmed','2024-01-22 20:00:04','2024-01-22 20:00:04'),(76,NULL,'user','2024-01-22 20:00:56','2024-01-22 20:00:56'),(77,NULL,'default','2024-01-22 20:00:56','2024-01-22 20:00:56'),(78,NULL,'default','2024-01-22 20:00:56','2024-01-22 20:00:56'),(79,NULL,'ahmed','2024-01-22 20:01:00','2024-01-22 20:01:00'),(80,NULL,'user','2024-01-22 20:01:53','2024-01-22 20:01:53'),(81,NULL,'default','2024-01-22 20:01:53','2024-01-22 20:01:53'),(82,NULL,'default','2024-01-22 20:01:53','2024-01-22 20:01:53'),(83,NULL,'ahmed','2024-01-22 20:02:00','2024-01-22 20:02:00'),(84,NULL,'user','2024-01-22 20:08:35','2024-01-22 20:08:35'),(85,NULL,'default','2024-01-22 20:08:35','2024-01-22 20:08:35'),(86,NULL,'default','2024-01-22 20:08:35','2024-01-22 20:08:35'),(87,NULL,'ahmed','2024-01-22 20:08:40','2024-01-22 20:08:40'),(88,NULL,'user','2024-01-22 20:20:08','2024-01-22 20:20:08'),(89,NULL,'default','2024-01-22 20:20:08','2024-01-22 20:20:08'),(90,NULL,'default','2024-01-22 20:20:08','2024-01-22 20:20:08'),(91,NULL,'ahmed','2024-01-22 20:20:12','2024-01-22 20:20:12'),(92,NULL,'user','2024-01-22 20:21:29','2024-01-22 20:21:29'),(93,NULL,'default','2024-01-22 20:21:29','2024-01-22 20:21:29'),(94,NULL,'default','2024-01-22 20:21:29','2024-01-22 20:21:29'),(95,NULL,'ahmed','2024-01-22 20:21:34','2024-01-22 20:21:34'),(96,NULL,'user','2024-01-22 20:23:10','2024-01-22 20:23:10'),(97,NULL,'default','2024-01-22 20:23:10','2024-01-22 20:23:10'),(98,NULL,'default','2024-01-22 20:23:10','2024-01-22 20:23:10'),(99,NULL,'ahmed','2024-01-22 20:23:14','2024-01-22 20:23:14'),(100,NULL,'user','2024-01-22 20:24:36','2024-01-22 20:24:36'),(101,NULL,'default','2024-01-22 20:24:36','2024-01-22 20:24:36'),(102,NULL,'default','2024-01-22 20:24:36','2024-01-22 20:24:36'),(103,NULL,'ahmed','2024-01-22 20:24:43','2024-01-22 20:24:43'),(104,NULL,'user','2024-01-22 20:39:53','2024-01-22 20:39:53'),(105,NULL,'default','2024-01-22 20:39:53','2024-01-22 20:39:53'),(106,NULL,'default','2024-01-22 20:39:53','2024-01-22 20:39:53'),(107,NULL,'ahmed','2024-01-22 20:39:58','2024-01-22 20:39:58'),(108,NULL,'user','2024-01-22 20:44:42','2024-01-22 20:44:42'),(109,NULL,'default','2024-01-22 20:44:42','2024-01-22 20:44:42'),(110,NULL,'default','2024-01-22 20:44:42','2024-01-22 20:44:42'),(111,NULL,'ahmed','2024-01-22 20:44:50','2024-01-22 20:44:50'),(112,NULL,'user','2024-01-22 20:46:29','2024-01-22 20:46:29'),(113,NULL,'default','2024-01-22 20:46:29','2024-01-22 20:46:29'),(114,NULL,'default','2024-01-22 20:46:29','2024-01-22 20:46:29'),(115,NULL,'ahmed','2024-01-22 20:46:47','2024-01-22 20:46:47'),(116,NULL,'user','2024-01-22 20:48:32','2024-01-22 20:48:32'),(117,NULL,'default','2024-01-22 20:48:32','2024-01-22 20:48:32'),(118,NULL,'default','2024-01-22 20:48:32','2024-01-22 20:48:32'),(119,NULL,'ahmed','2024-01-22 20:48:38','2024-01-22 20:48:38'),(120,NULL,'user','2024-01-22 20:54:03','2024-01-22 20:54:03'),(121,NULL,'default','2024-01-22 20:54:03','2024-01-22 20:54:03'),(122,NULL,'default','2024-01-22 20:54:03','2024-01-22 20:54:03'),(123,NULL,'ahmed','2024-01-22 20:54:20','2024-01-22 20:54:20'),(124,NULL,'user','2024-01-22 20:54:57','2024-01-22 20:54:57'),(125,NULL,'default','2024-01-22 20:54:57','2024-01-22 20:54:57'),(126,NULL,'default','2024-01-22 20:54:57','2024-01-22 20:54:57'),(127,NULL,'ahmed','2024-01-22 20:55:18','2024-01-22 20:55:18'),(128,NULL,'user','2024-01-22 20:58:34','2024-01-22 20:58:34'),(129,NULL,'default','2024-01-22 20:58:35','2024-01-22 20:58:35'),(130,NULL,'default','2024-01-22 20:58:35','2024-01-22 20:58:35'),(131,NULL,'ahmed','2024-01-22 20:58:40','2024-01-22 20:58:40'),(132,NULL,'user','2024-01-22 21:02:44','2024-01-22 21:02:44'),(133,NULL,'default','2024-01-22 21:02:44','2024-01-22 21:02:44'),(134,NULL,'default','2024-01-22 21:02:44','2024-01-22 21:02:44'),(135,NULL,'ahmed','2024-01-22 21:02:49','2024-01-22 21:02:49'),(136,NULL,'user','2024-01-22 21:06:44','2024-01-22 21:06:44'),(137,NULL,'default','2024-01-22 21:06:44','2024-01-22 21:06:44'),(138,NULL,'default','2024-01-22 21:06:44','2024-01-22 21:06:44'),(139,NULL,'ahmed','2024-01-22 21:06:48','2024-01-22 21:06:48'),(140,NULL,'user','2024-01-22 21:08:50','2024-01-22 21:08:50'),(141,NULL,'default','2024-01-22 21:08:50','2024-01-22 21:08:50'),(142,NULL,'default','2024-01-22 21:08:50','2024-01-22 21:08:50'),(143,NULL,'ahmed','2024-01-22 21:08:54','2024-01-22 21:08:54'),(144,NULL,'user','2024-01-22 21:44:27','2024-01-22 21:44:27'),(145,NULL,'default','2024-01-22 21:44:27','2024-01-22 21:44:27'),(146,NULL,'default','2024-01-22 21:44:27','2024-01-22 21:44:27'),(147,NULL,'ahmed','2024-01-22 21:44:32','2024-01-22 21:44:32'),(148,NULL,'user','2024-01-22 21:49:12','2024-01-22 21:49:12'),(149,NULL,'default','2024-01-22 21:49:12','2024-01-22 21:49:12'),(150,NULL,'default','2024-01-22 21:49:12','2024-01-22 21:49:12'),(151,NULL,'ahmed','2024-01-22 21:49:16','2024-01-22 21:49:16'),(152,NULL,'user','2024-01-22 21:54:12','2024-01-22 21:54:12'),(153,NULL,'default','2024-01-22 21:54:12','2024-01-22 21:54:12'),(154,NULL,'default','2024-01-22 21:54:12','2024-01-22 21:54:12'),(155,NULL,'ahmed','2024-01-22 21:54:16','2024-01-22 21:54:16'),(156,NULL,'user','2024-01-22 21:58:21','2024-01-22 21:58:21'),(157,NULL,'default','2024-01-22 21:58:21','2024-01-22 21:58:21'),(158,NULL,'default','2024-01-22 21:58:21','2024-01-22 21:58:21'),(159,NULL,'ahmed','2024-01-22 21:58:25','2024-01-22 21:58:25'),(160,NULL,'user','2024-01-22 21:59:57','2024-01-22 21:59:57'),(161,NULL,'default','2024-01-22 21:59:57','2024-01-22 21:59:57'),(162,NULL,'default','2024-01-22 21:59:57','2024-01-22 21:59:57'),(163,NULL,'ahmed','2024-01-22 22:00:03','2024-01-22 22:00:03'),(164,NULL,'user','2024-01-22 22:03:17','2024-01-22 22:03:17'),(165,NULL,'default','2024-01-22 22:03:17','2024-01-22 22:03:17'),(166,NULL,'default','2024-01-22 22:03:17','2024-01-22 22:03:17'),(167,NULL,'ahmed','2024-01-22 22:03:22','2024-01-22 22:03:22'),(168,NULL,'user','2024-01-22 22:04:04','2024-01-22 22:04:04'),(169,NULL,'default','2024-01-22 22:04:04','2024-01-22 22:04:04'),(170,NULL,'default','2024-01-22 22:04:04','2024-01-22 22:04:04'),(171,NULL,'ahmed','2024-01-22 22:04:09','2024-01-22 22:04:09'),(172,NULL,'user','2024-01-22 22:27:13','2024-01-22 22:27:13'),(173,NULL,'default','2024-01-22 22:27:13','2024-01-22 22:27:13'),(174,NULL,'default','2024-01-22 22:27:13','2024-01-22 22:27:13'),(175,NULL,'ahmed','2024-01-22 22:27:17','2024-01-22 22:27:17'),(176,NULL,'user','2024-01-22 22:28:13','2024-01-22 22:28:13'),(177,NULL,'default','2024-01-22 22:28:13','2024-01-22 22:28:13'),(178,NULL,'default','2024-01-22 22:28:13','2024-01-22 22:28:13'),(179,NULL,'ahmed','2024-01-22 22:28:18','2024-01-22 22:28:18'),(180,NULL,'user','2024-01-22 22:31:33','2024-01-22 22:31:33'),(181,NULL,'default','2024-01-22 22:31:34','2024-01-22 22:31:34'),(182,NULL,'default','2024-01-22 22:31:34','2024-01-22 22:31:34'),(183,NULL,'ahmed','2024-01-22 22:31:37','2024-01-22 22:31:37');
+/*!40000 ALTER TABLE `fridges` ENABLE KEYS */;
+UNLOCK TABLES;
 
-DROP TABLE IF EXISTS `fridgeingredients`;
-
-CREATE TABLE fridgeingredients (
-  fridge_ingredient_id INT AUTO_INCREMENT PRIMARY KEY,
-  fridge_id INT, -- References the fridge to which the ingredient belongs
-  ingredient_id INT, -- References the ingredient
-  quantity DOUBLE,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
+--
+-- Table structure for table `ingredients`
+--
 
 DROP TABLE IF EXISTS `ingredients`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -52,9 +83,9 @@ CREATE TABLE `ingredients` (
   `expiration_date` date DEFAULT NULL,
   `category` varchar(255) DEFAULT NULL,
   `unit` varchar(255) DEFAULT NULL,
-  `fridge_id` int,
+  `fridge_id` int DEFAULT NULL,
   PRIMARY KEY (`ingredient_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -63,7 +94,7 @@ CREATE TABLE `ingredients` (
 
 LOCK TABLES `ingredients` WRITE;
 /*!40000 ALTER TABLE `ingredients` DISABLE KEYS */;
-INSERT INTO `ingredients` VALUES (18,'meat',10,'2024-12-12','Meat','grams',0);
+INSERT INTO `ingredients` VALUES (24,'eggs',10,'2024-12-12','Meat',NULL,NULL),(29,'eggs',10,'2024-12-12','Meat','grams',23);
 /*!40000 ALTER TABLE `ingredients` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -80,8 +111,9 @@ CREATE TABLE `ingredientsofrecipe` (
   `quantity` int DEFAULT NULL,
   `expiration_date` date DEFAULT NULL,
   `r_id` int DEFAULT NULL,
+  `unit` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=597 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=736 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -90,7 +122,7 @@ CREATE TABLE `ingredientsofrecipe` (
 
 LOCK TABLES `ingredientsofrecipe` WRITE;
 /*!40000 ALTER TABLE `ingredientsofrecipe` DISABLE KEYS */;
-INSERT INTO `ingredientsofrecipe` VALUES (534,'avocado',0,'2024-01-20',715521),(535,'cilantro',0,'2024-01-20',715521),(536,'roma tomato',0,'2024-01-20',715521),(537,'salad leaves',0,'2024-01-20',715521),(538,'center cut bacon',0,'2024-01-20',715521),(539,'turkey breast',0,'2024-01-20',715521),(540,'pita pockets',0,'2024-01-20',1095992),(541,'bacon',0,'2024-01-20',1095992),(542,'spring mix greens',0,'2024-01-20',1095992),(543,'tomatoes',0,'2024-01-20',1095992),(544,'roast turkey',0,'2024-01-20',1095992),(545,'ranch dressing',0,'2024-01-20',1095992),(546,'black beans',0,'2024-01-20',715391),(547,'tomatoes',0,'2024-01-20',715391),(548,'canned tomatoes',0,'2024-01-20',715391),(549,'chili beans',0,'2024-01-20',715391),(550,'kernal corn',0,'2024-01-20',715391),(551,'onion',0,'2024-01-20',715391),(552,'chicken breasts',0,'2024-01-20',715391),(553,'chicken breast cutlets',0,'2024-01-20',638288),(554,'coarse salt and ground pepper',0,'2024-01-20',638288),(555,'baby arugula',0,'2024-01-20',638288),(556,'feta cheese',0,'2024-01-20',638288),(557,'olive oil',0,'2024-01-20',638288),(558,'balsamic vinegar',0,'2024-01-20',730914),(559,'chicken breast',0,'2024-01-20',730914),(560,'m zarella cheese',0,'2024-01-20',730914),(561,'basil olive oil',0,'2024-01-20',730914),(562,'tomato',0,'2024-01-20',730914),(563,'narrow bread like a baguette',0,'2024-01-20',650646),(564,'a tomato',0,'2024-01-20',650646),(565,'sugar',0,'2024-01-20',650646),(566,'salt',0,'2024-01-20',650646),(567,'olive oil',0,'2024-01-20',650646),(568,'oregano leaves',0,'2024-01-20',650646),(569,'sobrassada',0,'2024-01-20',650646),(570,'bell pepper',0,'2024-01-20',635342),(571,'bread',0,'2024-01-20',635342),(572,'lettuce',0,'2024-01-20',635342),(573,'mayonnaise',0,'2024-01-20',635342),(574,'thick- bacon',0,'2024-01-20',635342),(575,'tomato',0,'2024-01-20',635342),(576,'butter',0,'2024-01-20',655601),(577,'canned tomatoes',0,'2024-01-20',655601),(578,'sausages',0,'2024-01-20',655601),(579,'olive oil',0,'2024-01-20',655601),(580,'penne pasta',0,'2024-01-20',655601),(581,'potatoes',0,'2024-01-20',655601),(582,'salt',0,'2024-01-20',655601),(583,'goat log',0,'2024-01-20',655649),(584,'tellicherry peppercorns',0,'2024-01-20',655649),(585,'ground beef',0,'2024-01-20',655649),(586,'ea. brioche rolls',0,'2024-01-20',655649),(587,'ea. plum tomatoes',0,'2024-01-20',655649),(588,'salt and pepper to season',0,'2024-01-20',655649),(589,'bu. watercress',0,'2024-01-20',655649),(590,'extra virgin olive oil',0,'2024-01-20',655649),(591,'chicken breasts',0,'2024-01-20',710765),(592,'onion',0,'2024-01-20',710765),(593,'corn',0,'2024-01-20',710765),(594,'black beans',0,'2024-01-20',710765),(595,'canned tomatoes',0,'2024-01-20',710765),(596,'taco seasoning',0,'2024-01-20',710765);
+INSERT INTO `ingredientsofrecipe` VALUES (733,'eggs',6,'2024-01-22',661447,'servings'),(734,'cream cheese',6,'2024-01-22',661447,'servings'),(735,'ham',6,'2024-01-22',661447,'servings');
 /*!40000 ALTER TABLE `ingredientsofrecipe` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -117,7 +149,7 @@ CREATE TABLE `recipe` (
 
 LOCK TABLES `recipe` WRITE;
 /*!40000 ALTER TABLE `recipe` DISABLE KEYS */;
-INSERT INTO `recipe` VALUES (635342,'BLT Sandwich','https://spoonacular.com/recipeImages/635342-556x370.jpg','','<ol><li>Brown bacon in a skillet</li><li>Remove and pat off excess oil</li><li>Slice tomato into 1/4 inches slices</li><li>Toast bread</li><li>Spread a thin layer of mayonnaise on bread</li><li>Layer all ingredients on bread and close sandwich</li><li>Add fresh cracked black pepper</li></ol>'),(638288,'Chicken Roll-Ups With Feta Cheese and Arugula','https://spoonacular.com/recipeImages/638288-556x370.jpg','','Preheat oven to 425 degrees. Season chicken with salt and pepper. On a clean work surface, lay cutlets flat (smooth sides down). Fill and roll: Layer each cutlet with arugula; crumble goat cheese in the center. Starting with the narrow end, roll up chicken tightly; seal with a toothpick.\nIn a large nonstick ovenproof skillet, heat oil over medium-high heat; swirl to coat bottom of pan. Cook, seam side down, until golden brown, 1 to 2 minutes. Turn chicken.\nTransfer skillet to oven. Cook until chicken is opaque throughout, 10 to 12 minutes. Remove toothpicks, and slice chicken crosswise before serving, if desired.'),(650646,'Majorcan Toasts','https://spoonacular.com/recipeImages/650646-556x370.jpg','','Put broiler on and toast the breads on one side for about 2 minutes (especially if your top rack is right up against the broiler) or until they are golden brown.\nIn the meantime, combine in a bowl the tomatoes, salt, thyme/oregano and sugar and let sit.\nWhen the toasts are ready, spread the sobrassada across the warm toasts, arrange on the plate and then dress them with the tomato mixture.\nServe immediately.'),(655601,'Penne with Sausage, Tomatoes and Potatoes','https://spoonacular.com/recipeImages/655601-556x370.jpg','','<ol><li>In a large pot add the potatoes and salted water. Bring the water to a boiling and cook the penne pasta until they are al dente.</li><li>Meanwhile in a large deep skillet heat 1 tablespoon of the olive oil until warm, but not smoking.</li><li>Add the sausage to the skillet. Cook on medium high heat until nicely browned and cooked through. About 5 minutes.</li><li>Add the tomatoes and cook over medium low heat.</li><li>Add the pasta and potatoes to the skillet and add the butter and cook stirring until the pasta is well coated.</li><li>Transfer to bowls and serve right the way.</li></ol>'),(655649,'Peppered Goat Cheese Log Sliders','https://spoonacular.com/recipeImages/655649-556x370.jpg','','Sprinkle cracked peppercorns on parchment paper and roll the Chavrie Goat log in the peppercorns to evenly coat the exterior and refrigerate\nWith a 1  oz. scoop separate the ground beef into 12 scant portions and hand form pattys and refrigerate\nPre heat a grill to high\nSlice the plum tomatoes in  inch slices set aside\nSlice the Chavrie Goat Log in  inch slices place on a sheet tray and refrigerate\nSeason the burgers with salt and pepper and grill for 2 minutes on each side\nTo assemble the slider lay out all the bottoms of the brioche rolls\nBegin the stacking process by placing a cooked burger on each roll , top with Chavrie  Goat log slice , plum tomato slice , watercress and drizzle with olive oil and top with roll\nServe warm\nServing Suggestion:\nServe as an appetizer or serve (2) with matchstick potatoes as a light lunch with Heineken beer'),(710765,'How to Make a Chicken Taco Crock Pot','https://spoonacular.com/recipeImages/710765-556x370.jpg','','Instructions\n\nHeat crock pot to the HIGH setting for 4 hours, or LOW setting for 8 hours.\n\nAdd chicken, onion, corn, beans, tomatoes and green chilis, and taco seasoning to the slow cooker. Stir everything well, and then cover and cook. Stir intermittently over the next few hours.\n\nOnce fully cooker, serve on lettuce (for a healthier taco), or crush up taco shells and serve as a taco salad. OR, you could always serve just like a regular taco.\n\nAdd your favorite toppings such as fat free sour cream and cheese, with a little salsa on the side.\n\nTIP: To make this KETO friendly, omit the corn and the beans, and serve on lettuce. It\'s still full of flavor and so delicious! '),(715391,'Slow Cooker Chicken Taco Soup','https://spoonacular.com/recipeImages/715391-556x370.jpg','','Once you have all of your ingredients added, allow it to cook all day for 8 hours on low. If you are wanting to make this a little faster, turn it on high and cook for 4 hours.When your Chicken Taco Soup is ready to serve, add in some crushed tortilla shells, shredded cheddar cheese, and a little sour cream.'),(715521,'Turkey Avocado BLT Salad','https://spoonacular.com/recipeImages/715521-556x370.jpg','',''),(730914,'Basil Infused Balsamic Oven Baked Chicken','https://spoonacular.com/recipeImages/730914-556x370.jpg','','Place into the oven and bake for 40 minutes. Cover with mozzarella cheese and place back into the oven for 10 additional minutes. Use a thermometer make sure the internal temp is 160 for the chicken to be fully cooked. If not, allow to cook for a few additional minutes until the desired temp is reached.Allow to cool slightly and serve with your favorite salad.Basil Infused Balsamic Oven Baked ChickenI LOVE this recipe. If you want to join in on the Simple Fit Forty Lifestyle campaign we are kicking off here on PinkWhen, then make sure you sign up for the newsletter and stay up to date. You can also follow along in our private Facebook community, Simple Fit Forty Lifestyle, where we will be sharing all things fit an healthy and motivating each other along the way.JOIN 500,000 SUBSCRIBERS!Join over 500,000 others who follow PinkWhen on Social Media, the PinkWhen blog, and email. Sign up to receive exclusive bonuses like this FREE Simple Fit Dinners Ebook.Don\'t wait! You won\'t want to miss a thing.Success! Now check your email to confirm your subscription and download your FREE ebook.There was an error submitting your subscription. Please try again.First NameEmail AddressSubscribePowered by ConvertKit'),(1095992,'Turkey Ranch BLT','https://spoonacular.com/recipeImages/1095992-556x370.jpg','','<ol><li>Brush the slices of turkey with ranch dressing.</li><li>Stuff each half of pita with a a few slices of tomato, greens, a slice of turkey, and two slices of bacon.</li><li>Serve.</li></ol>');
+INSERT INTO `recipe` VALUES (661447,'Square Deviled Eggs','https://spoonacular.com/recipeImages/661447-556x370.jpg','','1. To make square hard boiled eggs, you\'ll need an Egg cuber or Square Egg Press. (See note in About section on where to purchase)\n2. First boil your eggs, then slide the egg inside the press and screw the top down so it pushes the egg into the corners.\n3. Let the egg cool and remove it from the mold. For better results use medium size eggs.\n4. If you intend to prepare this for a party, I suggest you buy several cubers, this way you can boil and chill several eggs at a time, or it will take you a lot of time.\n5. To prepare hard boiled eggs, place eggs in a saucepan, cover with cold water and bring to a boil over medium heat. As soon as the water comes to a full boil, let the eggs boil for 5 minutes, and then remove from heat and let stand covered in hot water 10 minutes .\n6. Filling is made with cream cheese, ham and egg yolk, it tastes very soft, it is ideal for kids.');
 /*!40000 ALTER TABLE `recipe` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -156,4 +188,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-01-20 13:37:23
+-- Dump completed on 2024-01-22 23:33:26

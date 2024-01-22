@@ -256,7 +256,7 @@ public class DatabaseAccess {
 
 	private static void insertListOfIngredients(Connection connection, List<Ingredient> ingredients, int recipe_id)
 			throws SQLException {
-		String sql = "INSERT INTO ingredientsofrecipe (name, quantity, expiration_date, r_id) VALUES (?, ?, ?, ?, ?)";
+		String sql = "INSERT INTO ingredientsofrecipe (name, quantity, expiration_date, r_id, unit) VALUES (?, ?, ?, ?, ?)";
 
 
 
