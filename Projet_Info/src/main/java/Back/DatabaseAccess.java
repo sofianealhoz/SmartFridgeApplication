@@ -144,8 +144,8 @@ public class DatabaseAccess {
 	
 	// Méthode pour insérer une liste de recettes dans la base de données
 	public static void insertRecipe(Recipe recipe, int recipe_id) {
-		String sql = "INSERT INTO Recipe (recipe_id, name, imageUrl, allergens_list, instructions_list) "
-				+ "VALUES (?, ?, ?, ?, ?)";
+		String sql = "INSERT INTO Recipe (recipe_id, name, imageUrl, allergens_list, instructions_list) VALUES (?, ?, ?, ?, ?)";
+
 
 		try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD)) {
 			String allergens = String.join("\n", recipe.getAllergens());
@@ -191,7 +191,9 @@ public class DatabaseAccess {
 
 	private static void insertListOfIngredients(Connection connection, List<Ingredient> ingredients, int recipe_id)
 			throws SQLException {
-		String sql = "INSERT INTO ingredientsofrecipe (name, quantity, expiration_date, r_id) VALUES (?, ?, ?, ?, ?)";
+		String sql = "INSERT INTO ingredientsofrecipe (name, quantity, expiration_date, r_id) VALUES (?, ?, ?, ?)";
+
+
 
 		try (PreparedStatement insertStatement = connection.prepareStatement(sql)) {
 			for (Ingredient ingredient : ingredients) {
@@ -199,7 +201,6 @@ public class DatabaseAccess {
 				insertStatement.setDouble(2, ingredient.getQuantity());
 				insertStatement.setDate(3, java.sql.Date.valueOf(ingredient.getExpirationDate()));
 				insertStatement.setInt(4, recipe_id);
-				insertStatement.setString(5, ingredient.getUnit());
 
 				// Ajouter le batch pour l'exécution efficace de plusieurs insertions
 				insertStatement.addBatch();
@@ -214,6 +215,8 @@ public class DatabaseAccess {
 	private static void insertIngredient(Connection connection, String name, String d, String localDate,
 			String category, String unit) throws SQLException {
 		String sql = "INSERT INTO Ingredients (name, quantity, expiration_date, category, unit) VALUES (?, ?, ?, ?, ?)";
+
+
 		try (PreparedStatement insertStatement = connection.prepareStatement(sql)) {
 			insertStatement.setString(1, name);
 			insertStatement.setString(2, d);
