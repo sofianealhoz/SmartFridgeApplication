@@ -31,43 +31,53 @@ public class WelcomePanel extends JPanel {
         setPreferredSize(new Dimension(400, 300));
         setBackground(new Color(245, 245, 245));
         setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-
+    
         // Welcome message
         JLabel welcomeLabel = new JLabel("Welcome to your Fridge App!", SwingConstants.CENTER);
-        welcomeLabel.setFont(new Font("Segoe UI", Font.BOLD, 18)); 
+        welcomeLabel.setFont(new Font("Segoe UI", Font.BOLD, 40)); 
         welcomeLabel.setForeground(Color.ORANGE); 
         welcomeLabel.setBorder(new EmptyBorder(10, 10, 10, 10));
         add(welcomeLabel, BorderLayout.NORTH);
+    
+        // Container panel for user account and allergy panels
+        JPanel containerPanel = new JPanel();
+        containerPanel.setLayout(new BoxLayout(containerPanel, BoxLayout.Y_AXIS));
+        containerPanel.setBackground(new Color(245, 245, 245));
 
+        // User Account Panel
+        JPanel userAccountPanel = createUserAccountPanel();
+        userAccountPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, userAccountPanel.getPreferredSize().height));
+        containerPanel.add(userAccountPanel);
+    
+        // Allergy Management Panel
+        JPanel allergyPanel = createAllergyPanel(frigo);
+        allergyPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, allergyPanel.getPreferredSize().height));
+        containerPanel.add(allergyPanel);
+    
+        add(containerPanel, BorderLayout.SOUTH);
+    
         // Instructional text
         JLabel instructionLabel = new JLabel("<html><div style='text-align: center;'>" +
             "To get started, go to 'Fridge' then add ingredients to your fridge using the 'Add Ingredient' button.<br/>" +
             "If you've already added ingredients, feel free to explore the other options!</div></html>",
             SwingConstants.CENTER);
-        instructionLabel.setFont(new Font("Segoe UI", Font.ITALIC, 14)); 
+        instructionLabel.setFont(new Font("Segoe UI", Font.PLAIN, 22)); 
         instructionLabel.setForeground(Color.ORANGE); 
         add(instructionLabel, BorderLayout.CENTER);
-
-        // User Account Panel
-        JPanel userAccountPanel = createUserAccountPanel();
-        add(userAccountPanel, BorderLayout.NORTH);
-
-        // Allergy Management Panel
-        JPanel allergyPanel = createAllergyPanel(frigo);
-        add(allergyPanel, BorderLayout.CENTER);
     }
-
 
     private JPanel createUserAccountPanel() {
         JPanel userAccountPanel = new JPanel();
-        userAccountPanel.setLayout(new GridLayout(0, 1, 10, 10));
+        userAccountPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 10, 10));
         userAccountPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
-
+    
         usernameField = new JTextField();
-        createAccountButton = new JButton("Create Account");
+        usernameField.setPreferredSize(new Dimension(150, 25)); // Réduire la largeur
+        createAccountButton = new JButton("Log Account");
         switchAccountButton = new JButton("Switch Account");
         accountComboBox = new JComboBox<>(); // Populate this with existing usernames
-
+        accountComboBox.setPreferredSize(new Dimension(150, 25)); // Réduire la largeur
+    
         userAccountPanel.add(new JLabel("Username:"));
         userAccountPanel.add(usernameField);
         userAccountPanel.add(createAccountButton);
@@ -83,13 +93,16 @@ public class WelcomePanel extends JPanel {
 
     private JPanel createAllergyPanel(Frigo frigo) {
         JPanel allergyPanel = new JPanel();
-        allergyPanel.setLayout(new GridLayout(0, 1, 10, 10));
+        allergyPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 10, 10));
         allergyPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
-
+    
         allergyField = new JTextField();
+        allergyField.setPreferredSize(new Dimension(150, 25)); // Réduire la largeur
         addAllergyButton = new JButton("Add Allergy");
         allergyComboBox = new JComboBox<>(); // Populate with existing allergies
+        allergyComboBox.setPreferredSize(new Dimension(150, 25)); // Réduire la largeur
         removeAllergyButton = new JButton("Remove Allergy");
+    
 
         allergyPanel.add(new JLabel("Allergy:"));
         allergyPanel.add(allergyField);
@@ -112,12 +125,12 @@ public class WelcomePanel extends JPanel {
         String username = usernameField.getText();
 
         if (username.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Username and password cannot be empty.", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Username cannot be empty.", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
         if (accountManager.createAccount(username)) {
-            JOptionPane.showMessageDialog(this, "Account created successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Account loged successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
             accountComboBox.addItem(username);
             accountManager.createAccount(username);
             mainInterface.switchAccount(username); 
@@ -127,7 +140,7 @@ public class WelcomePanel extends JPanel {
             refreshAllergyComboBox(currentUser);
              
         } else {
-            JOptionPane.showMessageDialog(this, "Account creation failed.", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Account login failed.", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
