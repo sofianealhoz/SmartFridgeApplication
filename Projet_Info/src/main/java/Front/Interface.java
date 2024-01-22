@@ -56,6 +56,10 @@ public class Interface extends JFrame {
 	public Frigo getFrigo() {
         return frigo;
 	}
+
+	public boolean getMode(){
+		return Bobmode;
+	}
 	
 	private void setmenuItems(String[] menuitems){
 		this.menuItems = menuitems;
@@ -97,7 +101,7 @@ public class Interface extends JFrame {
 			button.setCursor(new Cursor(Cursor.HAND_CURSOR));
 			button.setAlignmentX(Component.CENTER_ALIGNMENT); // Center text horizontally
 
-			button.addActionListener(e -> handleMenuItemClick(item));
+			button.addActionListener(e -> handleMenuItemClick(item,false));
 
 			// Add rigid area for vertical spacing between buttons
 			orangeStripe.add(Box.createRigidArea(new Dimension(0, 10)));
@@ -135,7 +139,7 @@ public class Interface extends JFrame {
 
 	// Constructor to set up the main interface of the application.
 	public Interface() {
-		Bobmode = false;
+		Bobmode = true;
 		accountManager.createAccount("default");
 		frigo = currentUser.getFridge();
 		System.out.println("Account : " + currentUser + " " + currentUser.getFridge().getId());
@@ -147,14 +151,14 @@ public class Interface extends JFrame {
 		cardPanel = new JPanel(cardLayout);
 
 		// Initializing the panels for the fridge and recipe search
-		frigoPanel = new FrigoPanel(frigo);
+		frigoPanel = new FrigoPanel(frigo, Bobmode);
 		recipesPanel = new RecipesPanel(cardPanel, cardLayout);
 		selectedRecipePanel = new SelectedRecipePanel(recipesPanel);
 		favoriteRecipePanel = new FavoritePanel(recipesPanel);
 
 
 		// Welcome Panel
-		WelcomePanel welcomePanel = new WelcomePanel(frigo, this, accountManager);
+		WelcomePanel welcomePanel = new WelcomePanel(frigo, this, accountManager, Bobmode);
 		cardPanel.add(welcomePanel, "Welcome");
 		
 		// Loading Panel
@@ -208,16 +212,25 @@ public class Interface extends JFrame {
 	}
 
 	// Handles menu item clicks to switch between panels
-	private void handleMenuItemClick(String itemName) {
+	private void handleMenuItemClick(String itemName, boolean initial) {
 		switch (itemName) {
-		case "My Fridge App":
-            cardLayout.show(cardPanel, "Welcome");
-            break;
+			case "My Fridge App":
+			if (!initial) {
+				// Check if welcomePanel is not null before trying to remove it
+				if (welcomePanel != null) {
+					cardPanel.remove(welcomePanel);
+				}
+				// Reinitialize welcomePanel and add it back
+				welcomePanel = new WelcomePanel(currentUser.getFridge(), this, accountManager, Bobmode);
+				cardPanel.add(welcomePanel, "Welcome");
+			}
+			cardLayout.show(cardPanel, "Welcome");
+			break;
 		case "Fridge":
 			currentUser=accountManager.getCurrentUser();
 			// Update the content of the FrigoPanel
 			cardPanel.remove(frigoPanel);
-			frigoPanel = new FrigoPanel(currentUser.getFridge());
+			frigoPanel = new FrigoPanel(currentUser.getFridge(),getMode());
 			cardPanel.add(frigoPanel, "Fridge");
 
 			cardLayout.show(cardPanel, "Fridge"); // Display the updated FrigoPanel
@@ -350,7 +363,7 @@ public class Interface extends JFrame {
 	public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             Interface app = new Interface();
-            app.handleMenuItemClick("My Fridge App"); // Display the WelcomePanel initially
+            app.handleMenuItemClick("My Fridge App",true); // Display the WelcomePanel initially
         });
     }
 

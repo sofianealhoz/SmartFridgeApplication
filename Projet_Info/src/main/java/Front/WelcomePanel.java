@@ -24,7 +24,7 @@ public class WelcomePanel extends JPanel {
     private JButton addAllergyButton;
     private JButton removeAllergyButton;
 
-    public WelcomePanel(Frigo frigo, Interface mainInterface, AccountManager accountManager) {
+    public WelcomePanel(Frigo frigo, Interface mainInterface, AccountManager accountManager, boolean Bobmode) {
         this.mainInterface = mainInterface;
         this.accountManager = accountManager;
         setLayout(new BorderLayout());
@@ -49,10 +49,13 @@ public class WelcomePanel extends JPanel {
         userAccountPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, userAccountPanel.getPreferredSize().height));
         containerPanel.add(userAccountPanel);
     
-        // Allergy Management Panel
-        JPanel allergyPanel = createAllergyPanel(frigo);
-        allergyPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, allergyPanel.getPreferredSize().height));
-        containerPanel.add(allergyPanel);
+        if (Bobmode){
+            // Allergy Management Panel
+            JPanel allergyPanel = createAllergyPanel(frigo);
+            allergyPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, allergyPanel.getPreferredSize().height));
+            containerPanel.add(allergyPanel);
+        }
+        
     
         add(containerPanel, BorderLayout.SOUTH);
     
