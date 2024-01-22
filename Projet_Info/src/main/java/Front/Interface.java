@@ -3,7 +3,9 @@ package Front;
 import Back.Frigo;
 import Back.Ingredient;
 import Back.RecipeFinder;
+import Back.User;
 import Back.Recipe;
+import Back.AccountManager;
 import Back.DatabaseAccess;
 
 import javax.swing.*;
@@ -43,17 +45,41 @@ public class Interface extends JFrame {
 	private ShoppingCartPanel shoppingCartPanel;
 	private boolean alertDisplayed = false;
 	private boolean alertDisplayed2 = false;
-
-	
-
+	DatabaseAccess databaseAccess = new DatabaseAccess();
+	AccountManager accountManager = new AccountManager(databaseAccess);
+	User currentUser = new User("default", databaseAccess);
 
 	public Frigo getFrigo() {
         return frigo;
-}
+	}
 	
+	private void updateFridgePanel() {
+        // Update your UI components that depend on the current fridge
+        // For example, update the frigoPanel to display the contents of the current fridge
+        if (frigo != null) {
+            frigoPanel.setFrigo(frigo);
+            frigoPanel.refreshFrigoDisplay();
+        }
+    }
+
+	// Method to handle switching accounts
+	 public void switchAccount(String username) {
+        accountManager.switchAccount(username);
+        currentUser = accountManager.getCurrentUser();
+        Frigo currentFridge = accountManager.getFridge(currentUser);
+        // Optionally, select a default fridge or let the user choose
+        this.frigo = currentFridge;
+        // Update the interface to reflect the new user's fridge
+        updateFridgePanel();
+    }
+    
+
 	// Constructor to set up the main interface of the application.
 	public Interface() {
-		frigo = new Frigo();
+		accountManager.createAccount("default");
+		frigo = currentUser.getFridge();
+		System.out.println("Account : " + currentUser + " " + currentUser.getFridge().getId());
+
 		menuButtons = new ArrayList<>();
 
 		// Setting up card layout to switch between different panels
@@ -69,7 +95,7 @@ public class Interface extends JFrame {
 
 
 		// Welcome Panel
-		WelcomePanel welcomePanel = new WelcomePanel();
+		WelcomePanel welcomePanel = new WelcomePanel(frigo, this, accountManager);
 		cardPanel.add(welcomePanel, "Welcome");
 		
 		// Loading Panel
@@ -146,6 +172,10 @@ public class Interface extends JFrame {
 
 	}
 
+	public void setOwner(User user){
+		this.currentUser=user;
+	}
+
 	// Handles menu item clicks to switch between panels
 	private void handleMenuItemClick(String itemName) {
 		switch (itemName) {
@@ -153,7 +183,15 @@ public class Interface extends JFrame {
             cardLayout.show(cardPanel, "Welcome");
             break;
 		case "Fridge":
-			cardLayout.show(cardPanel, "Fridge");
+			currentUser=accountManager.getCurrentUser();
+			// Update the content of the FrigoPanel
+			cardPanel.remove(frigoPanel);
+			frigoPanel = new FrigoPanel(currentUser.getFridge());
+			cardPanel.add(frigoPanel, "Fridge");
+
+
+			cardLayout.show(cardPanel, "Fridge"); // Display the updated FrigoPanel
+			System.out.println("Account : " + currentUser + " " + currentUser.getFridge().getId());
 			break;
 		case "Recipe Search":
             Object[] options = {"New Search", "Show last research"};

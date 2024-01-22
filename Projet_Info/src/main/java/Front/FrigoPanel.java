@@ -34,8 +34,34 @@ public class FrigoPanel extends JPanel {
 	private Frigo fridge;
 	private String currentUnit = "units"; // Default unit
 
-	public FrigoPanel(Frigo fridge) {
-		this.fridge = fridge;
+	 // Method to refresh the display based on the current Frigo's data
+	 public void refreshFrigoDisplay() {
+        // Clear the existing data in the table
+        DefaultTableModel model = (DefaultTableModel) ingredientsTable.getModel();
+        model.setRowCount(0);
+
+        // Check if fridge is not null
+        if (fridge != null) {
+            // Repopulate the table with data from the current Frigo
+            for (Ingredient ingredient : fridge.getIngredients()) {
+                String displayQuantity = convertQuantity(ingredient.getQuantity(), ingredient.getUnit());
+                model.addRow(new Object[]{
+                    ingredient.getName(),
+                    displayQuantity, // Display converted quantity
+                    ingredient.getExpirationDate().toString(),
+                    ingredient.getCategory()
+                });
+            }
+        }
+    }
+	
+	// Method to set the current Frigo and update the panel
+    public void setFrigo(Frigo frigo) {
+        this.fridge = frigo;
+        refreshFrigoDisplay(); // Update the panel to reflect the new Frigo's data
+    }
+
+	public FrigoPanel(Frigo frigo) {
 		setLayout(new BorderLayout());
 
 		// Create a table
@@ -71,16 +97,16 @@ public class FrigoPanel extends JPanel {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				int selectedRow = ingredientsTable.getSelectedRow();
-
+		
 				if (selectedRow != -1) {
-					// Get the name of the ingredient in the selected row
-					String ingredientName = (String) ingredientsTable.getValueAt(selectedRow, 0);
-
+					// Get the selected ingredient object from the fridge's ingredients list
+					Ingredient selectedIngredient = frigo.getIngredients().get(selectedRow);
+		
 					// Call a method to delete the ingredient from the fridge and database
-					fridge.removeIngredientByName(ingredientName);
-
+					frigo.removeIngredient(selectedIngredient);
+		
 					// Refresh the ingredients table
-					refreshIngredientsTable();
+					refreshIngredientsTable(frigo);
 				} else {
 					JOptionPane.showMessageDialog(FrigoPanel.this, "Please select an ingredient to delete.", "Error",
 							JOptionPane.ERROR_MESSAGE);
@@ -100,7 +126,7 @@ public class FrigoPanel extends JPanel {
 		addIngredientButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				displayAddIngredientDialog();
+				displayAddIngredientDialog(frigo);
 			}
 		});
 
@@ -125,13 +151,13 @@ public class FrigoPanel extends JPanel {
 					
 					if (quantityText != null) {
 						try {
-							int quantity = Integer.parseInt(quantityText);
+							double quantity = Integer.parseInt(quantityText);
 							
 							// Call a method to update the ingredient quantity in the database
-							DatabaseAccess.callUpdateIngredientQuantity(ingredientName, quantity);
+							DatabaseAccess.callUpdateIngredientQuantityForFridge(frigo.getId(), ingredientName, quantity);
 							
 							// Refresh the ingredients table
-							refreshIngredientsTable();
+							refreshIngredientsTable(frigo);
 						} catch (NumberFormatException ex) {
 							JOptionPane.showMessageDialog(FrigoPanel.this, "Invalid quantity format.", "Error",
 									JOptionPane.ERROR_MESSAGE);
@@ -159,7 +185,7 @@ public class FrigoPanel extends JPanel {
 		buttonPanel.add(updateQuantityButton);
 		add(buttonPanel, BorderLayout.SOUTH);
 
-		refreshIngredientsTable();
+		refreshIngredientsTable(frigo);
 	}
 	
 	// Style of the table
@@ -176,7 +202,7 @@ public class FrigoPanel extends JPanel {
 	}
 
 	// Shows a dialog to add a new ingredient to the fridge
-	void displayAddIngredientDialog() {
+	void displayAddIngredientDialog(Frigo frigo) {
 		
 		JFrame parentFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
     	JDialog dialog = new JDialog(parentFrame, "Add an Ingredient", true);
@@ -218,18 +244,24 @@ public class FrigoPanel extends JPanel {
 						int quantity = Integer.parseInt(quantityText);
 						LocalDate expirationDate = LocalDate.parse(expirationText);
 		
-						// Check if the ingredient name already exists
-						if (fridge.hasIngredient(name)) {
+						// Check if the ingredient already exists in the fridge
+						boolean ingredientExists = false;
+						for (Ingredient existingIngredient : frigo.getIngredients()) {
+							if (existingIngredient.getName().equalsIgnoreCase(name)) {
+								ingredientExists = true;
+								break;
+							}
+						}
+						
+						if (ingredientExists) {
 							throw new IllegalArgumentException("Ingredient already exists.");
 						}
 		
 						// Adding the new ingredient to the fridge
 						String selectedUnit = (String) unitComboBox.getSelectedItem(); // Use the existing unitComboBox
-						fridge.addIngredient(new Ingredient(name, expirationDate, quantity, selectedCategory, selectedUnit));
-						DatabaseAccess.callInsertIngredient(name, quantityText, expirationText, selectedCategory, selectedUnit);
-		
+						frigo.addIngredient(new Ingredient(name, expirationDate, quantity, selectedCategory, selectedUnit));		
 						// Refreshing the ingredients display
-						refreshIngredientsTable();
+						refreshIngredientsTable(frigo);
 		
 						dialog.dispose();
 					} catch (NumberFormatException | DateTimeParseException ex) {
@@ -240,10 +272,11 @@ public class FrigoPanel extends JPanel {
 								JOptionPane.ERROR_MESSAGE);
 					}
 				}
-				refreshIngredientsTable();
+				refreshIngredientsTable(frigo);
 				dialog.dispose();
 			}
 		});
+		
 		
 		// Adding form fields to the panel
 		panel.add(nameLabel);
@@ -266,11 +299,11 @@ public class FrigoPanel extends JPanel {
 		dialog.setVisible(true);
 	}
 	
-	private void refreshIngredientsTable() {
+	private void refreshIngredientsTable(Frigo frigo) {
 		DefaultTableModel model = (DefaultTableModel) ingredientsTable.getModel();
 		model.setRowCount(0); // Clear table
 	
-		for (Ingredient ingredient : fridge.getIngredients()) {
+		for (Ingredient ingredient : frigo.getIngredients()) {
 			String displayQuantity = convertQuantity(ingredient.getQuantity(), ingredient.getUnit());
 			model.addRow(new Object[] {
 				ingredient.getName(),

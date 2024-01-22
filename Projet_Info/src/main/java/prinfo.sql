@@ -19,6 +19,29 @@
 -- Table structure for table `ingredients`
 --
 
+DROP TABLE IF EXISTS `fridges`;
+
+CREATE TABLE fridges (
+  fridge_id INT AUTO_INCREMENT PRIMARY KEY,
+  user_id INT, -- Associates a fridge with a user using user_id
+  name VARCHAR(255), -- Name of the fridge
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+
+DROP TABLE IF EXISTS `fridgeingredients`;
+
+CREATE TABLE fridgeingredients (
+  fridge_ingredient_id INT AUTO_INCREMENT PRIMARY KEY,
+  fridge_id INT, -- References the fridge to which the ingredient belongs
+  ingredient_id INT, -- References the ingredient
+  quantity DOUBLE,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+
 DROP TABLE IF EXISTS `ingredients`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
@@ -29,6 +52,7 @@ CREATE TABLE `ingredients` (
   `expiration_date` date DEFAULT NULL,
   `category` varchar(255) DEFAULT NULL,
   `unit` varchar(255) DEFAULT NULL,
+  `fridge_id` int,
   PRIMARY KEY (`ingredient_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -39,7 +63,7 @@ CREATE TABLE `ingredients` (
 
 LOCK TABLES `ingredients` WRITE;
 /*!40000 ALTER TABLE `ingredients` DISABLE KEYS */;
-INSERT INTO `ingredients` VALUES (18,'meat',10,'2024-12-12','Meat','grams');
+INSERT INTO `ingredients` VALUES (18,'meat',10,'2024-12-12','Meat','grams',0);
 /*!40000 ALTER TABLE `ingredients` ENABLE KEYS */;
 UNLOCK TABLES;
 
