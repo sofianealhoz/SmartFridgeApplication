@@ -63,7 +63,7 @@ public class FrigoPanel extends JPanel {
         refreshFrigoDisplay(); // Update the panel to reflect the new Frigo's data
     }
 
-	public FrigoPanel(Frigo frigo) {
+	public FrigoPanel(Frigo frigo, boolean Bobmode) {
 		setLayout(new BorderLayout());
 
 		// Create a table
@@ -108,7 +108,7 @@ public class FrigoPanel extends JPanel {
 					frigo.removeIngredient(selectedIngredient);
 		
 					// Refresh the ingredients table
-					refreshIngredientsTable(frigo);
+					refreshIngredientsTable(frigo,Bobmode);
 				} else {
 					JOptionPane.showMessageDialog(FrigoPanel.this, "Please select an ingredient to delete.", "Error",
 							JOptionPane.ERROR_MESSAGE);
@@ -128,7 +128,7 @@ public class FrigoPanel extends JPanel {
 		addIngredientButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				displayAddIngredientDialog(frigo);
+				displayAddIngredientDialog(frigo,Bobmode);
 			}
 		});
 
@@ -159,7 +159,7 @@ public class FrigoPanel extends JPanel {
 							DatabaseAccess.callUpdateIngredientQuantityForFridge(frigo.getId(), ingredientName, quantity);
 							
 							// Refresh the ingredients table
-							refreshIngredientsTable(frigo);
+							refreshIngredientsTable(frigo,Bobmode);
 						} catch (NumberFormatException ex) {
 							JOptionPane.showMessageDialog(FrigoPanel.this, "Invalid quantity format.", "Error",
 									JOptionPane.ERROR_MESSAGE);
@@ -187,7 +187,7 @@ public class FrigoPanel extends JPanel {
 		buttonPanel.add(updateQuantityButton);
 		add(buttonPanel, BorderLayout.SOUTH);
 
-		refreshIngredientsTable(frigo);
+		refreshIngredientsTable(frigo,Bobmode);
 	}
 	
 	// Style of the table
@@ -204,7 +204,7 @@ public class FrigoPanel extends JPanel {
 	}
 
 	// Shows a dialog to add a new ingredient to the fridge
-	void displayAddIngredientDialog(Frigo frigo) {
+	void displayAddIngredientDialog(Frigo frigo, boolean Bobmode) {
 		
 		JFrame parentFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
     	JDialog dialog = new JDialog(parentFrame, "Add an Ingredient", true);
@@ -263,7 +263,7 @@ public class FrigoPanel extends JPanel {
 						String selectedUnit = (String) unitComboBox.getSelectedItem(); 
 						frigo.addIngredient(new Ingredient(name, expirationDate, quantity, selectedCategory, selectedUnit));		
 						// Refreshing the ingredients display
-						refreshIngredientsTable(frigo);
+						refreshIngredientsTable(frigo,Bobmode);
 		
 						dialog.dispose();
 					} catch (NumberFormatException | DateTimeParseException ex) {
@@ -274,7 +274,7 @@ public class FrigoPanel extends JPanel {
 								JOptionPane.ERROR_MESSAGE);
 					}
 				}
-				refreshIngredientsTable(frigo);
+				refreshIngredientsTable(frigo,Bobmode);
 				dialog.dispose();
 			}
 		});
@@ -301,7 +301,7 @@ public class FrigoPanel extends JPanel {
 		dialog.setVisible(true);
 	}
 	
-private void refreshIngredientsTable(Frigo frigo) {
+private void refreshIngredientsTable(Frigo frigo, boolean Bobmode) {
     DefaultTableModel model = (DefaultTableModel) ingredientsTable.getModel();
     model.setRowCount(0); // Clear table
 
@@ -313,7 +313,7 @@ private void refreshIngredientsTable(Frigo frigo) {
             // Obtenez le nom de l'ingrédient de la ligne actuelle
             String ingredientName = (String) table.getModel().getValueAt(row, 0);
             // Si l'ingrédient est dans les allergies, coloriez le texte en rouge
-            if (frigo.getOwner() != null && frigo.getOwner().getAllergies().contains(ingredientName)) {
+            if (frigo.getOwner() != null && frigo.getOwner().getAllergies().contains(ingredientName) && Bobmode) {
                 c.setForeground(Color.RED);
             } else {
                 c.setForeground(Color.BLACK);
