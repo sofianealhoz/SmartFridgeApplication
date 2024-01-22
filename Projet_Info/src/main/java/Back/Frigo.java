@@ -19,7 +19,15 @@ public class Frigo {
         ingredients.add(new Ingredient("Sugar", LocalDate.of(2024, 12, 31), 200, "Bakery"));
     }
     
-    // Getter for the list of ingredients (returns a copy to prevent external modifications)
+    public List<String> getAllergies() {
+		return allergies;
+	}
+
+	// Getter for the list of ingredients 
+    public List<Ingredient> getIngredientsFrigo() {
+        return ingredients;
+    }
+    
     public List<Ingredient> getIngredients() {
         return DatabaseAccess.getIngredientsList();
     }
