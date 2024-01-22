@@ -1,72 +1,31 @@
 package Back;
 
-import static org.junit.Assert.*;
-
 import org.junit.Test;
+import static org.junit.Assert.assertEquals;
 
 public class RecipeFormatterTest {
 
     @Test
-    public void testStandardizeInstructionsWithHtml() {
+    public void testStandardizeFromHTML() {
         RecipeFormatter formatter = new RecipeFormatter();
-        String rawInstructions = "<ol><li>Preheat the oven</li><li>Mix ingredients</li></ol>";
+        String htmlInstructions = "<ul><li>Step 1</li><li>Step 2</li></ul>";
+        String expected = "• Step 1\n• Step 2";
 
-        String standardizedInstructions = formatter.standardizeInstructions(rawInstructions);
+        String result = formatter.standardizeFromHTML(htmlInstructions);
 
-        assertEquals("1. Preheat the oven\n2. Mix ingredients", standardizedInstructions);
+        assertEquals(expected, result);
     }
 
     @Test
-    public void testStandardizeInstructionsWithoutHtml() {
+    public void testStandardizeFromPlainText() {
         RecipeFormatter formatter = new RecipeFormatter();
-        String rawInstructions = "Preheat the oven\nMix ingredients";
+        String plainTextInstructions = "Step 1\nStep 2";
+        String expected = "• Step 1\n• Step 2";
 
-        String standardizedInstructions = formatter.standardizeInstructions(rawInstructions);
+        String result = formatter.standardizeFromPlainText(plainTextInstructions);
 
-        assertEquals("1. Preheat the oven\n2. Mix ingredients", standardizedInstructions);
-    }
-
-    @Test
-    public void testStandardizeInstructionsWithMixedHtmlAndText() {
-        RecipeFormatter formatter = new RecipeFormatter();
-        String rawInstructions = "<ol><li>Preheat the oven</li>Line break\n<li>Mix ingredients</li></ol>";
-
-        String standardizedInstructions = formatter.standardizeInstructions(rawInstructions);
-
-        System.out.println("Standardized Instructions:");
-        System.out.println(standardizedInstructions);
-
-        assertTrue(standardizedInstructions.contains("1. Preheat the oven"));
-        assertTrue(standardizedInstructions.contains("2. Line break"));
-        assertTrue(standardizedInstructions.contains("3. Mix ingredients"));
-    }
-
-    @Test
-    public void testStandardizeInstructionsWithRedundantNumbering() {
-        RecipeFormatter formatter = new RecipeFormatter();
-        String rawInstructions = "1. Preheat the oven\n2. Mix ingredients\n1. Bake in the oven";
-
-        String standardizedInstructions = formatter.standardizeInstructions(rawInstructions);
-
-        assertEquals("1. Preheat the oven\n2. Mix ingredients\n3. Bake in the oven", standardizedInstructions);
-    }
-
-    @Test
-    public void testStandardizeInstructionsWithEmptyInput() {
-        RecipeFormatter formatter = new RecipeFormatter();
-        String rawInstructions = "";
-
-        String standardizedInstructions = formatter.standardizeInstructions(rawInstructions);
-
-        assertEquals("", standardizedInstructions);
-    }
-
-    @Test
-    public void testStandardizeInstructionsWithNullInput() {
-        RecipeFormatter formatter = new RecipeFormatter();
-        String standardizedInstructions = formatter.standardizeInstructions(null);
-
-        assertEquals("", standardizedInstructions);
+        assertEquals(expected, result);
     }
 }
+
 
