@@ -91,7 +91,6 @@ public class Interface extends JFrame {
 		recipesPanel = new RecipesPanel(cardPanel, cardLayout);
 		selectedRecipePanel = new SelectedRecipePanel(recipesPanel);
 		favoriteRecipePanel = new FavoritePanel(recipesPanel);
-        shoppingCartPanel = new ShoppingCartPanel(this, selectedRecipePanel);
 
 
 		// Welcome Panel
@@ -241,18 +240,6 @@ public class Interface extends JFrame {
             cardLayout.show(cardPanel, "SelectedRecipe");
             break;
 		case "Shopping List":
-            // Check if the ShoppingCartPanel already exists
-            Component[] components = cardPanel.getComponents();
-            for (Component component : components) {
-                if (component instanceof ShoppingCartPanel) {
-                    cardLayout.show(cardPanel, "ShoppingCart"); 
-                    // Trigger a refresh of the ShoppingCartPanel
-                    ((ShoppingCartPanel) component).refreshShoppingCart();
-                    return; 
-                }
-            }
-
-            // If ShoppingCartPanel doesn't exist, create and add it
             ShoppingCartPanel shoppingCartPanel = new ShoppingCartPanel(this, selectedRecipePanel);
             cardPanel.add(shoppingCartPanel, "ShoppingCart"); 
             cardLayout.show(cardPanel, "ShoppingCart"); 

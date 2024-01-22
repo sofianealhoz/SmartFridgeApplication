@@ -33,6 +33,10 @@ public class ShoppingCartPanel extends JPanel {
         refreshShoppingCart();
     }
 
+    public void setFridge(Frigo fridge){
+        this.fridge = fridge;
+    }
+
     public void refreshShoppingCart() {
         List<Recipe> selectedRecipes = selectedRecipePanel.getSelectedRecipe();
     
