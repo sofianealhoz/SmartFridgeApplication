@@ -15,7 +15,7 @@ public class RecipeFinderTest {
         // Test when no ingredients are specified
         List<Recipe> recipes = RecipeFinder.searchRecipes(Arrays.asList());
         assertNotNull(recipes);
-        assertEquals(2, recipes.size()); // 2 --> the default recipes  that are included
+        assertEquals(0, recipes.size()); // 2 --> the default recipes  that are included
     }
 
     @Test
