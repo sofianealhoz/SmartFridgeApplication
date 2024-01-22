@@ -15,7 +15,7 @@ import org.json.JSONObject;
 
 public class RecipeFinder {
 
-    private static final String API_KEY = "271c1fafc5874284b33e996004c5ff96";
+    private static final String API_KEY = "a654512b99af494fbdeba3a2440cd666";
 
     // Searches for recipes based on a list of ingredients.
     public static List<Recipe> searchRecipes(List<Ingredient> ingredients) {
@@ -55,6 +55,9 @@ public class RecipeFinder {
                 response.append(scanner.nextLine());
             }
             scanner.close();
+            
+            System.out.println("Response from Spoonacular API: " + response.toString());
+
 
             // Parsing the JSON response to extract recipe details
             JSONArray recipesArray = new JSONArray(response.toString());
@@ -107,6 +110,7 @@ public class RecipeFinder {
                 response.append(scanner.nextLine());
             }
             scanner.close();
+            System.out.println("Complete Response from API: " + response.toString());
 
             // Parsing the JSON response for detailed recipe information
             JSONObject recipeDetail = new JSONObject(response.toString());
@@ -160,19 +164,41 @@ public class RecipeFinder {
             return null;
         }
     }
-
-    // Extracts nutrition information from the JSON object.
+ // Extracts nutrition information from the JSON object.
     private static NutritionInfo extractNutritionInfo(JSONObject nutritionObject) {
         if (nutritionObject == null) {
             return new NutritionInfo(0, 0, 0, 0, 0, 0, 0);
         }
-        double calories = nutritionObject.optDouble("calories", 0);
-        double fat = nutritionObject.optDouble("fat", 0);
-        double protein = nutritionObject.optDouble("protein", 0);
-        double carbs = nutritionObject.optDouble("carbohydrates", 0);
-        double fiber = nutritionObject.optDouble("fiber", 0);
-        double sugar = nutritionObject.optDouble("sugar", 0);
-        double sodium = nutritionObject.optDouble("sodium", 0);
+
+        JSONArray nutrients = nutritionObject.getJSONArray("nutrients");
+        double calories = 0, fat = 0, protein = 0, carbs = 0, fiber = 0, sugar = 0, sodium = 0;
+
+        for (int i = 0; i < nutrients.length(); i++) {
+            JSONObject nutrient = nutrients.getJSONObject(i);
+            switch (nutrient.getString("name")) {
+                case "Calories":
+                    calories = nutrient.getDouble("amount");
+                    break;
+                case "Fat":
+                    fat = nutrient.getDouble("amount");
+                    break;
+                case "Protein":
+                    protein = nutrient.getDouble("amount");
+                    break;
+                case "Carbohydrates":
+                    carbs = nutrient.getDouble("amount");
+                    break;
+                case "Fiber":
+                    fiber = nutrient.getDouble("amount");
+                    break;
+                case "Sugar":
+                    sugar = nutrient.getDouble("amount");
+                    break;
+                case "Sodium":
+                    sodium = nutrient.getDouble("amount");
+                    break;
+            }
+        }
 
         return new NutritionInfo(calories, fat, protein, carbs, fiber, sugar, sodium);
     }
