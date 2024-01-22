@@ -28,6 +28,7 @@ CREATE TABLE `ingredients` (
   `quantity` int DEFAULT NULL,
   `expiration_date` date DEFAULT NULL,
   `category` varchar(255) DEFAULT NULL,
+  `unit` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`ingredient_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -38,7 +39,7 @@ CREATE TABLE `ingredients` (
 
 LOCK TABLES `ingredients` WRITE;
 /*!40000 ALTER TABLE `ingredients` DISABLE KEYS */;
-INSERT INTO `ingredients` VALUES (18,'meat',10,'2024-12-12','Meat');
+INSERT INTO `ingredients` VALUES (18,'meat',10,'2024-12-12','Meat','grams');
 /*!40000 ALTER TABLE `ingredients` ENABLE KEYS */;
 UNLOCK TABLES;
 

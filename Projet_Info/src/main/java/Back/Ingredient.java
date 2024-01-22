@@ -8,22 +8,21 @@ public class Ingredient {
     private LocalDate expirationDate;
     private double quantity;
     private String category;
+	private String unit; // Can be null or empty
    
     // Constructor to initialize
-    public Ingredient(String name, LocalDate expirationDate, double quantity, String category) {
+    public Ingredient(String name, LocalDate expirationDate, double quantity, String category, String unit) {
         this.name = name;
         this.expirationDate = expirationDate;
         this.quantity = quantity;
         this.category = category;
+		this.unit = unit != null ? unit : ""; // Set unit to empty string if null
     }
 
-	// Constructor to initialize
-	public Ingredient(String name, LocalDate expirationDate, int quantity, String category) {
-		this.name = name;
-		this.expirationDate = expirationDate;
-		this.quantity = quantity;
-		this.category = category;
-	}
+    // Overloaded constructor without unit
+    public Ingredient(String name, LocalDate expirationDate, int quantity, String category) {
+        this(name, expirationDate, quantity, category, ""); // Call the other constructor with an empty unit
+    }
 
 	// Getter method for the name of the ingredient
 	public String getName() {
@@ -49,6 +48,15 @@ public class Ingredient {
 	public void setCategory(String category) {
 		this.category = category;
 	}
+
+	// Getter for unit
+    public String getUnit() {
+        return unit != null ? unit : "";
+    }
+
+	public void setUnit(String unit) {
+        this.unit = unit != null ? unit : "";
+    }
 
 	// Add the equals method to compare two ingredients based on their names
 	@Override

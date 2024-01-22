@@ -1,6 +1,8 @@
 package Back;
 
 import java.io.IOException;
+
+import org.jsoup.Jsoup;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.time.LocalDate;
@@ -13,7 +15,7 @@ import org.json.JSONObject;
 
 public class RecipeFinder {
 
-    private static final String API_KEY = "bde71878bd254e889f1c97348688c78d";
+    private static final String API_KEY = "271c1fafc5874284b33e996004c5ff96";
 
     // Searches for recipes based on a list of ingredients.
     public static List<Recipe> searchRecipes(List<Ingredient> ingredients) {
@@ -124,11 +126,22 @@ public class RecipeFinder {
             String title = recipeDetail.getString("title");
             String imageUrl = recipeDetail.getString("image");
             String rawInstructions = recipeDetail.optString("instructions", "");
-            
-            // Use RecipeFormatter to standardize instructions
+            System.out.println("Raw Instructions from API: " + rawInstructions); // Debug statement
+            if (rawInstructions.isEmpty()) {
+                rawInstructions = "No instructions available."; // Default message
+            }
+            // Standardize instructions using RecipeFormatter
             RecipeFormatter formatter = new RecipeFormatter();
-            String standardizedInstructions = formatter.standardizeInstructions(rawInstructions);
-            List<String> instructionList = Arrays.asList(standardizedInstructions.split("\n")); 
+            String standardizedInstructions;
+            if (Jsoup.parse(rawInstructions).select("li").isEmpty()) {
+                // Assuming plain text if no <li> tags are found
+                standardizedInstructions = formatter.standardizeFromPlainText(rawInstructions);
+            } else {
+                // HTML instructions
+                standardizedInstructions = formatter.standardizeFromHTML(rawInstructions);
+            }
+
+            List<String> instructionList = Arrays.asList(standardizedInstructions.split("\n"));
             
             // Extracting nutrition info and allergens
             JSONObject nutritionObject = recipeDetail.optJSONObject("nutrition");

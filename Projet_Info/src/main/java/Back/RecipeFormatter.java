@@ -1,65 +1,48 @@
 package Back;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class RecipeFormatter {
 
-    public String standardizeInstructions(String rawInstructions) {
-        if (rawInstructions == null || rawInstructions.isEmpty()) {
-            return "";
-        }
-
-        // Detect if the instructions contain HTML tags
-        if (rawInstructions.contains("<") && rawInstructions.contains(">")) {
-            return processHtmlInstructions(rawInstructions);
-        } else {
-            return processNonHtmlInstructions(rawInstructions);
-        }
-    }
-
-    private String processHtmlInstructions(String htmlInstructions) {
+    // Standardizes recipe instructions from HTML format
+    public String standardizeFromHTML(String htmlInstructions) {
         Document doc = Jsoup.parse(htmlInstructions);
-        Elements elements = doc.select("ol li, ul li, p");
-        StringBuilder standardizedInstructions = new StringBuilder();
-        int counter = 1;
-
-        for (Element element : elements) {
-            String text = element.text().trim();
-            standardizedInstructions.append(counter++).append(". ").append(text).append("\n");
-        }
-
-        return standardizedInstructions.toString().trim();
+        Elements elements = doc.select("li"); // assuming list items contain the steps
+        List<String> steps = elements.eachText();
+        return formatAsBulletPoints(steps);
     }
 
-    private String processNonHtmlInstructions(String rawInstructions) {
-        // Split the instructions by line breaks or bullet points
-        String[] lines = rawInstructions.split("\\r?\\n|•");
-        StringBuilder standardizedInstructions = new StringBuilder();
-        int counter = 1;
-
-        for (String line : lines) {
-            String text = removeRedundantNumbering(line.trim());
-
-            if (!text.isEmpty()) {
-                standardizedInstructions.append(counter++).append(". ").append(text).append("\n");
-            }
-        }
-
-        return standardizedInstructions.toString().trim();
+    // Standardizes recipe instructions from plain text format
+    public String standardizeFromPlainText(String plainTextInstructions) {
+        List<String> steps = Arrays.asList(plainTextInstructions.split("\n")); // split by new line
+        return formatAsBulletPoints(steps);
     }
 
-    private String removeRedundantNumbering(String text) {
-        Pattern pattern = Pattern.compile("^\\d+\\.\\s*(\\d+\\.\\s*)?");
-        Matcher matcher = pattern.matcher(text);
+    private String formatAsBulletPoints(List<String> steps) {
+        System.out.println("Original Steps: " + steps); // Debug statement
 
-        if (matcher.find()) {
-            text = text.replaceFirst(pattern.pattern(), "");
-        }
+        String formattedInstructions = steps.stream()
+                    .filter(step -> !step.trim().isEmpty()) // Filter out empty lines
+                    .map(step -> removeExistingBullets(step).trim())
+                    .map(step -> step.startsWith("•") ? step : "• " + step) // Add your bullet
+                    .collect(Collectors.joining("\n"));
 
-        return text.trim();
+        System.out.println("Formatted Instructions: " + formattedInstructions); // Debug statement
+        return formattedInstructions;
     }
+
+    private String removeExistingBullets(String step) {
+        // Remove HTML list tags, markdown bullets, or other bullet symbols if present
+        step = step.replaceAll("<li>", "").replaceAll("</li>", ""); // Remove HTML list tags
+        step = step.replaceAll("^\\*\\s+", ""); // Remove markdown bullets
+        step = step.replaceAll("^-\\s+", ""); // Remove dash-style bullets
+        // Add more replacements as needed based on the formats you encounter
+        return step;
+    }
+
+
 }
