@@ -71,10 +71,10 @@ public class RecipeDetailPanel extends JPopupMenu {
             NutritionInfo nutritionInfo = recipe.getNutritionInfo();
             StringBuilder nutritionText = new StringBuilder();
             nutritionText.append("Calories: ").append(nutritionInfo.getCalories()).append(" ");
-            nutritionText.append("Protéines: ").append(nutritionInfo.getProtein()).append("g ");
-            nutritionText.append("Glucides: ").append(nutritionInfo.getCarbs()).append("g ");
-            nutritionText.append("Lipides: ").append(nutritionInfo.getFat()).append("g ");
-            nutritionText.append("Fibres: ").append(nutritionInfo.getFiber()).append("g");
+            nutritionText.append("Proteins: ").append(nutritionInfo.getProtein()).append("g ");
+            nutritionText.append("Carbs: ").append(nutritionInfo.getCarbs()).append("g ");
+            nutritionText.append("Fat: ").append(nutritionInfo.getFat()).append("g ");
+            nutritionText.append("Fibers: ").append(nutritionInfo.getFiber()).append("g");
             nutritionTextArea.setText(nutritionText.toString());
         } else {
             // Réinitialisez les zones de texte si aucune recette n'est sélectionnée
