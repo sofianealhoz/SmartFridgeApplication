@@ -331,14 +331,13 @@ public class DatabaseAccess {
 		
 	
 		try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD)) {
-			String sql = "SELECT * FROM Ingredients WHERE ? < ? AND ? < expiration_date ";
+			// DATE_SUB(expiration_date, INTERVAL 1 WEEK) : date d'expiration proche : date d'expiration moins 1 semaine
+			String sql = "SELECT * FROM Ingredients WHERE DATE_SUB(expiration_date, INTERVAL 1 WEEK) < ? AND ? < expiration_date ";
 			try (PreparedStatement statement = connection.prepareStatement(sql)) {
 				// Utilisez la date actuelle pour comparer avec les dates d’expiration
 				LocalDate currentDate = LocalDate.now();
-            	LocalDate soonToExpireDate = currentDate.minusWeeks(1); //Date proche de l'expiration
-				statement.setDate(1, Date.valueOf(soonToExpireDate));
+				statement.setDate(1, Date.valueOf(currentDate));
 				statement.setDate(2, Date.valueOf(currentDate));
-				statement.setDate(3, Date.valueOf(currentDate));
 	
 				try (ResultSet resultSet = statement.executeQuery()) {
 					while (resultSet.next()) {
