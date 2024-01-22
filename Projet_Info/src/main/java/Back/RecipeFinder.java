@@ -13,7 +13,7 @@ import org.json.JSONObject;
 
 public class RecipeFinder {
 
-    private static final String API_KEY = "96996d26975d47f49b013e475bcae4c1";
+    private static final String API_KEY = "dce42378565a430c9540f059c5d33e1d";
 
     // Searches for recipes based on a list of ingredients.
     public static List<Recipe> searchRecipes(List<Ingredient> ingredients) {
@@ -188,7 +188,9 @@ public class RecipeFinder {
                 for (int i = 0; i < ingredientsArray.length(); i++) {
                     JSONObject ingredientObject = ingredientsArray.getJSONObject(i);
                     String ingredientName = ingredientObject.optString("name", "Unknown");
-                    ingredientList.add(new Ingredient(ingredientName, LocalDate.now(), 0, "Unknown"));
+                    double quantity = ingredientObject.optDouble("amount", 0);
+                    String unit = ingredientObject.optString("unit", "");
+                    ingredientList.add(new Ingredient(ingredientName, LocalDate.now(), quantity, "Unknown", unit));
                 }
             }
 
@@ -212,7 +214,7 @@ public class RecipeFinder {
             
             DatabaseAccess.callInsertListOfIngredient(ingredientList, recipeId);
             DatabaseAccess.insertRecipe(recipe, recipeId);
-            return recipe;
+            return new Recipe(title, imageUrl, ingredientList, instructionList, nutritionInfo, allergens);
 
         } catch (IOException e) {
             e.printStackTrace();

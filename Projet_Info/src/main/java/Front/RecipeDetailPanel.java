@@ -51,15 +51,21 @@ public class RecipeDetailPanel extends JPopupMenu {
 
     public void displayRecipe(Recipe recipe) {
         if (recipe != null) {
-            // Affichez les ingrédients dans la zone de texte des ingrédients
+            // Afficher les ingrédients dans la zone de texte des ingrédients
             List<Ingredient> ingredients = recipe.getIngredients();
             StringBuilder ingredientsText = new StringBuilder();
             for (Ingredient ingredient : ingredients) {
-                ingredientsText.append("\u2022 ").append(ingredient.getName()).append("\n");
+                ingredientsText.append("\u2022 ")
+                               .append(ingredient.getName())
+                               .append(": ")
+                               .append(ingredient.getQuantity())
+                               .append(" ")
+                               .append(ingredient.getUnit())
+                               .append("\n");
             }
             ingredientsTextArea.setText(ingredientsText.toString());
 
-            // Affichez les instructions dans la zone de texte des instructions
+            // Afficher les instructions dans la zone de texte des instructions
             List<String> instructions = recipe.getInstructions();
             StringBuilder instructionsText = new StringBuilder();
             for (String instruction : instructions) {
@@ -67,7 +73,7 @@ public class RecipeDetailPanel extends JPopupMenu {
             }
             instructionsTextArea.setText(instructionsText.toString());
 
-            // Affichez les informations nutritionnelles
+            // Afficher les informations nutritionnelles
             NutritionInfo nutritionInfo = recipe.getNutritionInfo();
             StringBuilder nutritionText = new StringBuilder();
             nutritionText.append("Calories: ").append(nutritionInfo.getCalories()).append(" ");
@@ -77,7 +83,6 @@ public class RecipeDetailPanel extends JPopupMenu {
             nutritionText.append("Fibers: ").append(nutritionInfo.getFiber()).append("g");
             nutritionTextArea.setText(nutritionText.toString());
         } else {
-            // Réinitialisez les zones de texte si aucune recette n'est sélectionnée
             ingredientsTextArea.setText("");
             instructionsTextArea.setText("");
             nutritionTextArea.setText("");

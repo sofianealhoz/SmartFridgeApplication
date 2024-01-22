@@ -223,7 +223,7 @@ public class FrigoPanel extends JPanel {
 
 		 // Add Unit Selection
 		 JLabel unitLabel = new JLabel("Unit:");
-		 String[] units = { "grams", "milliliters", "units" };
+		 String[] units = { "grams", "milliliters", "units", "teaspoons", "tablespoons", "cups" };
 		 JComboBox<String> unitComboBox = new JComboBox<>(units);
 		 panel.add(unitLabel);
 		 panel.add(unitComboBox);
@@ -260,7 +260,7 @@ public class FrigoPanel extends JPanel {
 						}
 		
 						// Adding the new ingredient to the fridge
-						String selectedUnit = (String) unitComboBox.getSelectedItem(); // Use the existing unitComboBox
+						String selectedUnit = (String) unitComboBox.getSelectedItem(); 
 						frigo.addIngredient(new Ingredient(name, expirationDate, quantity, selectedCategory, selectedUnit));		
 						// Refreshing the ingredients display
 						refreshIngredientsTable(frigo);

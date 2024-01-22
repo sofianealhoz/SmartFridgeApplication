@@ -96,6 +96,7 @@ public class FavoritePanel extends JPanel {
             selectButton.addActionListener(e -> {
                 if (favoriteRecipes.contains(recipe)) {
                     favoriteRecipes.remove(recipe);
+                    displayFavoriteRecipes();
                 }
             });
 

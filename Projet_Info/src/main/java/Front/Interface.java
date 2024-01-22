@@ -45,6 +45,7 @@ public class Interface extends JFrame {
 	private ShoppingCartPanel shoppingCartPanel;
 	private boolean alertDisplayed = false;
 	private boolean alertDisplayed2 = false;
+	
 	DatabaseAccess databaseAccess = new DatabaseAccess();
 	AccountManager accountManager = new AccountManager(databaseAccess);
 	User currentUser = new User("default", databaseAccess);

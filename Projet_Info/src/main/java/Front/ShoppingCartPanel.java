@@ -71,7 +71,7 @@ public class ShoppingCartPanel extends JPanel {
     
                 // Create a table model to display the necessary ingredients for the recipe
                 DefaultTableModel tableModel = new DefaultTableModel(
-                    new String[]{"Ingredient", "Quantity", "Category"}, 0);
+                    new String[]{"Ingredient", "Quantity"}, 0);
     
                 List<Ingredient> necessaryIngredients = calculateNecessaryIngredients(recipe, fridge.getIngredients());
     
@@ -79,7 +79,6 @@ public class ShoppingCartPanel extends JPanel {
                     tableModel.addRow(new Object[]{
                         ingredient.getName(),
                         ingredient.getQuantity(),
-                        ingredient.getCategory()
                     });
                 }
     
@@ -117,17 +116,18 @@ public class ShoppingCartPanel extends JPanel {
                 if (fridgeIngredient.getName().equalsIgnoreCase(recipeIngredient.getName())) {
                     foundInFridge = true;
 
-                    // Check if there is enough quantity in the fridge
+                 // Check if there is enough quantity in the fridge
                     if (fridgeIngredient.getQuantity() < recipeIngredient.getQuantity()) {
                         double neededQuantity = recipeIngredient.getQuantity() - fridgeIngredient.getQuantity();
                         necessaryIngredients.add(new Ingredient(
                             recipeIngredient.getName(),
                             recipeIngredient.getExpirationDate(),
                             neededQuantity,
-                            recipeIngredient.getCategory(),
+                            "", // Vous pouvez laisser cette chaîne vide si la catégorie n'est pas utilisée
                             recipeIngredient.getUnit()
                         ));
                     }
+
                     break;
                 }
             }
