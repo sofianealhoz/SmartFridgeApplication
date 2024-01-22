@@ -58,7 +58,6 @@ public class DatabaseAccessTest {
     	} catch (SQLException e) {
     		e.printStackTrace();
     	}
-
     }
 
     @Test
@@ -69,7 +68,7 @@ public class DatabaseAccessTest {
         assertEquals(0, ingredients.size());
 
         // Insert a test ingredient into the database
-        DatabaseAccess.callInsertIngredient("Eggs",  "12", LocalDate.of(2024, 12, 31).toString(), "Dairy");
+        DatabaseAccess.callInsertIngredient("Eggs",  "12", LocalDate.of(2024, 12, 31).toString(), "Dairy", "");
 
         // Retrieve the ingredients again
         ingredients = DatabaseAccess.getIngredientsList();
@@ -116,7 +115,7 @@ public class DatabaseAccessTest {
         assertEquals(0, expiredIngredients.size());
 
         // Insert an expired ingredient into the database
-        DatabaseAccess.callInsertIngredient("Expired Milk", "500", LocalDate.of(2022, 1, 1).toString(), "Dairy");
+        DatabaseAccess.callInsertIngredient("Expired Milk", "500", LocalDate.of(2002, 1, 1).toString(), "Dairy", "");
 
         // Retrieve expired ingredients
         expiredIngredients = DatabaseAccess.getExpiredIngredients();
@@ -133,7 +132,7 @@ public class DatabaseAccessTest {
         assertEquals(0, soonExpiredIngredients.size());
 
         // Insert a soon-to-expire ingredient into the database
-        DatabaseAccess.callInsertIngredient("Soon Expire Cheese",  "200", LocalDate.now().plusDays(5).toString(), "Dairy");
+        DatabaseAccess.callInsertIngredient("Soon Expire Cheese",  "200", LocalDate.now().plusDays(5).toString(), "Dairy", "");
 
         // Retrieve soon-to-expire ingredients
         soonExpiredIngredients = DatabaseAccess.getSoonExpiredIngredients();
