@@ -248,6 +248,7 @@ public class FrigoPanel extends JPanel {
 		
 						// Check if the ingredient already exists in the fridge
 						boolean ingredientExists = false;
+						frigo.updateIngredient();
 						for (Ingredient existingIngredient : frigo.getIngredients()) {
 							if (existingIngredient.getName().equalsIgnoreCase(name)) {
 								ingredientExists = true;

@@ -4,7 +4,7 @@ import java.util.*;
 
 public class Frigo {
     // List to store Ingredients in the fridge
-    private final List<Ingredient> ingredients;
+    private List<Ingredient> ingredients;
     // List to store allergies
     private final List<String> allergies;
     private User owner; // Reference to the User who owns this fridge
@@ -68,6 +68,10 @@ public class Frigo {
             // If the ingredient is not found, print a message
             System.out.println(ingredient.getQuantity() + " unit(s) of " + ingredient.getName() + " not found in the fridge.");
         }
+    }
+    
+    public void updateIngredient() {
+    	this.ingredients = DatabaseAccess.getIngredientsForFridge(fridgeId);
     }
     
     // Display the contents of the fridge (list of ingredients with quantities and expiration dates)
