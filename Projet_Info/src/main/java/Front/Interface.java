@@ -51,7 +51,7 @@ public class Interface extends JFrame {
 	AccountManager accountManager = new AccountManager(databaseAccess);
 	User currentUser = new User("default", databaseAccess);
 	JPanel orangeStripe = new JPanel();
-	String[] menuItems = { "", "My Fridge App", "", "", "","", "", "", "", "", "", "", "Change Mode", ".", "Fridge", ".",
+	String[] menuItems = { "", "My Fridge App", "", "", "","", "", "", "", "Change Mode", ".", "Fridge", ".",
 		        "Recipe Search", ".", "Selected Recipes", ".", "Shopping List", ".", "Favorites" };
 
 	public Frigo getFrigo() {
@@ -73,11 +73,11 @@ public class Interface extends JFrame {
 		// Update the menuItems array based on the mode
 		if (Bobmode) {
 			Bobmode = false;
-			setmenuItems(new String[] { "", "My Fridge App", "", "", "","", "", "", "", "", "", "", "Change Mode", ".", "Fridge", ".",
-            "Recipe Search", ".", "Selected Recipes",  ".", "Shopping List"});
+			setmenuItems(new String[] { "", "My Fridge App", "", "", "","", "", "", "", "Change Mode", ".", "Fridge", ".",
+            "Recipe Search", ".", "Selected Recipes",  ".", "Shopping List",".", "Favorites"});
 		} else {
 			Bobmode = true;
-			setmenuItems(new String[] { "", "My Fridge App", "", "", "","", "", "", "", "", "", "", "Change Mode", ".", "Fridge", ".",
+			setmenuItems(new String[] { "", "My Fridge App", "", "", "","", "", "", "", "Change Mode", ".", "Fridge", ".",
             "Recipe Search", ".", "Selected Recipes", ".", "Shopping List", ".", "Favorites" });
 		}
 
