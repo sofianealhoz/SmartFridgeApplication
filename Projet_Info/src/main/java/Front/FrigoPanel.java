@@ -1,7 +1,9 @@
 package Front;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellRenderer;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -299,20 +301,42 @@ public class FrigoPanel extends JPanel {
 		dialog.setVisible(true);
 	}
 	
-	private void refreshIngredientsTable(Frigo frigo) {
-		DefaultTableModel model = (DefaultTableModel) ingredientsTable.getModel();
-		model.setRowCount(0); // Clear table
-	
-		for (Ingredient ingredient : frigo.getIngredients()) {
-			String displayQuantity = convertQuantity(ingredient.getQuantity(), ingredient.getUnit());
-			model.addRow(new Object[] {
-				ingredient.getName(),
-				displayQuantity, // Display converted quantity
-				ingredient.getExpirationDate().toString(),
-				ingredient.getCategory()
-			});
-		}
-	}
+private void refreshIngredientsTable(Frigo frigo) {
+    DefaultTableModel model = (DefaultTableModel) ingredientsTable.getModel();
+    model.setRowCount(0); // Clear table
+
+    // Définir un TableCellRenderer personnalisé
+    TableCellRenderer renderer = new DefaultTableCellRenderer() {
+        @Override
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+            Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+            // Obtenez le nom de l'ingrédient de la ligne actuelle
+            String ingredientName = (String) table.getModel().getValueAt(row, 0);
+            // Si l'ingrédient est dans les allergies, coloriez le texte en rouge
+            if (frigo.getOwner() != null && frigo.getOwner().getAllergies().contains(ingredientName)) {
+                c.setForeground(Color.RED);
+            } else {
+                c.setForeground(Color.BLACK);
+            }
+            return c;
+        }
+    };
+
+    // Appliquer le renderer à chaque colonne de la table
+    for (int i = 0; i < ingredientsTable.getColumnCount(); i++) {
+        ingredientsTable.getColumnModel().getColumn(i).setCellRenderer(renderer);
+    }
+
+    for (Ingredient ingredient : frigo.getIngredients()) {
+        String displayQuantity = convertQuantity(ingredient.getQuantity(), ingredient.getUnit());
+        model.addRow(new Object[] {
+            ingredient.getName(),
+            displayQuantity, // Display converted quantity
+            ingredient.getExpirationDate().toString(),
+            ingredient.getCategory()
+        });
+    }
+}
 
 	private String convertQuantity(double quantity, String unit) {
 		// Conversion factors
