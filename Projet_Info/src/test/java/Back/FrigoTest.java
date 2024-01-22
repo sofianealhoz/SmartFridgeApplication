@@ -20,14 +20,14 @@ public class FrigoTest {
 
     @Test
     public void testAddIngredient() {
-        Ingredient newIngredient = new Ingredient("Eggs", LocalDate.of(2024, 12, 31), 12, "Dairy");
+        Ingredient newIngredient = new Ingredient("Eggs", LocalDate.of(2024, 12, 31), 12, "Dairy", null);
         fridge.addIngredient(newIngredient);
         assertTrue(fridge.hasIngredient("Eggs"));
     }
 
     @Test
     public void testAddExistingIngredient() {
-        Ingredient existingIngredient = new Ingredient("Sugar", LocalDate.of(2024, 12, 31), 100, "Bakery");
+        Ingredient existingIngredient = new Ingredient("Sugar", LocalDate.of(2024, 12, 31), 100, "Bakery", null);
         Double initialQuantity = fridge.getIngredientsFrigo().stream()
                 .filter(ingredient -> ingredient.getName().equals("Sugar"))
                 .findFirst()
@@ -44,7 +44,7 @@ public class FrigoTest {
 
     @Test
     public void testRemoveIngredient() {
-        Ingredient ingredientToRemove = new Ingredient("Flour", LocalDate.of(2024, 6, 30), 200, "Bakery");
+        Ingredient ingredientToRemove = new Ingredient("Flour", LocalDate.of(2024, 6, 30), 200, "Bakery", null);
         fridge.removeIngredient(ingredientToRemove);
         assertFalse(fridge.hasIngredient("Flour"));
     }
@@ -55,15 +55,15 @@ public class FrigoTest {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         System.setOut(new PrintStream(outputStream));
         
-        Ingredient nonExistentIngredient = new Ingredient("Nonexistent", LocalDate.of(2024, 6, 30), 200, "Unknown");
+        Ingredient nonExistentIngredient = new Ingredient("Nonexistent", LocalDate.of(2024, 6, 30), 200, "Unknown", null);
         fridge.removeIngredient(nonExistentIngredient);
         // Make sure no exception is thrown, and it's considered as not found
     }
 
     @Test
     public void testSortIngredients() {
-    	Ingredient newIngredient_1 = new Ingredient("Eggs", LocalDate.of(2024, 12, 31), 12, "Dairy");
-    	Ingredient newIngredient_2 = new Ingredient("Apple", LocalDate.of(2022, 10, 15), 3.0, "Fruit");
+    	Ingredient newIngredient_1 = new Ingredient("Eggs", LocalDate.of(2024, 12, 31), 12, "Dairy", null);
+    	Ingredient newIngredient_2 = new Ingredient("Apple", LocalDate.of(2022, 10, 15), 3, "Fruit", null);
     	fridge.addIngredient(newIngredient_1);
     	fridge.addIngredient(newIngredient_2);
     	    	

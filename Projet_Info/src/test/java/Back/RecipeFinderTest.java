@@ -22,8 +22,8 @@ public class RecipeFinderTest {
     public void testSearchRecipes_WithIngredients() {
         // Test searching for recipes with specific ingredients
         List<Ingredient> searchIngredients = Arrays.asList(
-                new Ingredient("Flour", LocalDate.of(2024, 6, 30), 500, "Bakery"),
-                new Ingredient("Sugar", LocalDate.of(2024, 12, 31), 200, "Bakery")
+                new Ingredient("Flour", LocalDate.of(2024, 6, 30), 500, "Bakery", null),
+                new Ingredient("Sugar", LocalDate.of(2024, 12, 31), 200, "Bakery", null)
         );
 
         List<Recipe> recipes = RecipeFinder.searchRecipes(searchIngredients);
