@@ -2,10 +2,11 @@ package Back;
 
 import org.junit.Test;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 
 import java.util.Arrays;
 import java.util.List;
-
 
 public class RecipeTest {
 
@@ -47,7 +48,22 @@ public class RecipeTest {
         recipe.setAllergens(newAllergens);
         assertEquals(newAllergens, recipe.getAllergens());
     }
+    
+    @Test
+    public void testGetImagePath() {
+        // Replace "validImageUrl" with an actual valid image URL
+        String validImageUrl = "https://via.placeholder.com/150";
+        
+        // Create a testable Recipe instance
+        Recipe recipe = new Recipe("Test Recipe", validImageUrl, null, null, null, null);
 
+        // Call the getImagePath method
+        String imagePath = recipe.getImagePath();
+
+        // Assert that the returned path is not null or empty
+        assertNotNull("Image path should not be null", imagePath);
+        assertFalse("Image path should not be empty", imagePath.isEmpty());
+    }
 }
 
 
