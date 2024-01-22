@@ -73,11 +73,11 @@ public class Interface extends JFrame {
 		// Update the menuItems array based on the mode
 		if (Bobmode) {
 			Bobmode = false;
-			setmenuItems(new String[] { "", "My Fridge App", "", "", "","", "", "", "", "", "", "", "Change Mode", ".", "Fridge", ".",
+			setmenuItems(new String[] { "", "My Fridge App", "", "", "","", "", "",  "Change Mode", ".", "Fridge", ".",
             "Recipe Search", ".", "Selected Recipes",  ".", "Shopping List"});
 		} else {
 			Bobmode = true;
-			setmenuItems(new String[] { "", "My Fridge App", "", "", "","", "", "", "", "", "", "", "Change Mode", ".", "Fridge", ".",
+			setmenuItems(new String[] { "", "My Fridge App", "", "", "","", "", "", "",  "Change Mode", ".", "Fridge", ".",
             "Recipe Search", ".", "Selected Recipes", ".", "Shopping List", ".", "Favorites" });
 		}
 
