@@ -45,12 +45,71 @@ public class Interface extends JFrame {
 	private ShoppingCartPanel shoppingCartPanel;
 	private boolean alertDisplayed = false;
 	private boolean alertDisplayed2 = false;
+	private boolean Bobmode;
 	DatabaseAccess databaseAccess = new DatabaseAccess();
 	AccountManager accountManager = new AccountManager(databaseAccess);
 	User currentUser = new User("default", databaseAccess);
+	JPanel orangeStripe = new JPanel();
+	String[] menuItems = { "", "My Fridge App", "", "", "","", "", "", "", "", "", "", "Change Mode", ".", "Fridge", ".",
+		        "Recipe Search", ".", "Selected Recipes", ".", "Shopping List", ".", "Favorites" };
 
 	public Frigo getFrigo() {
         return frigo;
+	}
+	
+	private void setmenuItems(String[] menuitems){
+		this.menuItems = menuitems;
+	}
+
+	private void switchMode() {
+		orangeStripe.removeAll(); // Remove all components from orangeStripe
+		menuButtons.clear(); // Clear the existing buttons list
+	
+		// Update the menuItems array based on the mode
+		if (Bobmode) {
+			Bobmode = false;
+			setmenuItems(new String[] { "", "My Fridge App", "", "", "","", "", "", "", "", "", "", "Change Mode", ".", "Fridge", ".",
+            "Recipe Search", ".", "Selected Recipes",  ".", "Shopping List"});
+		} else {
+			Bobmode = true;
+			setmenuItems(new String[] { "", "My Fridge App", "", "", "","", "", "", "", "", "", "", "Change Mode", ".", "Fridge", ".",
+            "Recipe Search", ".", "Selected Recipes", ".", "Shopping List", ".", "Favorites" });
+		}
+
+		// Recreate the buttons
+		createMenuButtons();
+		
+		// Refresh the orangeStripe panel to show the new buttons
+		orangeStripe.revalidate();
+		orangeStripe.repaint();
+	}
+
+	private void createMenuButtons() {
+		for (int i = 0; i < menuItems.length; i++) {
+			String item = menuItems[i];
+			JButton button = new JButton(item);
+			button.setFont(new Font("Segoe UI", Font.BOLD, 24));
+			button.setForeground(Color.WHITE);
+			button.setOpaque(false); // Make the button transparent
+			button.setContentAreaFilled(false); // Remove the default background
+			button.setBorderPainted(false); // Remove the button border
+			button.setFocusPainted(false);
+			button.setCursor(new Cursor(Cursor.HAND_CURSOR));
+			button.setAlignmentX(Component.CENTER_ALIGNMENT); // Center text horizontally
+
+			button.addActionListener(e -> handleMenuItemClick(item));
+
+			// Add rigid area for vertical spacing between buttons
+			orangeStripe.add(Box.createRigidArea(new Dimension(0, 10)));
+			orangeStripe.add(button);
+			menuButtons.add(button);
+
+			// Apply a condition for the title
+			if (i == 1) {
+				button.setFont(new Font("Tahoma", Font.PLAIN, 40));
+			}
+		}
+	
 	}
 	
 	private void updateFridgePanel() {
@@ -76,6 +135,7 @@ public class Interface extends JFrame {
 
 	// Constructor to set up the main interface of the application.
 	public Interface() {
+		Bobmode = false;
 		accountManager.createAccount("default");
 		frigo = currentUser.getFridge();
 		System.out.println("Account : " + currentUser + " " + currentUser.getFridge().getId());
@@ -108,7 +168,6 @@ public class Interface extends JFrame {
 		cardPanel.add(favoriteRecipePanel, "Favorites");
 
 		// Create the orange stripe panel
-		JPanel orangeStripe = new JPanel();
 		orangeStripe.setBackground(Color.ORANGE);
 		int stripeWidth = getWidth() / 6; // Adjust the width fraction as needed
 		orangeStripe.setPreferredSize(new Dimension(stripeWidth, getHeight()));
@@ -116,35 +175,8 @@ public class Interface extends JFrame {
 		// Use BoxLayout for vertical arrangement of buttons
 		orangeStripe.setLayout(new BoxLayout(orangeStripe, BoxLayout.Y_AXIS));
 
-		// Create and add menu buttons to the orange stripe
-		String[] menuItems = { "", "My Fridge App", "", "", "","", "", "", "", "", "", "", "", "", "Fridge", ".",
-		        "Recipe Search", ".", "Selected Recipes", ".", "Shopping List", ".", "Favorites" };
-
-		for (int i = 0; i < menuItems.length; i++) {
-			String item = menuItems[i];
-			JButton button = new JButton(item);
-			button.setFont(new Font("Segoe UI", Font.BOLD, 24));
-			button.setForeground(Color.WHITE);
-			button.setOpaque(false); // Make the button transparent
-			button.setContentAreaFilled(false); // Remove the default background
-			button.setBorderPainted(false); // Remove the button border
-			button.setFocusPainted(false);
-			button.setCursor(new Cursor(Cursor.HAND_CURSOR));
-			button.setAlignmentX(Component.CENTER_ALIGNMENT); // Center text horizontally
-
-			button.addActionListener(e -> handleMenuItemClick(item));
-
-			// Add rigid area for vertical spacing between buttons
-			orangeStripe.add(Box.createRigidArea(new Dimension(0, 10)));
-			orangeStripe.add(button);
-			menuButtons.add(button);
-
-			// Apply a condition for the title
-			if (i == 1) {
-				button.setFont(new Font("Tahoma", Font.PLAIN, 40));
-			}
-		}
-
+		this.switchMode();
+		
 		// Set the main layout to BorderLayout
 		setLayout(new BorderLayout());
 
@@ -187,7 +219,6 @@ public class Interface extends JFrame {
 			cardPanel.remove(frigoPanel);
 			frigoPanel = new FrigoPanel(currentUser.getFridge());
 			cardPanel.add(frigoPanel, "Fridge");
-
 
 			cardLayout.show(cardPanel, "Fridge"); // Display the updated FrigoPanel
 			System.out.println("Account : " + currentUser + " " + currentUser.getFridge().getId());
@@ -248,6 +279,8 @@ public class Interface extends JFrame {
 			favoriteRecipePanel.displayFavoriteRecipes();
 			cardLayout.show(cardPanel, "Favorites");
 			break;
+		case "Change Mode":
+			this.switchMode();
 		}
 	}
 
