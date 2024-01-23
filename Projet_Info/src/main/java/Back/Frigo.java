@@ -13,25 +13,29 @@ public class Frigo {
 
      // Constructor: initializes empty lists for ingredients and allergies and adds the fridge to the database
     public Frigo(User owner, DatabaseAccess databaseAccess) {
-    this.ingredients = new ArrayList<>(DatabaseAccess.getIngredientsForFridge(this.fridgeId));
-    if (owner != null) {
-        this.allergies = owner.getAllergies();
-    } else {
-        this.allergies = new ArrayList<>(); // Initialize with an empty list
-    }
-    this.owner = owner;
-    this.databaseAccess = databaseAccess;
-    
-    // Add the fridge to the database
-    if (owner != null) {
-        boolean addedToFridgeDB = DatabaseAccess.addFridge(this);
-        if (!addedToFridgeDB) {
-            System.out.println("Failed to add fridge to the database.");
-        }
-    }
+	    this.ingredients = new ArrayList<>(DatabaseAccess.getIngredientsForFridge(this.fridgeId));
+	    if (owner != null) {
+	        this.allergies = owner.getAllergies();
+	    } else {
+	        this.allergies = new ArrayList<>(); // Initialize with an empty list
+	    }
+	    this.owner = owner;
+	    this.databaseAccess = databaseAccess;
+	    
+	    // Add the fridge to the database
+	    if (owner != null) {
+	        boolean addedToFridgeDB = DatabaseAccess.addFridge(this);
+	        if (!addedToFridgeDB) {
+	            System.out.println("Failed to add fridge to the database.");
+	        }
+	    }
     }
 
-    public int getId(){
+    public void setFridgeId(int fridgeId) {
+		this.fridgeId = fridgeId;
+	}
+
+	public int getId(){
         return databaseAccess.getFridgeIdFromDatabase(this.owner);
     }
 
@@ -96,10 +100,11 @@ public class Frigo {
     }
 
     // Sorts all the ingredients based on their expiration dates
-    public void sortIngredients() {
+    public List<Ingredient> sortIngredients() {
         this.getIngredients();
     	// Comparator for sorting ingredients by expiration date (nulls first)
         final Comparator<Ingredient> ingredientComparator = Comparator.comparing(Ingredient::getExpirationDate, Comparator.nullsFirst(Comparator.naturalOrder()));
         ingredients.sort(ingredientComparator);
+        return ingredients;
     }
 }
