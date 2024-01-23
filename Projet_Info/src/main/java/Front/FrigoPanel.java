@@ -371,7 +371,8 @@ private void refreshIngredientsTable(Frigo frigo, boolean Bobmode) {
             Object checkboxValue = model.getValueAt(i, 4); 
             if (checkboxValue instanceof Boolean && (Boolean) checkboxValue) {
                 String name = (String) model.getValueAt(i, 0); 
-                double quantity = Double.parseDouble(((String) model.getValueAt(i, 1)).split(" ")[0]); 
+                String quantityString = ((String) model.getValueAt(i, 1)).split(" ")[0];
+                double quantity = Double.parseDouble(quantityString.replace(',', '.'));
                 int quantityInt = (int) quantity; 
                 LocalDate expirationDate = LocalDate.parse((String) model.getValueAt(i, 2)); 
                 String category = (String) model.getValueAt(i, 3); 

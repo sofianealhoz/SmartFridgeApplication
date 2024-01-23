@@ -69,7 +69,10 @@ public class RecipeDetailPanel extends JPopupMenu {
             List<String> instructions = recipe.getInstructions();
             StringBuilder instructionsText = new StringBuilder();
             for (String instruction : instructions) {
-                instructionsText.append("\u2022 ").append(instruction).append("\n");
+                if (!instruction.startsWith("\u2022")) { // Check if the instruction already starts with a bullet
+                    instruction = "\u2022 " + instruction; // Add a bullet if not present
+                }
+                instructionsText.append(instruction).append("\n");
             }
             instructionsTextArea.setText(instructionsText.toString());
 

@@ -1,6 +1,8 @@
 package Back;
 
 import java.io.IOException;
+
+import org.jsoup.Jsoup;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.time.LocalDate;
@@ -87,7 +89,7 @@ public class RecipeFinder {
     }
 
     // Fetches detailed recipe information including ingredients, instructions, nutrition, and allergies.
-    private static Recipe fetchRecipeDetails(int recipeId) {
+    public static Recipe fetchRecipeDetails(int recipeId) {
         String detailUrl = "https://api.spoonacular.com/recipes/" + recipeId + "/information?includeNutrition=true&apiKey=" + API_KEY;
         try {
             URL url = new URL(detailUrl);
@@ -126,11 +128,22 @@ public class RecipeFinder {
             String title = recipeDetail.getString("title");
             String imageUrl = recipeDetail.getString("image");
             String rawInstructions = recipeDetail.optString("instructions", "");
-            
-            // Use RecipeFormatter to standardize instructions
+            System.out.println("Raw Instructions from API: " + rawInstructions); // Debug statement
+            if (rawInstructions.isEmpty()) {
+                rawInstructions = "No instructions available."; // Default message
+            }
+            // Standardize instructions using RecipeFormatter
             RecipeFormatter formatter = new RecipeFormatter();
-            String standardizedInstructions = formatter.standardizeInstructions(rawInstructions);
-            List<String> instructionList = Arrays.asList(standardizedInstructions.split("\n")); 
+            String standardizedInstructions;
+            if (Jsoup.parse(rawInstructions).select("li").isEmpty()) {
+                // Assuming plain text if no <li> tags are found
+                standardizedInstructions = formatter.standardizeFromPlainText(rawInstructions);
+            } else {
+                // HTML instructions
+                standardizedInstructions = formatter.standardizeFromHTML(rawInstructions);
+            }
+
+            List<String> instructionList = Arrays.asList(standardizedInstructions.split("\n"));
             
             // Extracting nutrition info and allergens
             JSONObject nutritionObject = recipeDetail.optJSONObject("nutrition");
@@ -152,7 +165,7 @@ public class RecipeFinder {
     }
 
     // Extracts nutrition information from the JSON object.
-    private static NutritionInfo extractNutritionInfo(JSONObject nutritionObject) {
+    public static NutritionInfo extractNutritionInfo(JSONObject nutritionObject) {
         if (nutritionObject == null) {
             return new NutritionInfo(0, 0, 0, 0, 0, 0, 0);
         }
@@ -191,7 +204,7 @@ public class RecipeFinder {
 
 
     // Extracts allergen information from the JSON object.
-    private static List<String> extractAllergens(JSONObject recipeDetail) {
+    public static List<String> extractAllergens(JSONObject recipeDetail) {
         JSONArray allergensArray = recipeDetail.optJSONArray("allergens");
         List<String> allergens = new ArrayList<>();
         if (allergensArray != null) {

@@ -18,9 +18,9 @@ import java.sql.Date;
 public class DatabaseAccess {
 
 	// Définissez les informations de connexion à votre base de données
-	private static final String URL = "jdbc:mysql://127.0.0.1/prinfo";
-	private static final String USER = "root";
-	private static final String PASSWORD = "root";
+	private static String URL = "jdbc:mysql://127.0.0.1/prinfo";
+	private static String USER = "root";
+	private static String PASSWORD = "root";
 
 	/*
 	 * public static void main(String[] args) { try { // Établissez la connexion à
@@ -245,6 +245,8 @@ public class DatabaseAccess {
 		String sql = "INSERT INTO Recipe (recipe_id, name, imageUrl, allergens_list, instructions_list) "
 				+ "VALUES (?, ?, ?, ?, ?)";
 
+
+
 		try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD)) {
 			String allergens = String.join("\n", recipe.getAllergens());
 			String instructions = String.join("\n", recipe.getInstructions());
@@ -325,6 +327,8 @@ public class DatabaseAccess {
 	private static void insertListOfIngredients(Connection connection, List<Ingredient> ingredients, int recipe_id)
 			throws SQLException {
 		String sql = "INSERT INTO ingredientsofrecipe (name, quantity, expiration_date, r_id, unit) VALUES (?, ?, ?, ?, ?)";
+
+
 
 		try (PreparedStatement insertStatement = connection.prepareStatement(sql)) {
 			for (Ingredient ingredient : ingredients) {
