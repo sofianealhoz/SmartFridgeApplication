@@ -451,33 +451,34 @@ public class DatabaseAccess {
 	}
 
 	public static List<Ingredient> getSoonExpiredIngredients() {
-		List<Ingredient> soonexpiredIngredients = new ArrayList<>();
-
+		List<Ingredient> soonExpiredIngredients = new ArrayList<>();
+	
 		try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD)) {
-			String sql = "SELECT * FROM Ingredients WHERE DATE_SUB(expiration_date, INTERVAL 1 WEEK) < ? AND ? < expiration_date ";
+			String sql = "SELECT * FROM Ingredients WHERE expiration_date > ? AND expiration_date <= ?";
 			try (PreparedStatement statement = connection.prepareStatement(sql)) {
-				// Utilisez la date actuelle pour comparer avec les dates d’expiration
 				LocalDate currentDate = LocalDate.now();
-				statement.setDate(1, Date.valueOf(currentDate));
-				statement.setDate(2, Date.valueOf(currentDate));
-
+				LocalDate oneWeekLater = currentDate.plusWeeks(1);
+	
+				statement.setDate(1, Date.valueOf(currentDate)); // current date
+				statement.setDate(2, Date.valueOf(oneWeekLater)); // one week from current date
+	
 				try (ResultSet resultSet = statement.executeQuery()) {
 					while (resultSet.next()) {
 						String name = resultSet.getString("name");
 						LocalDate expirationDate = resultSet.getDate("expiration_date").toLocalDate();
 						int quantity = resultSet.getInt("quantity");
 						String category = resultSet.getString("category");
-
+	
 						Ingredient ingredient = new Ingredient(name, expirationDate, quantity, category);
-						soonexpiredIngredients.add(ingredient);
+						soonExpiredIngredients.add(ingredient);
 					}
 				}
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-
-		return soonexpiredIngredients;
+	
+		return soonExpiredIngredients;
 	}
 
 }
