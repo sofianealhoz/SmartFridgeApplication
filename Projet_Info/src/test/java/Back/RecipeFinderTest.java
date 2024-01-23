@@ -2,6 +2,7 @@ package Back;
 
 import static org.junit.Assert.*;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.Test;
 import java.time.LocalDate;
@@ -58,7 +59,18 @@ public class RecipeFinderTest {
     @Test
     public void testExtractNutritionInfo() {
         // Test extracting nutrition information from a JSON object
-        JSONObject nutritionObject = new JSONObject("{\"calories\": 200, \"fat\": 10, \"protein\": 5, \"carbohydrates\": 20, \"fiber\": 2, \"sugar\": 8, \"sodium\": 300}");
+        JSONArray nutrientsArray = new JSONArray();
+        nutrientsArray.put(new JSONObject().put("name", "Calories").put("amount", 200));
+        nutrientsArray.put(new JSONObject().put("name", "Fat").put("amount", 10));
+        nutrientsArray.put(new JSONObject().put("name", "Protein").put("amount", 5));
+        nutrientsArray.put(new JSONObject().put("name", "Carbohydrates").put("amount", 20));
+        nutrientsArray.put(new JSONObject().put("name", "Fiber").put("amount", 2));
+        nutrientsArray.put(new JSONObject().put("name", "Sugar").put("amount", 8));
+        nutrientsArray.put(new JSONObject().put("name", "Sodium").put("amount", 300));
+
+        // Create the main JSON object with the "nutrients" array
+        JSONObject nutritionObject = new JSONObject().put("nutrients", nutrientsArray);
+        
         NutritionInfo nutritionInfo = RecipeFinder.extractNutritionInfo(nutritionObject);
 
         assertNotNull(nutritionInfo);
