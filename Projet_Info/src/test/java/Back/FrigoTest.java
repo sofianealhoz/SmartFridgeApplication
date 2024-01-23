@@ -1,5 +1,6 @@
 package Back;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -12,41 +13,34 @@ import java.util.List;
 public class FrigoTest {
 
     private Frigo fridge;
-
+    private Ingredient ingredient_1 = new Ingredient("Eggs", LocalDate.of(2024, 12, 31), 12, "Dairy", null);
+    private Ingredient ingredient_2 = new Ingredient("Apple", LocalDate.of(2022, 10, 15), 3, "Fruit", null);
+    
     @Before
     public void setUp() {
-        fridge = new Frigo();
+    	DatabaseAccess databaseAccess = new DatabaseAccess();
+        User user= new User("user", databaseAccess);
+        user.addAllergy("Peanuts");
+        fridge = new Frigo(user, databaseAccess);
+    }
+    
+    @After
+    public void tearDown() {
+	        fridge.removeIngredient(ingredient_1);
+	        fridge.removeIngredient(ingredient_2);
     }
 
     @Test
     public void testAddIngredient() {
-        Ingredient newIngredient = new Ingredient("Eggs", LocalDate.of(2024, 12, 31), 12, "Dairy", null);
-        fridge.addIngredient(newIngredient);
-        assertTrue(fridge.hasIngredient("Eggs"));
-    }
-
-    @Test
-    public void testAddExistingIngredient() {
-        Ingredient existingIngredient = new Ingredient("Sugar", LocalDate.of(2024, 12, 31), 100, "Bakery", null);
-        Double initialQuantity = fridge.getIngredientsFrigo().stream()
-                .filter(ingredient -> ingredient.getName().equals("Sugar"))
-                .findFirst()
-                .map(Ingredient::getQuantity)
-                .orElse(0.0);
-        fridge.addIngredient(existingIngredient);
-        Double finalQuantity = fridge.getIngredientsFrigo().stream()
-                .filter(ingredient -> ingredient.getName().equals("Sugar"))
-                .findFirst()
-                .map(Ingredient::getQuantity)
-                .orElse(0.0);
-        assertEquals(initialQuantity + existingIngredient.getQuantity(), finalQuantity, 0);
+        fridge.addIngredient(ingredient_2);
+        assertTrue(fridge.getIngredients().contains(ingredient_2));
     }
 
     @Test
     public void testRemoveIngredient() {
         Ingredient ingredientToRemove = new Ingredient("Flour", LocalDate.of(2024, 6, 30), 200, "Bakery", null);
         fridge.removeIngredient(ingredientToRemove);
-        assertFalse(fridge.hasIngredient("Flour"));
+        assertFalse(fridge.getIngredients().contains(ingredientToRemove));
     }
 
     @Test
@@ -62,18 +56,14 @@ public class FrigoTest {
 
     @Test
     public void testSortIngredients() {
-    	Ingredient newIngredient_1 = new Ingredient("Eggs", LocalDate.of(2024, 12, 31), 12, "Dairy", null);
-    	Ingredient newIngredient_2 = new Ingredient("Apple", LocalDate.of(2022, 10, 15), 3, "Fruit", null);
-    	fridge.addIngredient(newIngredient_1);
-    	fridge.addIngredient(newIngredient_2);
+    	fridge.addIngredient(ingredient_1);
+    	fridge.addIngredient(ingredient_2);
     	    	
         // Ensure ingredients are initially unsorted
-        assertFalse(isSortedByExpirationDate(fridge.getIngredientsFrigo()));
+        assertFalse(isSortedByExpirationDate(fridge.getIngredients()));
 
-        fridge.sortIngredients();
-        
         // Ensure ingredients are now sorted
-        assertTrue(isSortedByExpirationDate(fridge.getIngredientsFrigo()));
+        assertTrue(isSortedByExpirationDate(fridge.sortIngredients()));
     }
     
     @Test
@@ -81,7 +71,9 @@ public class FrigoTest {
         // Redirect System.out to capture console output
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         System.setOut(new PrintStream(outputStream));
-
+        
+        fridge.addIngredient(ingredient_1);
+        fridge.addIngredient(ingredient_2);
         fridge.displayContents();
 
         // Reset System.out
@@ -89,30 +81,8 @@ public class FrigoTest {
 
         // Verify the output contains expected content
         assertTrue(outputStream.toString().contains("Fridge contents"));
-        assertTrue(outputStream.toString().contains("Flour"));
-        assertTrue(outputStream.toString().contains("Sugar"));
-    }
-
-    @Test
-    public void testAddAllergy() {
-        fridge.addAllergy("Peanuts");
-        assertTrue(fridge.getAllergies().contains("Peanuts"));
-    }
-
-    @Test
-    public void testRemoveAllergy() {
-        fridge.addAllergy("Peanuts");
-        assertTrue(fridge.getAllergies().contains("Peanuts"));
-
-        fridge.removeAllergy("Peanuts");
-        assertFalse(fridge.getAllergies().contains("Peanuts"));
-    }
-
-    @Test
-    public void testRemoveNonexistentAllergy() {
-        assertFalse(fridge.getAllergies().contains("Nonexistent"));
-        fridge.removeAllergy("Nonexistent");
-        // Ensure no exception is thrown, and it's considered as not found
+        assertTrue(outputStream.toString().contains("Eggs"));
+        assertTrue(outputStream.toString().contains("Apple"));
     }
 
     @Test
@@ -121,7 +91,6 @@ public class FrigoTest {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         System.setOut(new PrintStream(outputStream));
 
-        fridge.addAllergy("Peanuts");
         fridge.displayAllergies();
 
         // Reset System.out
@@ -136,7 +105,7 @@ public class FrigoTest {
         for (int i = 0; i < ingredients.size() - 1; i++) {
             LocalDate currentExpiration = ingredients.get(i).getExpirationDate();
             LocalDate nextExpiration = ingredients.get(i + 1).getExpirationDate();
-            if (currentExpiration != null && nextExpiration != null && currentExpiration.isAfter(nextExpiration)) {
+            if (currentExpiration != null && nextExpiration != null && currentExpiration.isAfter(nextExpiration) && !(currentExpiration.isEqual(nextExpiration))) {
                 return false;
             }
         }

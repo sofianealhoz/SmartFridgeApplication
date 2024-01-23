@@ -75,6 +75,18 @@ public class DatabaseAccess {
 		return ingredients;
 	}
 
+	public static void setURL(String uRL) {
+		URL = uRL;
+	}
+
+	public static void setUSER(String uSER) {
+		USER = uSER;
+	}
+
+	public static void setPASSWORD(String pASSWORD) {
+		PASSWORD = pASSWORD;
+	}
+
 	public int getFridgeIdFromDatabase(User owner) {
 		int fridgeId = -1; // Default value if not found
 
