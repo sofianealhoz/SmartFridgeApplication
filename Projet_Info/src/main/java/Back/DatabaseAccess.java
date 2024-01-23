@@ -458,10 +458,8 @@ public class DatabaseAccess {
 			try (PreparedStatement statement = connection.prepareStatement(sql)) {
 				// Utilisez la date actuelle pour comparer avec les dates d’expiration
 				LocalDate currentDate = LocalDate.now();
-				LocalDate soonToExpireDate = currentDate.minusWeeks(1); // Date proche de l'expiration
-				statement.setDate(1, Date.valueOf(soonToExpireDate));
+				statement.setDate(1, Date.valueOf(currentDate));
 				statement.setDate(2, Date.valueOf(currentDate));
-				statement.setDate(3, Date.valueOf(currentDate));
 
 				try (ResultSet resultSet = statement.executeQuery()) {
 					while (resultSet.next()) {
