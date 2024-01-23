@@ -45,6 +45,7 @@ public class Interface extends JFrame {
 	private ShoppingCartPanel shoppingCartPanel;
 	private boolean alertDisplayed = false;
 	private boolean alertDisplayed2 = false;
+	private boolean switching = false;
 
 	private boolean Bobmode;
 	DatabaseAccess databaseAccess = new DatabaseAccess();
@@ -61,7 +62,15 @@ public class Interface extends JFrame {
 	public boolean getMode(){
 		return Bobmode;
 	}
+
+	public boolean getSwitching(){
+		return switching;
+	}
 	
+	public void setSwitching(boolean switching){
+		this.switching = switching;
+	}
+
 	private void setmenuItems(String[] menuitems){
 		this.menuItems = menuitems;
 	}
@@ -73,10 +82,12 @@ public class Interface extends JFrame {
 		// Update the menuItems array based on the mode
 		if (Bobmode) {
 			Bobmode = false;
+			setSwitching(true);
 			setmenuItems(new String[] { "", "My Fridge App", "", "", "","", "", "",  "Change Mode", ".", "Fridge", ".",
             "Recipe Search", ".", "Selected Recipes",  ".", "Shopping List"});
 		} else {
 			Bobmode = true;
+			setSwitching(true);
 			setmenuItems(new String[] { "", "My Fridge App", "", "", "","", "", "", "",  "Change Mode", ".", "Fridge", ".",
             "Recipe Search", ".", "Selected Recipes", ".", "Shopping List", ".", "Favorites" });
 		}
@@ -102,7 +113,7 @@ public class Interface extends JFrame {
 			button.setCursor(new Cursor(Cursor.HAND_CURSOR));
 			button.setAlignmentX(Component.CENTER_ALIGNMENT); // Center text horizontally
 
-			button.addActionListener(e -> handleMenuItemClick(item,false));
+			button.addActionListener(e -> handleMenuItemClick(item));
 
 			// Add rigid area for vertical spacing between buttons
 			orangeStripe.add(Box.createRigidArea(new Dimension(0, 10)));
@@ -140,7 +151,7 @@ public class Interface extends JFrame {
 
 	// Constructor to set up the main interface of the application.
 	public Interface() {
-		Bobmode = true;
+		Bobmode = false;
 		accountManager.createAccount("default");
 		frigo = currentUser.getFridge();
 		System.out.println("Account : " + currentUser + " " + currentUser.getFridge().getId());
@@ -213,10 +224,10 @@ public class Interface extends JFrame {
 	}
 
 	// Handles menu item clicks to switch between panels
-	private void handleMenuItemClick(String itemName, boolean initial) {
+	private void handleMenuItemClick(String itemName) {
 		switch (itemName) {
 			case "My Fridge App":
-			if (!initial) {
+			if (this.getSwitching()) {
 				// Check if welcomePanel is not null before trying to remove it
 				if (welcomePanel != null) {
 					cardPanel.remove(welcomePanel);
@@ -224,6 +235,7 @@ public class Interface extends JFrame {
 				// Reinitialize welcomePanel and add it back
 				welcomePanel = new WelcomePanel(currentUser.getFridge(), this, accountManager, Bobmode);
 				cardPanel.add(welcomePanel, "Welcome");
+				setSwitching(false);
 			}
 			cardLayout.show(cardPanel, "Welcome");
 			break;
@@ -364,7 +376,7 @@ public class Interface extends JFrame {
 	public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             Interface app = new Interface();
-            app.handleMenuItemClick("My Fridge App",true); // Display the WelcomePanel initially
+            app.handleMenuItemClick("My Fridge App"); // Display the WelcomePanel initially
         });
     }
 

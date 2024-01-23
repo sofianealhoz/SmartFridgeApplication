@@ -143,7 +143,14 @@ public class WelcomePanel extends JPanel {
             refreshAllergyComboBox(currentUser);
              
         } else {
-            JOptionPane.showMessageDialog(this, "Account login failed.", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Account loged successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
+            accountComboBox.addItem(username);
+            accountManager.createAccount(username);
+            mainInterface.switchAccount(username); 
+            
+              // Refresh UI components to reflect the new user's data
+            User currentUser = accountManager.getCurrentUser();
+            refreshAllergyComboBox(currentUser);
         }
     }
 
