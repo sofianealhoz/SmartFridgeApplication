@@ -15,7 +15,7 @@ import org.json.JSONObject;
 
 public class RecipeFinder {
 
-    private static final String API_KEY = "271c1fafc5874284b33e996004c5ff96";
+    private static final String API_KEY = "d2a1f4e48d6e461da5d0be7b5fdaa389";
 
     // Searches for recipes based on a list of ingredients.
     public static List<Recipe> searchRecipes(List<Ingredient> ingredients) {
@@ -118,7 +118,9 @@ public class RecipeFinder {
                 for (int i = 0; i < ingredientsArray.length(); i++) {
                     JSONObject ingredientObject = ingredientsArray.getJSONObject(i);
                     String ingredientName = ingredientObject.optString("name", "Unknown");
-                    ingredientList.add(new Ingredient(ingredientName, LocalDate.now(), 0, "Unknown"));
+                    double quantity = ingredientObject.optDouble("amount", 0);
+                    String unit = ingredientObject.optString("unit", "");
+                    ingredientList.add(new Ingredient(ingredientName, LocalDate.now(), quantity, "Unknown", unit));
                 }
             }
 
@@ -153,7 +155,8 @@ public class RecipeFinder {
             
             DatabaseAccess.callInsertListOfIngredient(ingredientList, recipeId);
             DatabaseAccess.insertRecipe(recipe, recipeId);
-            return recipe;
+            DatabaseAccess.instertNutritionInfo(nutritionInfo, recipeId);
+            return new Recipe(title, imageUrl, ingredientList, instructionList, nutritionInfo, allergens);
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -166,16 +169,39 @@ public class RecipeFinder {
         if (nutritionObject == null) {
             return new NutritionInfo(0, 0, 0, 0, 0, 0, 0);
         }
-        double calories = nutritionObject.optDouble("calories", 0);
-        double fat = nutritionObject.optDouble("fat", 0);
-        double protein = nutritionObject.optDouble("protein", 0);
-        double carbs = nutritionObject.optDouble("carbohydrates", 0);
-        double fiber = nutritionObject.optDouble("fiber", 0);
-        double sugar = nutritionObject.optDouble("sugar", 0);
-        double sodium = nutritionObject.optDouble("sodium", 0);
+        JSONArray nutrients = nutritionObject.getJSONArray("nutrients");
+        double calories = 0, fat = 0, protein = 0, carbs = 0, fiber = 0, sugar = 0, sodium = 0;
+
+        for (int i = 0; i < nutrients.length(); i++) {
+            JSONObject nutrient = nutrients.getJSONObject(i);
+            switch (nutrient.getString("name")) {
+                case "Calories":
+                    calories = nutrient.getDouble("amount");
+                    break;
+                case "Fat":
+                    fat = nutrient.getDouble("amount");
+                    break;
+                case "Protein":
+                    protein = nutrient.getDouble("amount");
+                    break;
+                case "Carbohydrates":
+                    carbs = nutrient.getDouble("amount");
+                    break;
+                case "Fiber":
+                    fiber = nutrient.getDouble("amount");
+                    break;
+                case "Sugar":
+                    sugar = nutrient.getDouble("amount");
+                    break;
+                case "Sodium":
+                    sodium = nutrient.getDouble("amount");
+                    break;
+            }
+        }
 
         return new NutritionInfo(calories, fat, protein, carbs, fiber, sugar, sodium);
     }
+
 
     // Extracts allergen information from the JSON object.
     public static List<String> extractAllergens(JSONObject recipeDetail) {

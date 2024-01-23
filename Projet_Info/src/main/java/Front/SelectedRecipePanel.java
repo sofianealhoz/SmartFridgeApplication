@@ -98,6 +98,7 @@ public class SelectedRecipePanel extends JPanel {
             selectButton.addActionListener(e -> {
                 if (selectedRecipes.contains(recipe)) {
                     selectedRecipes.remove(recipe);
+                    displaySelectedRecipes(); 
                 }
             });
 

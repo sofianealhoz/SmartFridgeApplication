@@ -72,4 +72,8 @@ public class Ingredient {
 	public void setQuantity(double d) {
 		this.quantity = d;
 	}
+	public void updateQuantity(double newQuantity) {
+	    this.quantity = newQuantity;
+	}
+
 }
