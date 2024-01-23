@@ -142,6 +142,7 @@ public class RecipeFinder {
             
             DatabaseAccess.callInsertListOfIngredient(ingredientList, recipeId);
             DatabaseAccess.insertRecipe(recipe, recipeId);
+            DatabaseAccess.instertNutritionInfo(nutritionInfo, recipeId);
             return new Recipe(title, imageUrl, ingredientList, instructionList, nutritionInfo, allergens);
 
         } catch (IOException e) {

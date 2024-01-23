@@ -46,10 +46,11 @@ public class DatabaseAccess {
 
 	// Méthode pour récupérer la liste des ingrédients présents dans la base de
 	// données
-  	// Method to retrieve the list of ingredients for a specific fridge based on fridge_id
-	  public static List<Ingredient> getIngredientsForFridge(int fridgeId) {
+	// Method to retrieve the list of ingredients for a specific fridge based on
+	// fridge_id
+	public static List<Ingredient> getIngredientsForFridge(int fridgeId) {
 		List<Ingredient> ingredients = new ArrayList<>();
-	
+
 		try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD)) {
 			String sql = "SELECT * FROM ingredients WHERE fridge_id = ?";
 			try (PreparedStatement statement = connection.prepareStatement(sql)) {
@@ -61,7 +62,7 @@ public class DatabaseAccess {
 						int quantity = resultSet.getInt("quantity");
 						String category = resultSet.getString("category");
 						String unit = resultSet.getString("unit");
-	
+
 						Ingredient ingredient = new Ingredient(name, expirationDate, quantity, category, unit);
 						ingredients.add(ingredient);
 					}
@@ -70,18 +71,18 @@ public class DatabaseAccess {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-	
+
 		return ingredients;
 	}
 
 	public int getFridgeIdFromDatabase(User owner) {
 		int fridgeId = -1; // Default value if not found
-	
+
 		try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD)) {
 			String sql = "SELECT fridge_id FROM fridges WHERE name = ?";
 			try (PreparedStatement statement = connection.prepareStatement(sql)) {
 				statement.setString(1, owner.getUsername());
-	
+
 				try (ResultSet resultSet = statement.executeQuery()) {
 					if (resultSet.next()) {
 						fridgeId = resultSet.getInt("fridge_id");
@@ -91,116 +92,154 @@ public class DatabaseAccess {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-	
+
 		return fridgeId;
 	}
 
-	
 	// Function to add a fridge to the database
-    public static boolean addFridge(Frigo fridge) {
-        try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD)) {
-            String sql = "INSERT INTO fridges (name) VALUES (?)";
-            try (PreparedStatement statement = connection.prepareStatement(sql)) {
-                // Set the values for the insert statement
-                statement.setString(1, fridge.getOwner().getUsername());
+	public static boolean addFridge(Frigo fridge) {
+		try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD)) {
+			String sql = "INSERT INTO fridges (name) VALUES (?)";
+			try (PreparedStatement statement = connection.prepareStatement(sql)) {
+				// Set the values for the insert statement
+				statement.setString(1, fridge.getOwner().getUsername());
 
-                // Execute the insert statement
-                int rowsInserted = statement.executeUpdate();
+				// Execute the insert statement
+				int rowsInserted = statement.executeUpdate();
 
-                // Check if the insertion was successful
-                return rowsInserted > 0;
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
+				// Check if the insertion was successful
+				return rowsInserted > 0;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
 
-	// Check if a specific ingredient exists in a fridge by fridgeId and ingredient name
+	// Check if a specific ingredient exists in a fridge by fridgeId and ingredient
+	// name
 	public static boolean hasIngredientInFridge(int fridgeId, String ingredientName) {
-    // Assuming you have a method to get the list of ingredients in a specific fridge by fridgeId
-    List<Ingredient> fridgeIngredients = DatabaseAccess.getIngredientsForFridge(fridgeId);
-    
-    for (Ingredient ingredient : fridgeIngredients) {
-        if (ingredient.getName().equals(ingredientName)) {
-            return true;
-        }
-    }
-    return false;
+		// Assuming you have a method to get the list of ingredients in a specific
+		// fridge by fridgeId
+		List<Ingredient> fridgeIngredients = DatabaseAccess.getIngredientsForFridge(fridgeId);
+
+		for (Ingredient ingredient : fridgeIngredients) {
+			if (ingredient.getName().equals(ingredientName)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	// Retourne la liste de recette stockée dans la base de données :
 	public static List<Recipe> returnRecipeList() {
 		List<Recipe> recipes = new ArrayList<>();
 		List<Ingredient> ingredients = new ArrayList<>();
-		
-		try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD)) {
-            String sql = "SELECT * FROM Recipe";
-            try (PreparedStatement statement = connection.prepareStatement(sql);
-                 ResultSet resultSet = statement.executeQuery()) {
 
-                while (resultSet.next()) {
-                    
-                    int recipe_id = resultSet.getInt("recipe_id");
-                    String recipe_name = resultSet.getString("name");
-                    String image_URL = resultSet.getString("imageURL");
-                    String[] instructionsArray = resultSet.getString("instructions_list").split("\n");
-                    List<String> instructions = Arrays.asList(instructionsArray);
-                    NutritionInfo nutritioninfo = new NutritionInfo(0, 0, 0, 0, 0, 0, 0);
-                    List<String> allergens = new ArrayList<>();
-                    
-                    
-                    String SQL = "SELECT * FROM ingredientsofrecipe WHERE r_id = " + recipe_id;
-                    try (PreparedStatement statement1 = connection.prepareStatement(SQL);
-                            ResultSet result = statement1.executeQuery()) {
-                    		
-                    	while (result.next()) {
-                    		
-                    		String ingredient_name = result.getString("name");
-                    		double ingredient_quantity = result.getInt("quantity"); 
-                    		String dateString = result.getString("expiration_date");
-                    		LocalDate exp_date = LocalDate.parse(dateString, DateTimeFormatter.ISO_LOCAL_DATE);
+		try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD)) {
+			String sql = "SELECT * FROM Recipe";
+			try (PreparedStatement statement = connection.prepareStatement(sql);
+					ResultSet resultSet = statement.executeQuery()) {
+
+				while (resultSet.next()) {
+
+					int recipe_id = resultSet.getInt("recipe_id");
+					String recipe_name = resultSet.getString("name");
+					String image_URL = resultSet.getString("imageURL");
+					String[] instructionsArray = resultSet.getString("instructions_list").split("\n");
+					List<String> instructions = Arrays.asList(instructionsArray);
+					NutritionInfo nutritioninfo = returnNutritionInfo(recipe_id);
+					List<String> allergens = new ArrayList<>();
+
+					String SQL = "SELECT * FROM ingredientsofrecipe WHERE r_id = " + recipe_id;
+					try (PreparedStatement statement1 = connection.prepareStatement(SQL);
+							ResultSet result = statement1.executeQuery()) {
+
+						while (result.next()) {
+
+							String ingredient_name = result.getString("name");
+							double ingredient_quantity = result.getInt("quantity");
+							String dateString = result.getString("expiration_date");
+							LocalDate exp_date = LocalDate.parse(dateString, DateTimeFormatter.ISO_LOCAL_DATE);
 							String unit = result.getString("unit");
-                    		
-                    		Ingredient ingredient = new Ingredient(ingredient_name, exp_date, ingredient_quantity, "Unknown",unit);
-                    		ingredients.add(ingredient);
-                    	}
-                    		
-                    }
-                    
-                    // Ajoutez ici d'autres attributs de la classe Recipe en fonction de votre modèle
-                    Recipe recipe = new Recipe(recipe_name, image_URL, ingredients ,instructions, nutritioninfo, allergens);
-                    recipes.add(recipe);
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace(); // Gérer les exceptions de manière appropriée dans votre application
-        }
-		
-		
+
+							Ingredient ingredient = new Ingredient(ingredient_name, exp_date, ingredient_quantity,
+									"Unknown", unit);
+							ingredients.add(ingredient);
+						}
+
+					}
+
+					// Ajoutez ici d'autres attributs de la classe Recipe en fonction de votre
+					// modèle
+					Recipe recipe = new Recipe(recipe_name, image_URL, ingredients, instructions, nutritioninfo,
+							allergens);
+					recipes.add(recipe);
+				}
+			}
+		} catch (SQLException e) {
+			e.printStackTrace(); // Gérer les exceptions de manière appropriée dans votre application
+		}
+
 		return recipes;
 	}
 
-	 public static void resetDatabaseRecipe() {
-	        try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD)) {
-	            // Supprimer toutes les lignes de la table "ingredientsofrecipe"
-	            String deleteIngredientsOfRecipe = "DELETE FROM ingredientsofrecipe";
-	            try (PreparedStatement deleteIngredientsOfRecipeStatement = connection.prepareStatement(deleteIngredientsOfRecipe)) {
-	                deleteIngredientsOfRecipeStatement.executeUpdate();
-	            }
+	public static NutritionInfo returnNutritionInfo(int recipe_id) {
 
-	            // Supprimer toutes les lignes de la table "recipe"
-	            String deleteRecipe = "DELETE FROM recipe";
-	            try (PreparedStatement deleteRecipeStatement = connection.prepareStatement(deleteRecipe)) {
-	                deleteRecipeStatement.executeUpdate();
-	            }
+		Double calories = null, fat = null, protein = null, carbs = null, fiber = null, sugar = null, sodium = null;
 
-	            System.out.println("Database reset successful.");
-	        } catch (SQLException e) {
-	            e.printStackTrace(); // Gérer les exceptions de manière appropriée dans votre application
-	        }
-	    }
-	
+		try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD)) {
+			String sql = "SELECT * FROM nutrition_info WHERE recipe_id = " + recipe_id;
+			try (PreparedStatement statement = connection.prepareStatement(sql);
+					ResultSet resultSet = statement.executeQuery()) {
+
+				while (resultSet.next()) {
+					calories = resultSet.getDouble("calories");
+					fat = resultSet.getDouble("fat");
+					protein = resultSet.getDouble("protein");
+					carbs = resultSet.getDouble("carbs");
+					fiber = resultSet.getDouble("fiber");
+					sugar = resultSet.getDouble("sugar");
+					sodium = resultSet.getDouble("sodium");
+
+				}
+			}
+		} catch (SQLException e) {
+			e.printStackTrace(); // Gérer les exceptions de manière appropriée dans votre application
+		}
+
+		NutritionInfo nutrition_info = new NutritionInfo(calories, fat, protein, carbs, fiber, sugar, sodium);
+
+		return nutrition_info;
+	}
+
+	public static void resetDatabaseRecipe() {
+		try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD)) {
+			// Supprimer toutes les lignes de la table "ingredientsofrecipe"
+			String deleteIngredientsOfRecipe = "DELETE FROM ingredientsofrecipe";
+			try (PreparedStatement deleteIngredientsOfRecipeStatement = connection
+					.prepareStatement(deleteIngredientsOfRecipe)) {
+				deleteIngredientsOfRecipeStatement.executeUpdate();
+			}
+
+			// Supprimer toutes les lignes de la table "recipe"
+			String deleteRecipe = "DELETE FROM recipe";
+			try (PreparedStatement deleteRecipeStatement = connection.prepareStatement(deleteRecipe)) {
+				deleteRecipeStatement.executeUpdate();
+			}
+
+			// Supprimer toutes les lignes de la table "recipe"
+			String deleteNutritionInfo = "DELETE FROM nutrition_info";
+			try (PreparedStatement deleteRecipeStatement = connection.prepareStatement(deleteNutritionInfo)) {
+				deleteRecipeStatement.executeUpdate();
+			}
+
+			System.out.println("Database reset successful.");
+		} catch (SQLException e) {
+			e.printStackTrace(); // Gérer les exceptions de manière appropriée dans votre application
+		}
+	}
+
 	// Méthode pour insérer une liste de recettes dans la base de données
 	public static void insertRecipe(Recipe recipe, int recipe_id) {
 		String sql = "INSERT INTO Recipe (recipe_id, name, imageUrl, allergens_list, instructions_list) "
@@ -226,22 +265,51 @@ public class DatabaseAccess {
 		}
 	}
 
-    // Method to insert a new row into the fridgeingredients table when adding an ingredient to a fridge
-    public static void insertIngredientToFridge(int fridgeId, int ingredientId, double quantity) {
-        String sql = "INSERT INTO fridgeingredients (fridge_id, ingredient_id, quantity) VALUES (?, ?, ?)";
+	// Method to insert a new row into the fridgeingredients table when adding an
+	// ingredient to a fridge
+	public static void insertIngredientToFridge(int fridgeId, int ingredientId, double quantity) {
+		String sql = "INSERT INTO fridgeingredients (fridge_id, ingredient_id, quantity) VALUES (?, ?, ?)";
 
-        try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD)) {
-            try (PreparedStatement statement = connection.prepareStatement(sql)) {
-                statement.setInt(1, fridgeId);
-                statement.setInt(2, ingredientId);
-                statement.setDouble(3, quantity);
+		try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD)) {
+			try (PreparedStatement statement = connection.prepareStatement(sql)) {
+				statement.setInt(1, fridgeId);
+				statement.setInt(2, ingredientId);
+				statement.setDouble(3, quantity);
 
-                statement.executeUpdate();
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
+				statement.executeUpdate();
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public static void instertNutritionInfo(NutritionInfo nutritionInfo, int recipe_id) {
+		try {
+			// Établissez la connexion à la base de données
+			try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD)) {
+				String sql = "INSERT INTO nutrition_info (recipe_id, calories, fat, protein, carbs, fiber, sugar, sodium) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+
+				try (PreparedStatement insertStatement = connection.prepareStatement(sql)) {
+
+					insertStatement.setInt(1, recipe_id);
+					insertStatement.setDouble(2, nutritionInfo.getCalories());
+					insertStatement.setDouble(3, nutritionInfo.getFat());
+					insertStatement.setDouble(4, nutritionInfo.getProtein());
+					insertStatement.setDouble(5, nutritionInfo.getCarbs());
+					insertStatement.setDouble(6, nutritionInfo.getFiber());
+					insertStatement.setDouble(7, nutritionInfo.getSugar());
+					insertStatement.setDouble(8, nutritionInfo.getSodium());
+					// Ajouter le batch pour l'exécution efficace de plusieurs insertions
+					insertStatement.addBatch();
+
+					// Exécuter le batch d'insertions
+					insertStatement.executeBatch();
+				}
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
 
 	public static void callInsertListOfIngredient(List<Ingredient> ingredients, int recipe_id) {
 		try {
@@ -257,8 +325,6 @@ public class DatabaseAccess {
 	private static void insertListOfIngredients(Connection connection, List<Ingredient> ingredients, int recipe_id)
 			throws SQLException {
 		String sql = "INSERT INTO ingredientsofrecipe (name, quantity, expiration_date, r_id, unit) VALUES (?, ?, ?, ?, ?)";
-
-
 
 		try (PreparedStatement insertStatement = connection.prepareStatement(sql)) {
 			for (Ingredient ingredient : ingredients) {
@@ -276,36 +342,37 @@ public class DatabaseAccess {
 		}
 	}
 
-
 	// Méthode qui appelle updateIngredientQuantity for a specific fridge
 	public static void callUpdateIngredientQuantityForFridge(int fridgeId, String name, double newQuantity) {
-    try {
-        // Établissez la connexion à la base de données
-        try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD)) {
-            updateIngredientQuantityForFridge(connection, fridgeId, name, newQuantity);
-        }
-    } catch (SQLException e) {
-        e.printStackTrace();
-    }
+		try {
+			// Établissez la connexion à la base de données
+			try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD)) {
+				updateIngredientQuantityForFridge(connection, fridgeId, name, newQuantity);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 
-	// Méthode pour mettre à jour la quantité d'un ingrédient dans un frigo spécifique
-	private static void updateIngredientQuantityForFridge(Connection connection, int fridgeId, String name, double newQuantity)
-        throws SQLException {
-    String sql = "UPDATE Ingredients SET quantity = ? WHERE fridge_id = ? AND name = ?";
-    try (PreparedStatement statement = connection.prepareStatement(sql)) {
-        statement.setDouble(1, newQuantity);
-        statement.setInt(2, fridgeId);
-        statement.setString(3, name);
-        statement.executeUpdate();
-    }
+	// Méthode pour mettre à jour la quantité d'un ingrédient dans un frigo
+	// spécifique
+	private static void updateIngredientQuantityForFridge(Connection connection, int fridgeId, String name,
+			double newQuantity) throws SQLException {
+		String sql = "UPDATE Ingredients SET quantity = ? WHERE fridge_id = ? AND name = ?";
+		try (PreparedStatement statement = connection.prepareStatement(sql)) {
+			statement.setDouble(1, newQuantity);
+			statement.setInt(2, fridgeId);
+			statement.setString(3, name);
+			statement.executeUpdate();
+		}
 	}
 
-	public void addIngredient(String name, double quantity, LocalDate expirationDate, String category, String unit, int fridgeId) {
+	public void addIngredient(String name, double quantity, LocalDate expirationDate, String category, String unit,
+			int fridgeId) {
 		String sql = "INSERT INTO Ingredients (name, quantity, expiration_date, category, unit, fridge_id) VALUES (?, ?, ?, ?, ?, ?)";
-		
+
 		try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD);
-			 PreparedStatement statement = connection.prepareStatement(sql)) {
+				PreparedStatement statement = connection.prepareStatement(sql)) {
 			statement.setString(1, name);
 			statement.setDouble(2, quantity);
 			statement.setDate(3, java.sql.Date.valueOf(expirationDate));
@@ -321,7 +388,7 @@ public class DatabaseAccess {
 	public void deleteIngredientByName(String name, int fridgeId) {
 		String sql = "DELETE FROM Ingredients WHERE name = ? AND fridge_id = ?";
 		try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD);
-			 PreparedStatement statement = connection.prepareStatement(sql)) {
+				PreparedStatement statement = connection.prepareStatement(sql)) {
 			statement.setString(1, name);
 			statement.setInt(2, fridgeId);
 			statement.executeUpdate();
@@ -356,22 +423,21 @@ public class DatabaseAccess {
 
 	public static List<Ingredient> getExpiredIngredients() {
 		List<Ingredient> expiredIngredients = new ArrayList<>();
-		
-	
+
 		try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD)) {
 			String sql = "SELECT * FROM Ingredients WHERE expiration_date < ?";
 			try (PreparedStatement statement = connection.prepareStatement(sql)) {
 				// Utilisez la date actuelle pour comparer avec les dates d’expiration
 				LocalDate currentDate = LocalDate.now();
 				statement.setDate(1, Date.valueOf(currentDate));
-	
+
 				try (ResultSet resultSet = statement.executeQuery()) {
 					while (resultSet.next()) {
 						String name = resultSet.getString("name");
 						LocalDate expirationDate = resultSet.getDate("expiration_date").toLocalDate();
 						int quantity = resultSet.getInt("quantity");
 						String category = resultSet.getString("category");
-	
+
 						Ingredient ingredient = new Ingredient(name, expirationDate, quantity, category);
 						expiredIngredients.add(ingredient);
 					}
@@ -380,31 +446,30 @@ public class DatabaseAccess {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-	
+
 		return expiredIngredients;
 	}
 
 	public static List<Ingredient> getSoonExpiredIngredients() {
 		List<Ingredient> soonexpiredIngredients = new ArrayList<>();
-		
-	
+
 		try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD)) {
 			String sql = "SELECT * FROM Ingredients WHERE ? < ? AND ? < expiration_date ";
 			try (PreparedStatement statement = connection.prepareStatement(sql)) {
 				// Utilisez la date actuelle pour comparer avec les dates d’expiration
 				LocalDate currentDate = LocalDate.now();
-            	LocalDate soonToExpireDate = currentDate.minusWeeks(1); //Date proche de l'expiration
+				LocalDate soonToExpireDate = currentDate.minusWeeks(1); // Date proche de l'expiration
 				statement.setDate(1, Date.valueOf(soonToExpireDate));
 				statement.setDate(2, Date.valueOf(currentDate));
 				statement.setDate(3, Date.valueOf(currentDate));
-	
+
 				try (ResultSet resultSet = statement.executeQuery()) {
 					while (resultSet.next()) {
 						String name = resultSet.getString("name");
 						LocalDate expirationDate = resultSet.getDate("expiration_date").toLocalDate();
 						int quantity = resultSet.getInt("quantity");
 						String category = resultSet.getString("category");
-	
+
 						Ingredient ingredient = new Ingredient(name, expirationDate, quantity, category);
 						soonexpiredIngredients.add(ingredient);
 					}
@@ -413,8 +478,8 @@ public class DatabaseAccess {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-	
+
 		return soonexpiredIngredients;
 	}
-	
+
 }
