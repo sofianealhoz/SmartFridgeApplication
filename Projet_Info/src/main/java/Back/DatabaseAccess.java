@@ -454,7 +454,7 @@ public class DatabaseAccess {
 		List<Ingredient> soonexpiredIngredients = new ArrayList<>();
 
 		try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD)) {
-			String sql = "SELECT * FROM Ingredients WHERE ? < ? AND ? < expiration_date ";
+			String sql = "SELECT * FROM Ingredients WHERE DATE_SUB(expiration_date, INTERVAL 1 WEEK) < ? AND ? < expiration_date ";
 			try (PreparedStatement statement = connection.prepareStatement(sql)) {
 				// Utilisez la date actuelle pour comparer avec les dates d’expiration
 				LocalDate currentDate = LocalDate.now();
